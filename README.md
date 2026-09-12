@@ -1,0 +1,46 @@
+# Agentic Trader
+
+A browsable swing-trade research journal: what was checked, which patterns appeared, why a setup was rejected, and what the evidence can teach.
+
+**[Open the research dashboard](https://howardwhsrun.github.io/Agentic-Trader/)**
+
+The dashboard has an overview, dated research journal, searchable market universe, candidate details, strategy rules, and a learning guide. It uses real saved research snapshots. Baseline archives are labeled as archives; hypothetical price levels are not live quotes or executed trades.
+
+## What is published
+
+Only the static site and a purpose-built public export are stored here. The exporter selects market metrics, research decisions, safe explanatory text, public source links, timestamps, and percentage-based strategy rules. Private account identifiers, balances, buying power, deposits, position sizes, bank records, authentication details, and raw source logs remain outside this repository. Some account-specific sentences are omitted from the public journal.
+
+The first entry preserves the September 11, 2026 market snapshot. It is not a new scheduled check. Future checks appear when the local monitor successfully records and publishes them. The website itself does not query a brokerage, place trades, run the monitor, or guarantee that a scheduled check took place. The displayed timestamps show the latest published evidence.
+
+## Development
+
+No JavaScript packages or external assets are needed. Python 3.9 or later is sufficient for export, publication, and tests.
+
+```sh
+python3 -m http.server 8765 --bind 127.0.0.1 --directory docs
+```
+
+Open `http://127.0.0.1:8765/` to preview the site. Serve it over HTTP so the browser can fetch its JSON data.
+
+Export saved logs from a private directory outside the repository:
+
+```sh
+python3 scripts/export_research.py --logs ../logs --output docs/data/research.json
+python3 -m unittest discover -s tests -v
+```
+
+Publish a new public export after a research check:
+
+```sh
+python3 scripts/publish_logs.py --logs ../logs --state ../reports/pages-publish-state.json
+```
+
+The publisher verifies the repository and branch, refuses unrelated changes, exports only approved fields, and commits only `docs/data/research.json`. It never force-pushes. An unchanged export does not create an empty commit. Failed publication preserves the local research logs and records the error in the private state file. A successful push means deployment is pending, not that the site is already updated.
+
+## Hosting and updates
+
+GitHub Pages publishes `main` → `/docs`, with `.nojekyll` for plain static files. See [GitHub's publishing-source documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+The local monitor is scheduled for five weekday checks in America/Chicago: 08:45, 10:45, 12:45, 14:45, and 15:45. It follows the actual exchange calendar. The monitor publishes after saving each research log, including quiet checks with no opportunity. Local scheduling requires the host and Codex to be available; missed runs are never invented.
+
+Research and alerts do not establish a trade, an investment return, or a proven strategy. Stop levels model planned risk; gaps and slippage can produce larger losses.

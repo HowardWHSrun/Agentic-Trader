@@ -1,0 +1,568 @@
+#!/usr/bin/env python3
+"""Export a deliberately small public view of private research archives.
+
+Only review.json and scan.json are read. Account/config snapshots, markdown,
+positions, sizing amounts and unknown keys never enter the output schema.
+Free text passes a separate conservative privacy filter: sentences containing
+personal-finance context, identifiers, local paths or credentials are omitted.
+This is a publication boundary, not a lossless archive or a fresh market scan.
+"""
+
+from __future__ import annotations
+
+import argparse
+import ipaddress
+import json
+import math
+import os
+import re
+import sys
+import tempfile
+from datetime import date, datetime, timezone
+from pathlib import Path
+from urllib.parse import unquote, urlsplit, urlunsplit
+
+MAX_INPUT_BYTES = 20 * 1024 * 1024
+CHECK_TYPES = {"baseline_archive", "intraday", "after_close", "failed_check"}
+DECISIONS = {"no_opportunity", "watch_only", "qualified_opportunity", "monitor_failure"}
+RISK_RULES = {
+    "max_position_pct": 25,
+    "risk_per_trade_pct": 1.5,
+    "max_open_risk_pct": 1.5,
+    "max_total_exposure_pct": 30,
+    "max_sector_exposure_pct": 25,
+    "max_positions": 3,
+    "max_new_entries_per_week": 1,
+}
+METRIC_FIELDS = (
+    "close", "sma20", "sma50", "sma200", "atr14", "relative_return_20",
+    "return_20", "relative_volume", "prior20_high",
+)
+PLAN_FIELDS = ("entry", "stop", "target_2r", "max_entry_chase", "stop_distance_pct")
+FILTER_FIELDS = (
+    "dollar_liquidity", "long_trend", "minimum_price",
+    "positive_relative_strength", "valid_atr",
+)
+REVIEW_FIELDS = ("why_interesting", "why_not_actionable", "what_would_change")
+SECTORS = {
+    "broad_market", "consumer_discretionary", "consumer_staples", "energy",
+    "financials", "healthcare", "industrials", "small_caps", "technology_growth",
+    "utilities", "technology", "information_technology", "communication_services",
+    "materials", "real_estate", "health_care", "unknown",
+}
+SETUPS = {"pullback_reclaim", "breakout", "breakout_20", "breakout_20d"}
+ENTRY_ID = re.compile(r"^\d{8}T\d{6}\.\d{6}Z-(?:baseline_archive|intraday|after_close|failed_check)$")
+SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,9}$")
+
+# Dropping whole sentences avoids leaving a private amount detached from its
+# context. Decimal points and ISO timestamps are not sentence boundaries.
+SENTENCES = re.compile(r"(?<=[.!?。！？])\s+(?=[A-Z0-9\"'])|[\r\n]+")
+PRIVATE_CONTEXT = re.compile(
+    r"\b(?:account\w*|acct|balance\w*|buying[ -]?power|purchasing[ -]?power|"
+    r"deposit\w*|withdraw\w*|holdings|holding\s+\d|portfolio|net[ -]?(?:worth|liquidation)|"
+    r"wallet|bankroll|broker\w*|statement|cash|capital|margin|funds?|allocat\w*|I|we|my|our|"
+    r"available[ -]?(?:cash|funds|capital)|"
+    r"settled[ -]?cash|unsettled[ -]?cash|cash[ -]?(?:balance|available)|"
+    r"equity[ -]?(?:value|balance)|funds?\s+(?:available|remaining)|"
+    r"capital[ -]?(?:ceiling|budget)|whole[ -]?position|position[ -]?(?:ceiling|cap)|"
+    r"(?:planned[ -]?(?:loss|risk)|loss|risk|personal)[ -]?budget|"
+    r"personal|private|user(?:'s)?|customer|client[ -]?(?:id|number)|"
+    r"filled|fills|executed|transactions?|order[ -]?(?:id|number)|"
+    r"(?:my|our)\s+(?:cash|money|funds|capital|shares|trades|position)|"
+    r"(?:bought|sold|purchased|deposited)|social[ -]?security|routing|iban)\b|"
+    r"(?:账户|帳戶|余额|餘額|购买力|購買力|入金|出金|持仓|持倉|本金|预算|預算|账号|帳號)",
+    re.IGNORECASE,
+)
+SENSITIVE_LITERAL = re.compile(
+    r"(?:\b(?:api[ _-]?key|access[ _-]?token|refresh[ _-]?token|password|passwd|"
+    r"secret|authorization|bearer|cookie|credential|session[ _-]?id)\b)|"
+    r"(?:\b(?:sk|pk|ghp|github_pat|AKIA)[_-]?[A-Za-z0-9_-]{12,})|"
+    r"(?:\b[A-Fa-f0-9]{24,}\b)|(?:\b[A-Za-z0-9_-]{32,}\b)|"
+    r"(?:\b\d{4,}(?:[- ]\d{3,})+\b)|(?:\b\d{8,}\b)|"
+    r"(?:[*•xX]{2,}[ -]*\d{2,})|(?:\d{2,}[ -]*[*•xX]{2,})|"
+    r"(?:\b(?=[A-Z0-9]*[A-Z])(?=[A-Z0-9]*\d)[A-Z0-9]{8,}\b)|"
+    r"(?:\b(?:ending\s+in|last\s+four)\s*[:#]?\s*\d{4}\b)|"
+    r"(?:\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b)|"
+    r"(?:file://|(?:^|\s)(?:~?/|[A-Za-z]:\\)|/(?:Users|home|mnt|tmp|var|private)/)|"
+    r"(?:\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b)|"
+    r"(?:\b(?:\d+(?:\.\d+)?|zero|one|two|three|four|five|six|seven|eight|nine|ten|single)"
+    r"[ -]+(?:whole[ -]?)?(?:shares?|contracts?|units?)\b)",
+    re.IGNORECASE,
+)
+MONEY_NUMBER = r"\d+(?:,\d{3})*(?:\.\d+)?"
+MONEY = re.compile(
+    r"(?:[$€£¥]\s*" + MONEY_NUMBER + r"|\b(?:USD|EUR|GBP|CNY|RMB|JPY)\s*"
+    + MONEY_NUMBER + r"\b|\b" + MONEY_NUMBER
+    + r"\s*(?:USD|EUR|GBP|CNY|RMB|JPY|(?:US\s+)?dollars?|bucks|euros?|yuan)\b)", re.I,
+)
+# A money amount must be grammatically adjacent to its own market-price label.
+# A target or entry in another clause cannot legitimize an unrelated amount.
+PRICE_LABEL = r"(?:closed?|price|sma\d*|average|entry|stop|target|objective|high|low|resistance|support|ATR\d*|spread)"
+PRICE_BEFORE_MONEY = re.compile(
+    r"\b" + PRICE_LABEL + r"\b(?:\s+(?:at|of|is|was|around|near|about|equals?|the|its|a|an)){0,4}\s*[(:=]?\s*$", re.I,
+)
+PRICE_AFTER_MONEY = re.compile(
+    r"^\s+(?:(?:\d+[- ]session|\d+R|arithmetic|hypothetical|next[- ]session|planned)\s+){0,3}"
+    + PRICE_LABEL + r"\b", re.I,
+)
+URL_IN_TEXT = re.compile(r"https?://\S+", re.I)
+
+
+class ExportError(ValueError):
+    """Input cannot safely be exported; the previous output remains intact."""
+
+
+def public_url(value: object) -> str | None:
+    """Allow only external, unauthenticated, query-free public HTTP(S) URLs."""
+    if not isinstance(value, str) or len(value) > 2048:
+        return None
+    try:
+        parts = urlsplit(value.strip())
+        hostname = parts.hostname
+        if parts.scheme not in {"http", "https"} or not hostname:
+            return None
+        if parts.username or parts.password or parts.port not in {None, 80, 443}:
+            return None
+        if parts.query or parts.fragment:
+            return None
+        if hostname.lower() in {"localhost", "localhost.localdomain"} or "." not in hostname:
+            return None
+        if hostname.lower().endswith((".local", ".internal", ".localhost", ".test", ".invalid")):
+            return None
+        if PRIVATE_CONTEXT.search(hostname) or SENSITIVE_LITERAL.search(hostname):
+            return None
+        try:
+            if not ipaddress.ip_address(hostname).is_global:
+                return None
+        except ValueError:
+            pass
+        decoded_path = parts.path
+        for _ in range(3):
+            decoded_path = unquote(decoded_path)
+        if PRIVATE_CONTEXT.search(decoded_path) or SENSITIVE_LITERAL.search(decoded_path.lstrip("/")):
+            return None
+        if any(ord(char) < 32 for char in value + decoded_path) or "\\" in value + decoded_path:
+            return None
+        return urlunsplit((parts.scheme, parts.netloc, parts.path, "", ""))
+    except ValueError:
+        return None
+
+
+def public_text(value: object) -> str:
+    if not isinstance(value, str):
+        return ""
+    retained = []
+    for sentence in SENTENCES.split(value.strip()):
+        sentence = sentence.strip()
+        if not sentence or len(sentence) > 4000:
+            continue
+        if PRIVATE_CONTEXT.search(sentence) or SENSITIVE_LITERAL.search(sentence):
+            continue
+        if any(
+            not PRICE_BEFORE_MONEY.search(sentence[:amount.start()])
+            and not PRICE_AFTER_MONEY.search(sentence[amount.end():])
+            for amount in MONEY.finditer(sentence)
+        ):
+            continue
+        if any(public_url(url.rstrip(".,;)")) is None for url in URL_IN_TEXT.findall(sentence)):
+            continue
+        retained.append(sentence)
+    return " ".join(retained)
+
+
+def public_lines(value: object) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [clean for item in value if (clean := public_text(item))]
+
+
+def object_value(value: object) -> dict:
+    return value if isinstance(value, dict) else {}
+
+
+def number(value: object) -> int | float | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return value if math.isfinite(value) else None
+
+
+def boolean(value: object) -> bool | None:
+    return value if isinstance(value, bool) else None
+
+
+def iso_timestamp(value: object, *, required: bool = False) -> str | None:
+    try:
+        if not isinstance(value, str):
+            raise ValueError
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if parsed.utcoffset() is None:
+            raise ValueError
+        return parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+    except (ValueError, TypeError):
+        if required:
+            raise ExportError("An archive has an invalid checked_at timestamp") from None
+        return None
+
+
+def iso_date(value: object) -> str | None:
+    try:
+        if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            return None
+        return date.fromisoformat(value).isoformat()
+    except ValueError:
+        return None
+
+
+def read_object(path: Path) -> dict:
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_INPUT_BYTES:
+        raise ExportError("An archive input is missing, linked, or too large")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeError):
+        raise ExportError("An archive input is not valid UTF-8 JSON") from None
+    if not isinstance(data, dict):
+        raise ExportError("An archive input must be a JSON object")
+    return data
+
+
+def sizing_status(candidate: dict) -> str:
+    sizing = object_value(candidate.get("sizing"))
+    if sizing.get("available") is not True:
+        return "not_evaluated"
+    shares = number(sizing.get("shares"))
+    if shares is not None and shares <= 0:
+        return "does_not_fit"
+    if shares is not None and shares > 0 and not sizing.get("blockers"):
+        return "within_limits"
+    return "not_evaluated"
+
+
+def future_requirements(value: object) -> str:
+    """Keep future conditions useful when a private clause removes a sentence.
+
+    These generic conditions are emitted only for requirements mentioned in that
+    same omitted conditional sentence. No new observation or clearance is added.
+    """
+    if not isinstance(value, str):
+        return ""
+    retained = []
+    for sentence in SENTENCES.split(value.strip()):
+        safe = public_text(sentence)
+        if safe:
+            retained.append(safe)
+            continue
+        if not re.search(r"\b(?:require\w*|must|would\s+need)\b", sentence, re.I):
+            continue
+        conditions = []
+        if re.search(r"\b(?:siz(?:e|ing)|position|risk)\b.*\b(?:limits?|fit|satisf\w*)\b|\bfit\b.*\blimits?\b", sentence, re.I):
+            conditions.append("a size within position and risk limits")
+        if re.search(r"\b(?:earnings|event)\b", sentence, re.I):
+            conditions.append("verified earnings or event clearance" if re.search(r"\bearnings\b", sentence, re.I) else "event checks")
+        if re.search(r"\bchart[- ]supported\b.*\broom\b", sentence, re.I):
+            conditions.append("chart-supported reward room")
+        if re.search(r"\b(?:live[- ]price|live|quotes?|spread)\b", sentence, re.I):
+            conditions.append("fresh execution checks")
+        if conditions:
+            retained.append("A future setup requires " + ", ".join(conditions) + ".")
+    return " ".join(retained)
+
+
+def export_candidate(candidate: dict, reviews: dict) -> dict | None:
+    symbol = candidate.get("symbol")
+    if not isinstance(symbol, str) or not SYMBOL.fullmatch(symbol):
+        return None
+    raw_metrics = object_value(candidate.get("metrics"))
+    raw_filters = object_value(candidate.get("filters"))
+    raw_plan = object_value(candidate.get("plan"))
+    plan = {key: number(raw_plan.get(key)) for key in PLAN_FIELDS} if raw_plan else None
+    raw_review = object_value(reviews.get(symbol))
+    review = {key: public_text(raw_review.get(key)) for key in REVIEW_FIELDS} if raw_review else None
+    if review:
+        review["what_would_change"] = future_requirements(raw_review.get("what_would_change"))
+    if review and candidate.get("technical_match") is True:
+        reason = raw_review.get("why_not_actionable", "")
+        rejected_sizing = isinstance(reason, str) and any(
+            PRIVATE_CONTEXT.search(sentence)
+            and re.search(r"\b(?:siz\w*|capital|ceiling|limit\w*|budget)\b", sentence, re.I)
+            and re.search(r"\b(?:exceeds?|above|zero\s+whole\s+shares|does\s+not\s+fit)\b", sentence, re.I)
+            for sentence in SENTENCES.split(reason)
+        )
+        if rejected_sizing:
+            review["why_not_actionable"] = (
+                "The recorded review also found that the setup did not fit sizing limits. "
+                + review["why_not_actionable"]
+            ).strip()
+    raw_setups = candidate.get("setup_types")
+    return {
+        "symbol": symbol,
+        "kind": candidate.get("kind") if candidate.get("kind") in {"stock", "etf"} else "unknown",
+        "sector": candidate.get("sector") if candidate.get("sector") in SECTORS else "unknown",
+        "last_date": iso_date(candidate.get("last_date")),
+        "technical_match": boolean(candidate.get("technical_match")),
+        "setup_types": [item for item in raw_setups if isinstance(item, str) and item in SETUPS]
+        if isinstance(raw_setups, list) else [],
+        "filters": {key: boolean(raw_filters.get(key)) for key in FILTER_FIELDS},
+        "metrics": {key: number(raw_metrics.get(key)) for key in METRIC_FIELDS},
+        "plan": plan,
+        "blockers": public_lines(candidate.get("blockers")),
+        "sizing_status": sizing_status(candidate),
+        "review": review,
+    }
+
+
+def export_entry(folder: Path) -> dict:
+    if not ENTRY_ID.fullmatch(folder.name) or folder.is_symlink():
+        raise ExportError("An archive folder has an invalid public entry identifier")
+    review = read_object(folder / "review.json")
+    scan = read_object(folder / "scan.json")
+    if review.get("check_type") not in CHECK_TYPES or review.get("decision") not in DECISIONS:
+        raise ExportError("An archive contains an unknown check type or decision")
+    if not folder.name.endswith("-" + review["check_type"]):
+        raise ExportError("An archive check type does not match its identifier")
+    notification = object_value(review.get("notification"))
+    if review["check_type"] == "baseline_archive" and (
+        review["decision"] == "qualified_opportunity" or notification.get("sent") is True
+    ):
+        raise ExportError("An archived baseline cannot be a new opportunity alert")
+    raw_reviews = review.get("candidate_reviews", [])
+    reviews = {
+        item["symbol"]: item for item in raw_reviews
+        if isinstance(item, dict) and isinstance(item.get("symbol"), str)
+    } if isinstance(raw_reviews, list) else {}
+    raw_candidates = scan.get("candidates", [])
+    if not isinstance(raw_candidates, list):
+        raise ExportError("Archive candidates must be a list")
+    candidates = [
+        clean for item in raw_candidates if isinstance(item, dict)
+        if (clean := export_candidate(item, reviews)) is not None
+    ]
+    raw_gate = object_value(scan.get("market_gate"))
+    raw_benchmarks = object_value(raw_gate.get("benchmarks"))
+    benchmarks = {}
+    for symbol in ("SPY", "QQQ"):
+        raw = object_value(raw_benchmarks.get(symbol))
+        benchmarks[symbol] = {key: number(raw.get(key)) for key in ("close", "sma50", "sma200")}
+        benchmarks[symbol]["last_date"] = iso_date(raw.get("last_date"))
+    sources = []
+    raw_sources = review.get("sources", [])
+    for source in raw_sources if isinstance(raw_sources, list) else []:
+        if not isinstance(source, dict):
+            continue
+        url = public_url(source.get("url"))
+        title = public_text(source.get("title"))
+        if url and title:
+            sources.append({"title": title, "url": url, "as_of": public_text(source.get("as_of"))})
+    freshness = public_text(review.get("data_freshness"))
+    if review["check_type"] == "baseline_archive":
+        freshness = "Archived baseline; this entry is not a new market check. " + freshness
+    return {
+        "id": folder.name,
+        "checked_at": iso_timestamp(review.get("checked_at"), required=True),
+        "check_type": review["check_type"],
+        "decision": review["decision"],
+        "summary": public_text(review.get("summary")),
+        "data_freshness": freshness.strip(),
+        "signal_session": iso_date(scan.get("expected_session")),
+        "scan_generated_at": iso_timestamp(scan.get("generated_at")),
+        "market_gate": {"passed": boolean(raw_gate.get("passed")), "benchmarks": benchmarks},
+        "data_blockers": public_lines(scan.get("data_blockers")),
+        "observations": public_lines(review.get("observations")),
+        "lessons": public_lines(review.get("lessons")),
+        "sources": sources,
+        "candidates": candidates,
+        "notification": {
+            "sent": boolean(notification.get("sent")),
+            "reason": public_text(notification.get("reason")),
+        },
+    }
+
+
+def export_logs(logs: Path) -> dict:
+    if not logs.is_dir():
+        raise ExportError("The private logs directory does not exist")
+    folders = sorted({path.parent for path in logs.glob("*/*/review.json")})
+    if not folders:
+        raise ExportError("No research archives found; refusing to replace public history")
+    entries = [export_entry(folder) for folder in folders]
+    entries.sort(key=lambda item: (datetime.fromisoformat(item["checked_at"].replace("Z", "+00:00")), item["id"]), reverse=True)
+    latest_folder = next(folder for folder in folders if folder.name == entries[0]["id"])
+    latest_rules = object_value(read_object(latest_folder / "scan.json").get("rules"))
+    # Rules describe the latest recorded scan, not a copied account/config file.
+    # Missing settings remain unknown; historic defaults are never asserted.
+    risk_rules = {key: number(latest_rules.get(key)) for key in RISK_RULES}
+    payload = {
+        "schema_version": 1,
+        "updated_at": entries[0]["checked_at"],
+        "timezone": "America/Chicago",
+        "schedule": ["08:45", "10:45", "12:45", "14:45", "15:45"],
+        "risk_rules": risk_rules,
+        "entries": entries,
+    }
+    validate_public_payload(payload)
+    return payload
+
+
+def validate_public_payload(payload: object) -> None:
+    """Fail closed on schema drift or private prose in a publication candidate.
+
+    This also accepts JSON loaded from historical commits, so publishers can
+    audit pending history independently of the private source archives.
+    No rejected value is echoed in the exception.
+    """
+    try:
+        _validate_public_payload(payload)
+    except (KeyError, TypeError, AttributeError, OverflowError, RecursionError):
+        raise ExportError("Public research payload failed its schema or privacy audit") from None
+
+
+def _validate_public_payload(payload: object) -> None:
+    def require(condition: bool) -> None:
+        if not condition:
+            raise ExportError("Public research payload failed its schema or privacy audit")
+
+    def keys(value: object, expected: tuple | set) -> None:
+        require(isinstance(value, dict) and set(value) == set(expected))
+
+    def prose(value: object) -> None:
+        require(isinstance(value, str) and public_text(value) == value)
+
+    def lines(value: object) -> None:
+        require(isinstance(value, list))
+        for item in value:
+            prose(item)
+
+    def numeric(value: object) -> None:
+        require(value is None or number(value) is not None)
+
+    def boolish(value: object) -> None:
+        require(value is None or isinstance(value, bool))
+
+    def day(value: object) -> None:
+        require(value is None or iso_date(value) == value)
+
+    def stamp(value: object, required: bool = False) -> None:
+        require((value is None and not required) or (isinstance(value, str) and iso_timestamp(value) == value))
+
+    keys(payload, ("schema_version", "updated_at", "timezone", "schedule", "risk_rules", "entries"))
+    require(type(payload["schema_version"]) is int and payload["schema_version"] == 1)
+    require(payload["timezone"] == "America/Chicago")
+    require(payload["schedule"] == ["08:45", "10:45", "12:45", "14:45", "15:45"])
+    keys(payload["risk_rules"], RISK_RULES)
+    for value in payload["risk_rules"].values():
+        numeric(value)
+    stamp(payload["updated_at"], required=True)
+    require(isinstance(payload["entries"], list) and bool(payload["entries"]))
+    checked = []
+    identifiers = set()
+    for entry in payload["entries"]:
+        keys(entry, (
+            "id", "checked_at", "check_type", "decision", "summary", "data_freshness",
+            "signal_session", "scan_generated_at", "market_gate", "data_blockers",
+            "observations", "lessons", "sources", "candidates", "notification",
+        ))
+        require(isinstance(entry["id"], str) and ENTRY_ID.fullmatch(entry["id"]) is not None)
+        require(entry["id"] not in identifiers)
+        identifiers.add(entry["id"])
+        require(entry["check_type"] in CHECK_TYPES and entry["id"].endswith("-" + entry["check_type"]))
+        require(entry["decision"] in DECISIONS)
+        stamp(entry["checked_at"], required=True)
+        checked.append(datetime.fromisoformat(entry["checked_at"].replace("Z", "+00:00")))
+        stamp(entry["scan_generated_at"])
+        day(entry["signal_session"])
+        prose(entry["summary"])
+        prose(entry["data_freshness"])
+        for field in ("data_blockers", "observations", "lessons"):
+            lines(entry[field])
+        gate = entry["market_gate"]
+        keys(gate, ("passed", "benchmarks"))
+        boolish(gate["passed"])
+        keys(gate["benchmarks"], ("SPY", "QQQ"))
+        for benchmark in gate["benchmarks"].values():
+            keys(benchmark, ("close", "sma50", "sma200", "last_date"))
+            day(benchmark["last_date"])
+            for field in ("close", "sma50", "sma200"):
+                numeric(benchmark[field])
+        require(isinstance(entry["sources"], list))
+        for source in entry["sources"]:
+            keys(source, ("title", "url", "as_of"))
+            require(isinstance(source["url"], str) and public_url(source["url"]) == source["url"])
+            prose(source["title"])
+            prose(source["as_of"])
+        require(isinstance(entry["candidates"], list))
+        for candidate in entry["candidates"]:
+            keys(candidate, (
+                "symbol", "kind", "sector", "last_date", "technical_match", "setup_types",
+                "filters", "metrics", "plan", "blockers", "sizing_status", "review",
+            ))
+            require(isinstance(candidate["symbol"], str) and SYMBOL.fullmatch(candidate["symbol"]) is not None)
+            require(candidate["kind"] in {"stock", "etf", "unknown"})
+            require(candidate["sector"] in SECTORS)
+            day(candidate["last_date"])
+            boolish(candidate["technical_match"])
+            require(isinstance(candidate["setup_types"], list) and all(item in SETUPS for item in candidate["setup_types"]))
+            keys(candidate["filters"], FILTER_FIELDS)
+            for value in candidate["filters"].values():
+                boolish(value)
+            keys(candidate["metrics"], METRIC_FIELDS)
+            for value in candidate["metrics"].values():
+                numeric(value)
+            if candidate["plan"] is not None:
+                keys(candidate["plan"], PLAN_FIELDS)
+                for value in candidate["plan"].values():
+                    numeric(value)
+            lines(candidate["blockers"])
+            require(candidate["sizing_status"] in {"does_not_fit", "not_evaluated", "within_limits"})
+            if candidate["review"] is not None:
+                keys(candidate["review"], REVIEW_FIELDS)
+                for value in candidate["review"].values():
+                    prose(value)
+        keys(entry["notification"], ("sent", "reason"))
+        boolish(entry["notification"]["sent"])
+        prose(entry["notification"]["reason"])
+        if entry["check_type"] == "baseline_archive":
+            require(entry["decision"] != "qualified_opportunity" and entry["notification"]["sent"] is not True)
+            require(entry["data_freshness"].startswith("Archived baseline; this entry is not a new market check."))
+    require(checked == sorted(checked, reverse=True))
+    require(payload["updated_at"] == payload["entries"][0]["checked_at"])
+
+
+def atomic_write(output: Path, data: dict) -> bool:
+    payload = (json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
+    if output.is_file() and output.read_bytes() == payload:
+        return False
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=output.parent, prefix=".research-", suffix=".tmp", delete=False) as handle:
+            temporary = Path(handle.name)
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(temporary, 0o644)
+        os.replace(temporary, output)
+        temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    return True
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--logs", type=Path, required=True, help="Private archive directory (read only)")
+    parser.add_argument("--output", type=Path, required=True, help="Public research.json destination")
+    arguments = parser.parse_args(argv)
+    try:
+        data = export_logs(arguments.logs)
+        changed = atomic_write(arguments.output, data)
+    except (ExportError, OSError, TypeError, OverflowError) as exc:
+        # Do not echo source contents, paths or values into publish logs.
+        message = str(exc) if isinstance(exc, ExportError) else "Unable to read or atomically write research data"
+        print("Export failed: " + message, file=sys.stderr)
+        return 1
+    print(f"Public research export {'updated' if changed else 'unchanged'}: {len(data['entries'])} entries")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

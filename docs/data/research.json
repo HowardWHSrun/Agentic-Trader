@@ -1,0 +1,1209 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-09-12T16:43:46Z",
+  "timezone": "America/Chicago",
+  "schedule": [
+    "08:45",
+    "10:45",
+    "12:45",
+    "14:45",
+    "15:45"
+  ],
+  "risk_rules": {
+    "max_position_pct": 25,
+    "risk_per_trade_pct": 1.5,
+    "max_open_risk_pct": 1.5,
+    "max_total_exposure_pct": 30,
+    "max_sector_exposure_pct": 25,
+    "max_positions": 3,
+    "max_new_entries_per_week": 1
+  },
+  "entries": [
+    {
+      "id": "20260912T164346.000000Z-baseline_archive",
+      "checked_at": "2026-09-12T16:43:46Z",
+      "check_type": "baseline_archive",
+      "decision": "no_opportunity",
+      "summary": "Archive of the saved September 11 analysis: two technical patterns, but neither qualifies for an opportunity alert.",
+      "data_freshness": "Archived baseline; this entry is not a new market check. This is a baseline archive, not a new scheduled market check. The scan was generated on September 12 at 16:40:17 UTC from September 11 completed regular-session bars downloaded at 16:27:50 UTC on September 12.",
+      "signal_session": "2026-09-11",
+      "scan_generated_at": "2026-09-12T16:40:17.781940Z",
+      "market_gate": {
+        "passed": true,
+        "benchmarks": {
+          "SPY": {
+            "close": 764.29,
+            "sma50": 758.6164000000001,
+            "sma200": 714.2339499999999,
+            "last_date": "2026-09-11"
+          },
+          "QQQ": {
+            "close": 714.88,
+            "sma50": 710.4063999999998,
+            "sma200": 660.1389000000001,
+            "last_date": "2026-09-11"
+          }
+        }
+      },
+      "data_blockers": [],
+      "observations": [
+        "The broad-market trend rule passed in the saved data: SPY closed at $764.29, above its $758.62 50-session average, which was above its $714.23 200-session average; QQQ closed at $714.88, above its $710.41 50-session average.",
+        "All 34 symbols had 302 valid, matching completed exchange sessions. Robinhood histories were requested with split adjustment. Provider-reported share volume is not labeled verified consolidated SIP volume.",
+        "Two pullback patterns appeared: XLK and MSFT.",
+        "This log preserves the no-opportunity decision rather than implying a new market observation."
+      ],
+      "lessons": [
+        "Relative strength compares two returns. MSFT fell about 0.25% over 20 sessions while SPY fell about 1.75%; outperforming SPY by about 1.50 percentage points did not mean MSFT rose.",
+        "A 2R target is arithmetic: entry plus twice the entry-to-stop distance. A prior high encountered earlier may reduce usable reward room; it must be reviewed instead of assuming the target is reachable.",
+        "Higher permitted risk changes capacity, not evidence.",
+        "A useful log records what was known at the time, including uncertainty and skips. It should not rewrite a rejected setup as an obvious winner after prices move."
+      ],
+      "sources": [
+        {
+          "title": "Robinhood research tool documentation, verified earlier during setup",
+          "url": "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+          "as_of": "2026-09-12; not rechecked for this archive"
+        }
+      ],
+      "candidates": [
+        {
+          "symbol": "SPY",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 764.29,
+            "sma20": 766.8790000000001,
+            "sma50": 758.6164000000001,
+            "sma200": 714.2339499999999,
+            "atr14": 5.598735714285697,
+            "relative_return_20": 0.0,
+            "return_20": -1.74705610119813,
+            "relative_volume": 1.234094897339975,
+            "prior20_high": 779.37
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QQQ",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 714.88,
+            "sma20": 715.6679999999999,
+            "sma50": 710.4063999999998,
+            "sma200": 660.1389000000001,
+            "atr14": 7.793914285714274,
+            "relative_return_20": -0.6010800060047394,
+            "return_20": -2.3481361072028695,
+            "relative_volume": 0.8627651632836368,
+            "prior20_high": 734.58
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "IWM",
+          "kind": "etf",
+          "sector": "small_caps",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 288.89,
+            "sma20": 296.6015,
+            "sma50": 296.28059999999994,
+            "sma200": 273.8322,
+            "atr14": 3.045714285714285,
+            "relative_return_20": -3.0667824490489877,
+            "return_20": -4.813838550247118,
+            "relative_volume": 1.5007971631177488,
+            "prior20_high": 305.18
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIA",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 525.79,
+            "sma20": 531.5445000000002,
+            "sma50": 529.1946,
+            "sma200": 499.89374999999995,
+            "atr14": 4.468928571428584,
+            "relative_return_20": -0.5061089264087215,
+            "return_20": -2.2531650276068516,
+            "relative_volume": 1.1285606059984257,
+            "prior20_high": 539.967
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLK",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 187.67,
+            "sma20": 185.52749999999997,
+            "sma50": 182.72660000000005,
+            "sma200": 161.33489999999995,
+            "atr14": 3.0307142857142844,
+            "relative_return_20": 0.12206265359104851,
+            "return_20": -1.6249934476070815,
+            "relative_volume": 1.0748876639849974,
+            "prior20_high": 191.75
+          },
+          "plan": {
+            "entry": 188.65,
+            "stop": 184.1,
+            "target_2r": 197.75,
+            "max_entry_chase": 189.4,
+            "stop_distance_pct": 2.411873840445269
+          },
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "does_not_fit",
+          "review": {
+            "why_interesting": "The saved close of $187.67 reclaimed the 20-session average ($185.53) within a rising longer trend. Its 20-session return was -1.62%, about 0.12 percentage points better than SPY. Relative volume was 1.07 times its prior 20-session average; this is a pullback pattern, not a 1.5-times-volume breakout.",
+            "why_not_actionable": "The recorded review also found that the setup did not fit sizing limits. The prior 20-session high is $191.75, only about 0.68R above entry, below the arithmetic $197.75 2R objective; this is a potential overhead level to inspect, not proof of unobstructed target room. Fresh spread, news and macro-event checks were not completed for this archive.",
+            "what_would_change": "A future setup requires a size within position and risk limits, event checks, chart-supported reward room, fresh execution checks. These September 11 trigger levels expire after the next regular session. Do not raise the cap again or invent fractional-share protection just to make this setup fit."
+          }
+        },
+        {
+          "symbol": "XLF",
+          "kind": "etf",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 57.25,
+            "sma20": 57.6985,
+            "sma50": 57.114399999999996,
+            "sma200": 53.60154999999999,
+            "atr14": 0.6629928571428582,
+            "relative_return_20": 0.013448136900162666,
+            "return_20": -1.7336079642979674,
+            "relative_volume": 1.1936496578340186,
+            "prior20_high": 58.6
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLI",
+          "kind": "etf",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 172.37,
+            "sma20": 177.5825,
+            "sma50": 180.32040000000003,
+            "sma200": 171.20399999999998,
+            "atr14": 2.312499999999998,
+            "relative_return_20": -5.476152898209797,
+            "return_20": -7.223208999407927,
+            "relative_volume": 0.8295611564601637,
+            "prior20_high": 187.39
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLV",
+          "kind": "etf",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 165.36,
+            "sma20": 170.88549999999998,
+            "sma50": 166.23699999999997,
+            "sma200": 155.64380000000006,
+            "atr14": 2.146978571428566,
+            "relative_return_20": -0.046506079583419346,
+            "return_20": -1.7935621807815494,
+            "relative_volume": 0.8453473878814642,
+            "prior20_high": 176.595
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLE",
+          "kind": "etf",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 65.14,
+            "sma20": 63.718500000000006,
+            "sma50": 60.13919999999998,
+            "sma200": 55.23355000000002,
+            "atr14": 1.2092500000000004,
+            "relative_return_20": 8.42900827938352,
+            "return_20": 6.681952178185391,
+            "relative_volume": 1.1616652616883756,
+            "prior20_high": 66.17
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLP",
+          "kind": "etf",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 83.38,
+            "sma20": 85.20549999999999,
+            "sma50": 84.994,
+            "sma200": 83.45060000000004,
+            "atr14": 0.8996428571428561,
+            "relative_return_20": -1.2994555267088481,
+            "return_20": -3.046511627906978,
+            "relative_volume": 1.127014731152526,
+            "prior20_high": 87.465
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLY",
+          "kind": "etf",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 112.96,
+            "sma20": 115.99399999999999,
+            "sma50": 115.93879999999997,
+            "sma200": 116.98634999999999,
+            "atr14": 1.4214285714285708,
+            "relative_return_20": -2.887810931305046,
+            "return_20": -4.634867032503176,
+            "relative_volume": 0.8344428043544045,
+            "prior20_high": 119.175
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLU",
+          "kind": "etf",
+          "sector": "utilities",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 42.39,
+            "sma20": 43.19450000000001,
+            "sma50": 44.21939999999999,
+            "sma200": 44.63487500000003,
+            "atr14": 0.6139714285714274,
+            "relative_return_20": -1.9995379042514583,
+            "return_20": -3.7465940054495883,
+            "relative_volume": 0.7607331265723891,
+            "prior20_high": 44.6501
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SMH",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 568.53,
+            "sma20": 563.4460000000001,
+            "sma50": 569.1037999999999,
+            "sma200": 482.16015000000004,
+            "atr14": 13.781428571428576,
+            "relative_return_20": -1.74798735344609,
+            "return_20": -3.49504345464422,
+            "relative_volume": 0.7668035745145902,
+            "prior20_high": 600.3699
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AAPL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 332.27,
+            "sma20": 316.62600000000003,
+            "sma50": 317.9742,
+            "sma200": 284.95335,
+            "atr14": 7.844628571428574,
+            "relative_return_20": 10.595251082525515,
+            "return_20": 8.848194981327385,
+            "relative_volume": 1.207115042563515,
+            "prior20_high": 330.81
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MSFT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 495.63,
+            "sma20": 494.434,
+            "sma50": 453.6687999999999,
+            "sma200": 431.2575499999999,
+            "atr14": 10.057321428571425,
+            "relative_return_20": 1.4954863056740653,
+            "return_20": -0.2515697955240648,
+            "relative_volume": 0.6840115951803427,
+            "prior20_high": 517.78
+          },
+          "plan": {
+            "entry": 498.98,
+            "stop": 483.89,
+            "target_2r": 529.16,
+            "max_entry_chase": 501.49,
+            "stop_distance_pct": 3.0241693053829812
+          },
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "The saved close of $495.63 reclaimed its $494.43 20-session average in a rising longer trend. The 20-session return was -0.25%, around 1.50 percentage points better than SPY. Relative volume was 0.68 times average, so it does not meet the breakout-volume test; its technical label is pullback recovery.",
+            "why_not_actionable": "The recorded review also found that the setup did not fit sizing limits. Verified earnings clearance through the intended holding window remains unknown in the saved scan. The prior 20-session high at $517.78 lies below the arithmetic $529.16 2R target and needs chart review. No fresh execution quote was checked.",
+            "what_would_change": "A future setup requires a size within position and risk limits, verified earnings or event clearance, chart-supported reward room, fresh execution checks. An estimated earnings date, positive relative strength or the existence of a calculated 2R target does not clear those requirements."
+          }
+        },
+        {
+          "symbol": "NVDA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 218.29,
+            "sma20": 220.1625,
+            "sma50": 212.5840000000001,
+            "sma200": 197.4727000000001,
+            "atr14": 7.692857142857144,
+            "relative_return_20": -1.3643509116736063,
+            "return_20": -3.1114070128717364,
+            "relative_volume": 0.6946459975977165,
+            "prior20_high": 234.76
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMZN",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 256.78,
+            "sma20": 258.9605,
+            "sma50": 255.25279999999995,
+            "sma200": 239.79769999999996,
+            "atr14": 5.629285714285713,
+            "relative_return_20": -1.4023423071298668,
+            "return_20": -3.149398408327997,
+            "relative_volume": 0.8294832070808021,
+            "prior20_high": 269.58
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GOOGL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 338.5,
+            "sma20": 341.05550000000005,
+            "sma50": 347.1792,
+            "sma200": 336.8105500000001,
+            "atr14": 7.321714285714287,
+            "relative_return_20": -0.5222590622156575,
+            "return_20": -2.2693151634137876,
+            "relative_volume": 1.0945578258324076,
+            "prior20_high": 351.6
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "META",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 648.03,
+            "sma20": 586.4670000000001,
+            "sma50": 600.9022,
+            "sma200": 623.2309,
+            "atr14": 21.324742857142862,
+            "relative_return_20": 10.665152811956645,
+            "return_20": 8.918096710758515,
+            "relative_volume": 0.9612265245894382,
+            "prior20_high": 663.5
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AVGO",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 361.99,
+            "sma20": 367.49375,
+            "sma50": 383.0853000000002,
+            "sma200": 370.20265000000006,
+            "atr14": 10.38878571428572,
+            "relative_return_20": -11.615157292129142,
+            "return_20": -13.362213393327272,
+            "relative_volume": 0.8351155540190415,
+            "prior20_high": 424.92
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 516.13,
+            "sma20": 482.03475,
+            "sma50": 496.54840000000013,
+            "sma200": 346.91242500000016,
+            "atr14": 19.039057142857132,
+            "relative_return_20": 8.60405699144885,
+            "return_20": 6.85700089025072,
+            "relative_volume": 1.056718509591607,
+            "prior20_high": 526.79
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "TSLA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 365.44,
+            "sma20": 355.12975,
+            "sma50": 354.4981,
+            "sma200": 398.92545000000007,
+            "atr14": 14.271778571428582,
+            "relative_return_20": 9.242055512893621,
+            "return_20": 7.494999411695491,
+            "relative_volume": 0.7581860322225868,
+            "prior20_high": 384.04
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "JPM",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 356.23,
+            "sma20": 356.738,
+            "sma50": 351.7386,
+            "sma200": 319.4364500000001,
+            "atr14": 5.60793571428571,
+            "relative_return_20": -0.14768653877322846,
+            "return_20": -1.8947426399713585,
+            "relative_volume": 0.9646865531540368,
+            "prior20_high": 366.5
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "COST",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 904.77,
+            "sma20": 937.7629999999999,
+            "sma50": 940.7849000000001,
+            "sma200": 960.4721500000003,
+            "atr14": 14.61270714285715,
+            "relative_return_20": -4.187341154091163,
+            "return_20": -5.9343972552892925,
+            "relative_volume": 0.9563799741716594,
+            "prior20_high": 978.7
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "WMT",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 107.15,
+            "sma20": 107.2885,
+            "sma50": 110.33060000000002,
+            "sma200": 118.72090000000001,
+            "atr14": 1.8976214285714275,
+            "relative_return_20": -5.658751019437879,
+            "return_20": -7.40580712063601,
+            "relative_volume": 0.6143704084357047,
+            "prior20_high": 116.87
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "V",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 370.45,
+            "sma20": 372.9605,
+            "sma50": 365.2256,
+            "sma200": 334.9533999999999,
+            "atr14": 5.666878571428575,
+            "relative_return_20": 3.1152323222954137,
+            "return_20": 1.3681762210972837,
+            "relative_volume": 0.5379101027263828,
+            "prior20_high": 385.5699
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MA",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 569.19,
+            "sma20": 580.7605000000001,
+            "sma50": 562.2783999999999,
+            "sma200": 531.0841000000001,
+            "atr14": 8.819721428571427,
+            "relative_return_20": 2.126218065080765,
+            "return_20": 0.3791619638826349,
+            "relative_volume": 0.7716870448449449,
+            "prior20_high": 601.23
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CAT",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 818.57,
+            "sma20": 817.231,
+            "sma50": 856.1844,
+            "sma200": 778.5409499999997,
+            "atr14": 20.490642857142866,
+            "relative_return_20": -2.4689513876855584,
+            "return_20": -4.2160074888836885,
+            "relative_volume": 0.7660492763934934,
+            "prior20_high": 887.909
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GE",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 323.66,
+            "sma20": 343.41299999999995,
+            "sma50": 353.54979999999995,
+            "sma200": 321.9924500000002,
+            "atr14": 7.828564285714281,
+            "relative_return_20": -8.506936800310294,
+            "return_20": -10.253992901508424,
+            "relative_volume": 0.6828586648643562,
+            "prior20_high": 375.58
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UBER",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 71.67,
+            "sma20": 76.11949999999999,
+            "sma50": 73.928,
+            "sma200": 76.02590000000005,
+            "atr14": 2.512421428571429,
+            "relative_return_20": -3.8011779525709666,
+            "return_20": -5.548234053769097,
+            "relative_volume": 1.5458495282252747,
+            "prior20_high": 82.365
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NFLX",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 77.4,
+            "sma20": 79.444,
+            "sma50": 75.70080000000002,
+            "sma200": 86.24419999999998,
+            "atr14": 2.0989214285714266,
+            "relative_return_20": 0.6734364692963068,
+            "return_20": -1.0736196319018232,
+            "relative_volume": 0.7913439326540599,
+            "prior20_high": 83.6
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PLTR",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 167.23,
+            "sma20": 175.55500000000004,
+            "sma50": 153.9268,
+            "sma200": 151.51977499999992,
+            "atr14": 7.634964285714288,
+            "relative_return_20": -4.8335818519888445,
+            "return_20": -6.580637953186974,
+            "relative_volume": 0.5192196485882993,
+            "prior20_high": 188.37
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "LLY",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1115.7,
+            "sma20": 1183.1245,
+            "sma50": 1184.6546000000003,
+            "sma200": 1064.8479499999996,
+            "atr14": 27.77657857142856,
+            "relative_return_20": -5.970065486891196,
+            "return_20": -7.717121588089326,
+            "relative_volume": 0.7437958699396516,
+            "prior20_high": 1292.65
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XOM",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 165.99,
+            "sma20": 162.331,
+            "sma50": 155.17059999999998,
+            "sma200": 145.66885,
+            "atr14": 3.404285714285718,
+            "relative_return_20": 6.3999783633505665,
+            "return_20": 4.652922262152437,
+            "relative_volume": 0.8220743368121574,
+            "prior20_high": 168.64
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        }
+      ],
+      "notification": {
+        "sent": false,
+        "reason": "No qualified opportunity. This is an archived baseline, not a scheduled run or a trade alert."
+      }
+    }
+  ]
+}
