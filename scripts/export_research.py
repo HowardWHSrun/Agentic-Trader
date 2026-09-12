@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export a deliberately small public view of private research archives.
 
-Only review.json and scan.json are read. Account/config snapshots, markdown,
+Only review.json, scan.json, and an optional crypto.json are read. Account/config snapshots, markdown,
 positions, sizing amounts and unknown keys never enter the output schema.
 Free text passes a separate conservative privacy filter: sentences containing
 personal-finance context, identifiers, local paths or credentials are omitted.
@@ -43,6 +43,10 @@ FILTER_FIELDS = (
     "dollar_liquidity", "long_trend", "minimum_price",
     "positive_relative_strength", "valid_atr",
 )
+CRYPTO_FILTER_FIELDS = (
+    "data_quality", "market_gate", "trend", "relative_strength",
+    "recent_trade_volume_evidence", "quote_fresh", "venue_quote_review_passed",
+)
 REVIEW_FIELDS = ("why_interesting", "why_not_actionable", "what_would_change")
 SECTORS = {
     "broad_market", "consumer_discretionary", "consumer_staples", "energy",
@@ -50,9 +54,11 @@ SECTORS = {
     "utilities", "technology", "information_technology", "communication_services",
     "materials", "real_estate", "health_care", "unknown",
 }
-SETUPS = {"pullback_reclaim", "breakout", "breakout_20", "breakout_20d"}
+SETUPS = {"pullback_reclaim", "pullback", "breakout", "breakout_20", "breakout_20d"}
 ENTRY_ID = re.compile(r"^\d{8}T\d{6}\.\d{6}Z-(?:baseline_archive|intraday|after_close|failed_check)$")
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,9}$")
+CRYPTO_SYMBOL = re.compile(r"^[A-Z0-9]{2,10}/USD$")
+QUOTE_FIELDS = ("bid", "ask", "spread_pct", "observed_at", "provider", "venue")
 
 # Dropping whole sentences avoids leaving a private amount detached from its
 # context. Decimal points and ISO timestamps are not sentence boundaries.
@@ -84,7 +90,10 @@ SENSITIVE_LITERAL = re.compile(
     r"(?:\b(?:ending\s+in|last\s+four)\s*[:#]?\s*\d{4}\b)|"
     r"(?:\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b)|"
     r"(?:file://|(?:^|\s)(?:~?/|[A-Za-z]:\\)|/(?:Users|home|mnt|tmp|var|private)/)|"
+    r"(?:(?:^|\s)(?:\.{1,2}/|(?:logs|reports|data|spending|credentials)/)\S+)|"
+    r"(?:\b(?:[\w.-]+/)+[\w.-]+\.(?:json|csv|tsv|xlsx|env|pem|key|sqlite|db)\b)|"
     r"(?:\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b)|"
+    r"(?:\b\d+(?:\.\d+)?\s+(?!(?:USD|EUR|GBP|CNY|RMB|JPY|UTC|SMA|ATR|SIP|US)\b)(?-i:[A-Z][A-Z0-9]{1,9})\b)|"
     r"(?:\b(?:\d+(?:\.\d+)?|zero|one|two|three|four|five|six|seven|eight|nine|ten|single)"
     r"[ -]+(?:whole[ -]?)?(?:shares?|contracts?|units?)\b)",
     re.IGNORECASE,
@@ -267,15 +276,23 @@ def future_requirements(value: object) -> str:
     return " ".join(retained)
 
 
-def export_candidate(candidate: dict, reviews: dict) -> dict | None:
+def export_candidate(candidate: dict, reviews: dict, *, crypto: bool = False) -> dict | None:
     symbol = candidate.get("symbol")
-    if not isinstance(symbol, str) or not SYMBOL.fullmatch(symbol):
+    pattern = CRYPTO_SYMBOL if crypto else SYMBOL
+    if not isinstance(symbol, str) or not pattern.fullmatch(symbol):
         return None
     raw_metrics = object_value(candidate.get("metrics"))
     raw_filters = object_value(candidate.get("filters"))
     raw_plan = object_value(candidate.get("plan"))
     plan = {key: number(raw_plan.get(key)) for key in PLAN_FIELDS} if raw_plan else None
-    raw_review = object_value(reviews.get(symbol))
+    if crypto and plan is not None:
+        plan["max_entry_chase"] = number(raw_plan.get("max_chase_price"))
+    raw_review = object_value(candidate.get("review") if crypto else reviews.get(symbol))
+    if crypto and raw_review:
+        raw_review = {
+            key: " ".join(item for item in value if isinstance(item, str)) if isinstance(value, list) else value
+            for key, value in raw_review.items() if key in REVIEW_FIELDS
+        }
     review = {key: public_text(raw_review.get(key)) for key in REVIEW_FIELDS} if raw_review else None
     if review:
         review["what_would_change"] = future_requirements(raw_review.get("what_would_change"))
@@ -293,20 +310,70 @@ def export_candidate(candidate: dict, reviews: dict) -> dict | None:
                 + review["why_not_actionable"]
             ).strip()
     raw_setups = candidate.get("setup_types")
-    return {
+    exported = {
         "symbol": symbol,
-        "kind": candidate.get("kind") if candidate.get("kind") in {"stock", "etf"} else "unknown",
-        "sector": candidate.get("sector") if candidate.get("sector") in SECTORS else "unknown",
+        "kind": "crypto" if crypto else candidate.get("kind") if candidate.get("kind") in {"stock", "etf"} else "unknown",
+        "sector": "crypto" if crypto else candidate.get("sector") if candidate.get("sector") in SECTORS else "unknown",
         "last_date": iso_date(candidate.get("last_date")),
         "technical_match": boolean(candidate.get("technical_match")),
         "setup_types": [item for item in raw_setups if isinstance(item, str) and item in SETUPS]
         if isinstance(raw_setups, list) else [],
-        "filters": {key: boolean(raw_filters.get(key)) for key in FILTER_FIELDS},
+        "filters": {key: boolean(raw_filters.get(key)) for key in (CRYPTO_FILTER_FIELDS if crypto else FILTER_FIELDS)},
         "metrics": {key: number(raw_metrics.get(key)) for key in METRIC_FIELDS},
         "plan": plan,
         "blockers": public_lines(candidate.get("blockers")),
-        "sizing_status": sizing_status(candidate),
+        "sizing_status": "not_evaluated" if crypto else sizing_status(candidate),
         "review": review,
+    }
+    if crypto:
+        raw_quote = object_value(candidate.get("quote"))
+        exported["quote"] = {
+            "bid": number(raw_quote.get("bid")),
+            "ask": number(raw_quote.get("ask")),
+            "spread_pct": number(raw_quote.get("spread_pct")),
+            "observed_at": iso_timestamp(raw_quote.get("observed_at")),
+            "provider": public_text(raw_quote.get("provider")),
+            "venue": public_text(raw_quote.get("venue")),
+        } if raw_quote else None
+    return exported
+
+
+def export_sources(raw_sources: object) -> list[dict]:
+    sources = []
+    for source in raw_sources if isinstance(raw_sources, list) else []:
+        if not isinstance(source, dict):
+            continue
+        url = public_url(source.get("url"))
+        title = public_text(source.get("title"))
+        if url and title:
+            sources.append({"title": title, "url": url, "as_of": public_text(source.get("as_of"))})
+    return sources
+
+
+def export_crypto(report: dict) -> dict:
+    metadata = object_value(report.get("metadata"))
+    gate = object_value(report.get("market_gate"))
+    if metadata.get("bar_timezone") != "UTC" or gate.get("benchmark") != "BTC/USD":
+        raise ExportError("Crypto research must use validated UTC bars and the BTC/USD benchmark")
+    raw_candidates = report.get("candidates", [])
+    if not isinstance(raw_candidates, list):
+        raise ExportError("Crypto archive candidates must be a list")
+    candidates = [
+        clean for item in raw_candidates if isinstance(item, dict)
+        if (clean := export_candidate(item, {}, crypto=True)) is not None
+    ]
+    return {
+        "signal_session": iso_date(report.get("expected_session")),
+        "scan_generated_at": iso_timestamp(report.get("generated_at")),
+        "provider": public_text(metadata.get("provider")),
+        "feed": public_text(metadata.get("feed")),
+        "bar_timezone": "UTC",
+        "market_gate": {"passed": boolean(gate.get("passed")), "benchmark": "BTC/USD"},
+        "data_blockers": public_lines(report.get("data_blockers")),
+        "observations": public_lines(report.get("observations")),
+        "lessons": public_lines(report.get("lessons")),
+        "sources": export_sources(report.get("sources")),
+        "candidates": candidates,
     }
 
 
@@ -315,6 +382,8 @@ def export_entry(folder: Path) -> dict:
         raise ExportError("An archive folder has an invalid public entry identifier")
     review = read_object(folder / "review.json")
     scan = read_object(folder / "scan.json")
+    crypto_path = folder / "crypto.json"
+    crypto = export_crypto(read_object(crypto_path)) if crypto_path.exists() or crypto_path.is_symlink() else None
     if review.get("check_type") not in CHECK_TYPES or review.get("decision") not in DECISIONS:
         raise ExportError("An archive contains an unknown check type or decision")
     if not folder.name.endswith("-" + review["check_type"]):
@@ -343,15 +412,6 @@ def export_entry(folder: Path) -> dict:
         raw = object_value(raw_benchmarks.get(symbol))
         benchmarks[symbol] = {key: number(raw.get(key)) for key in ("close", "sma50", "sma200")}
         benchmarks[symbol]["last_date"] = iso_date(raw.get("last_date"))
-    sources = []
-    raw_sources = review.get("sources", [])
-    for source in raw_sources if isinstance(raw_sources, list) else []:
-        if not isinstance(source, dict):
-            continue
-        url = public_url(source.get("url"))
-        title = public_text(source.get("title"))
-        if url and title:
-            sources.append({"title": title, "url": url, "as_of": public_text(source.get("as_of"))})
     freshness = public_text(review.get("data_freshness"))
     if review["check_type"] == "baseline_archive":
         freshness = "Archived baseline; this entry is not a new market check. " + freshness
@@ -368,12 +428,13 @@ def export_entry(folder: Path) -> dict:
         "data_blockers": public_lines(scan.get("data_blockers")),
         "observations": public_lines(review.get("observations")),
         "lessons": public_lines(review.get("lessons")),
-        "sources": sources,
+        "sources": export_sources(review.get("sources")),
         "candidates": candidates,
         "notification": {
             "sent": boolean(notification.get("sent")),
             "reason": public_text(notification.get("reason")),
         },
+        "crypto": crypto,
     }
 
 
@@ -391,7 +452,7 @@ def export_logs(logs: Path) -> dict:
     # Missing settings remain unknown; historic defaults are never asserted.
     risk_rules = {key: number(latest_rules.get(key)) for key in RISK_RULES}
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "updated_at": entries[0]["checked_at"],
         "timezone": "America/Chicago",
         "schedule": ["08:45", "10:45", "12:45", "14:45", "15:45"],
@@ -443,8 +504,76 @@ def _validate_public_payload(payload: object) -> None:
     def stamp(value: object, required: bool = False) -> None:
         require((value is None and not required) or (isinstance(value, str) and iso_timestamp(value) == value))
 
+    def sources(value: object) -> None:
+        require(isinstance(value, list))
+        for source in value:
+            keys(source, ("title", "url", "as_of"))
+            require(isinstance(source["url"], str) and public_url(source["url"]) == source["url"])
+            prose(source["title"])
+            prose(source["as_of"])
+
+    def candidates(value: object, *, crypto: bool = False) -> None:
+        require(isinstance(value, list))
+        for candidate in value:
+            candidate_fields = (
+                "symbol", "kind", "sector", "last_date", "technical_match", "setup_types",
+                "filters", "metrics", "plan", "blockers", "sizing_status", "review",
+            )
+            keys(candidate, candidate_fields + (("quote",) if crypto else ()))
+            pattern = CRYPTO_SYMBOL if crypto else SYMBOL
+            require(isinstance(candidate["symbol"], str) and pattern.fullmatch(candidate["symbol"]) is not None)
+            require(candidate["kind"] == "crypto" if crypto else candidate["kind"] in {"stock", "etf", "unknown"})
+            require(candidate["sector"] == "crypto" if crypto else candidate["sector"] in SECTORS)
+            day(candidate["last_date"])
+            boolish(candidate["technical_match"])
+            require(isinstance(candidate["setup_types"], list) and all(item in SETUPS for item in candidate["setup_types"]))
+            keys(candidate["filters"], CRYPTO_FILTER_FIELDS if crypto else FILTER_FIELDS)
+            for item in candidate["filters"].values():
+                boolish(item)
+            keys(candidate["metrics"], METRIC_FIELDS)
+            for item in candidate["metrics"].values():
+                numeric(item)
+            if candidate["plan"] is not None:
+                keys(candidate["plan"], PLAN_FIELDS)
+                for item in candidate["plan"].values():
+                    numeric(item)
+            lines(candidate["blockers"])
+            require(candidate["sizing_status"] == "not_evaluated" if crypto else candidate["sizing_status"] in {"does_not_fit", "not_evaluated", "within_limits"})
+            if candidate["review"] is not None:
+                keys(candidate["review"], REVIEW_FIELDS)
+                for item in candidate["review"].values():
+                    prose(item)
+            if crypto and candidate["quote"] is not None:
+                quote = candidate["quote"]
+                keys(quote, QUOTE_FIELDS)
+                for field in ("bid", "ask", "spread_pct"):
+                    numeric(quote[field])
+                stamp(quote["observed_at"])
+                prose(quote["provider"])
+                prose(quote["venue"])
+
+    def crypto_report(value: object) -> None:
+        if value is None:
+            return
+        keys(value, (
+            "signal_session", "scan_generated_at", "provider", "feed", "bar_timezone",
+            "market_gate", "data_blockers", "observations", "lessons", "sources", "candidates",
+        ))
+        day(value["signal_session"])
+        stamp(value["scan_generated_at"])
+        prose(value["provider"])
+        prose(value["feed"])
+        require(value["bar_timezone"] == "UTC")
+        keys(value["market_gate"], ("passed", "benchmark"))
+        boolish(value["market_gate"]["passed"])
+        require(value["market_gate"]["benchmark"] == "BTC/USD")
+        for field in ("data_blockers", "observations", "lessons"):
+            lines(value[field])
+        sources(value["sources"])
+        candidates(value["candidates"], crypto=True)
+
     keys(payload, ("schema_version", "updated_at", "timezone", "schedule", "risk_rules", "entries"))
-    require(type(payload["schema_version"]) is int and payload["schema_version"] == 1)
+    require(type(payload["schema_version"]) is int and payload["schema_version"] in {1, 2})
     require(payload["timezone"] == "America/Chicago")
     require(payload["schedule"] == ["08:45", "10:45", "12:45", "14:45", "15:45"])
     keys(payload["risk_rules"], RISK_RULES)
@@ -455,11 +584,14 @@ def _validate_public_payload(payload: object) -> None:
     checked = []
     identifiers = set()
     for entry in payload["entries"]:
-        keys(entry, (
+        entry_fields = (
             "id", "checked_at", "check_type", "decision", "summary", "data_freshness",
             "signal_session", "scan_generated_at", "market_gate", "data_blockers",
             "observations", "lessons", "sources", "candidates", "notification",
-        ))
+        )
+        keys(entry, entry_fields + (("crypto",) if payload["schema_version"] == 2 else ()))
+        if payload["schema_version"] == 2:
+            crypto_report(entry["crypto"])
         require(isinstance(entry["id"], str) and ENTRY_ID.fullmatch(entry["id"]) is not None)
         require(entry["id"] not in identifiers)
         identifiers.add(entry["id"])
@@ -482,40 +614,8 @@ def _validate_public_payload(payload: object) -> None:
             day(benchmark["last_date"])
             for field in ("close", "sma50", "sma200"):
                 numeric(benchmark[field])
-        require(isinstance(entry["sources"], list))
-        for source in entry["sources"]:
-            keys(source, ("title", "url", "as_of"))
-            require(isinstance(source["url"], str) and public_url(source["url"]) == source["url"])
-            prose(source["title"])
-            prose(source["as_of"])
-        require(isinstance(entry["candidates"], list))
-        for candidate in entry["candidates"]:
-            keys(candidate, (
-                "symbol", "kind", "sector", "last_date", "technical_match", "setup_types",
-                "filters", "metrics", "plan", "blockers", "sizing_status", "review",
-            ))
-            require(isinstance(candidate["symbol"], str) and SYMBOL.fullmatch(candidate["symbol"]) is not None)
-            require(candidate["kind"] in {"stock", "etf", "unknown"})
-            require(candidate["sector"] in SECTORS)
-            day(candidate["last_date"])
-            boolish(candidate["technical_match"])
-            require(isinstance(candidate["setup_types"], list) and all(item in SETUPS for item in candidate["setup_types"]))
-            keys(candidate["filters"], FILTER_FIELDS)
-            for value in candidate["filters"].values():
-                boolish(value)
-            keys(candidate["metrics"], METRIC_FIELDS)
-            for value in candidate["metrics"].values():
-                numeric(value)
-            if candidate["plan"] is not None:
-                keys(candidate["plan"], PLAN_FIELDS)
-                for value in candidate["plan"].values():
-                    numeric(value)
-            lines(candidate["blockers"])
-            require(candidate["sizing_status"] in {"does_not_fit", "not_evaluated", "within_limits"})
-            if candidate["review"] is not None:
-                keys(candidate["review"], REVIEW_FIELDS)
-                for value in candidate["review"].values():
-                    prose(value)
+        sources(entry["sources"])
+        candidates(entry["candidates"])
         keys(entry["notification"], ("sent", "reason"))
         boolish(entry["notification"]["sent"])
         prose(entry["notification"]["reason"])

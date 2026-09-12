@@ -61,6 +61,41 @@ def fixture(check_type="baseline_archive", checked_at="2031-04-05T16:00:00Z"):
     return review, scan
 
 
+def crypto_fixture():
+    _, scan = fixture()
+    candidate = copy.deepcopy(scan["candidates"][0])
+    candidate.update(
+        symbol="BTC/USD", kind="crypto", sector="crypto", last_date="2031-04-05",
+        sizing={"available": False, "shares": None, "quantity": None},
+        blockers=["Protective-order support remains unverified."],
+        review={
+            "why_interesting": ["The close is above the 50-day average.", "Relative return uses BTC as its benchmark."],
+            "why_not_actionable": ["Technical patterns alone do not establish a qualified opportunity.", "Protective-order support remains unverified."],
+            "what_would_change": ["A future setup requires verified protective-order support and fresh execution checks."],
+        },
+        quote={
+            "bid": 60321.25, "ask": 60331.25, "spread_pct": 0.0165765,
+            "observed_at": "2031-04-06T15:57:00+00:00",
+            "provider": "Alpaca", "venue": "Alpaca US", "fresh": False,
+            "bid_size": 987.123, "ask_size": 654.321,
+        },
+    )
+    candidate["metrics"]["relative_return_20"] = 0.0
+    candidate["filters"] = {key: True for key in exporter.CRYPTO_FILTER_FIELDS}
+    candidate["setup_types"] = ["pullback"]
+    candidate["plan"]["max_chase_price"] = candidate["plan"].pop("max_entry_chase")
+    return {
+        "schema_version": 1, "asset_class": "crypto",
+        "generated_at": "2031-04-06T16:00:00+00:00", "expected_session": "2031-04-05",
+        "metadata": {"provider": "Alpaca", "feed": "us", "venue": "Alpaca US", "bar_timezone": "UTC"},
+        "market_gate": {"passed": True, "benchmark": "BTC/USD", "conditions": {"btc_above_50sma": True}, "blockers": []},
+        "data_blockers": [], "observations": ["Daily crypto bars use completed UTC days."],
+        "lessons": ["Crypto trades continuously; an equity exchange calendar does not define its daily bars."],
+        "sources": [{"title": "Crypto market data documentation", "url": "https://docs.alpaca.markets/docs/crypto-data", "as_of": "2031-04-06"}],
+        "candidates": [candidate], "qualified_opportunities": 0,
+    }
+
+
 class ExportTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -69,7 +104,7 @@ class ExportTests(unittest.TestCase):
         self.logs = self.root / "private-logs"
         self.logs.mkdir()
 
-    def write_archive(self, review=None, scan=None):
+    def write_archive(self, review=None, scan=None, crypto=None):
         if review is None:
             review, scan = fixture()
         stamp = exporter.iso_timestamp(review["checked_at"]).replace("-", "").replace(":", "").replace("Z", ".000000Z")
@@ -77,13 +112,16 @@ class ExportTests(unittest.TestCase):
         folder.mkdir(parents=True)
         (folder / "review.json").write_text(json.dumps(review), encoding="utf-8")
         (folder / "scan.json").write_text(json.dumps(scan), encoding="utf-8")
+        if crypto is not None:
+            (folder / "crypto.json").write_text(json.dumps(crypto), encoding="utf-8")
         return folder
 
     def test_preserves_market_evidence_and_removes_private_sizing(self):
         self.write_archive()
         data = exporter.export_logs(self.logs)
         entry = data["entries"][0]
-        self.assertEqual(data["schema_version"], 1)
+        self.assertEqual(data["schema_version"], 2)
+        self.assertIsNone(entry["crypto"])
         self.assertEqual(data["risk_rules"], exporter.RISK_RULES)
         self.assertEqual(entry["decision"], "no_opportunity")
         self.assertEqual(entry["signal_session"], "2031-04-04")
@@ -344,6 +382,153 @@ class ExportTests(unittest.TestCase):
         for mutate in mutations:
             bad = copy.deepcopy(good)
             mutate(bad)
+            with self.assertRaises(exporter.ExportError):
+                exporter.validate_public_payload(bad)
+
+    def test_crypto_preserves_utc_market_evidence_without_execution_or_sizing_inference(self):
+        review, scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        crypto = crypto_fixture()
+        crypto["candidates"][0]["sizing"] = {"available": True, "shares": 7, "quantity": 0.42, "blockers": []}
+        self.write_archive(review, scan, crypto)
+        data = exporter.export_logs(self.logs)
+        entry = data["entries"][0]
+        public = entry["crypto"]
+        candidate = public["candidates"][0]
+        self.assertEqual(entry["decision"], "no_opportunity")
+        self.assertFalse(entry["notification"]["sent"])
+        self.assertEqual(public["signal_session"], "2031-04-05")
+        self.assertEqual(public["scan_generated_at"], "2031-04-06T16:00:00Z")
+        self.assertEqual(public["bar_timezone"], "UTC")
+        self.assertEqual(public["market_gate"], {"passed": True, "benchmark": "BTC/USD"})
+        self.assertEqual((public["provider"], public["feed"]), ("Alpaca", "us"))
+        self.assertEqual(candidate["symbol"], "BTC/USD")
+        self.assertEqual(candidate["kind"], "crypto")
+        self.assertEqual(candidate["sector"], "crypto")
+        self.assertEqual(candidate["sizing_status"], "not_evaluated")
+        self.assertEqual(candidate["metrics"]["relative_return_20"], 0.0)
+        self.assertEqual(candidate["filters"], crypto["candidates"][0]["filters"])
+        self.assertEqual(candidate["setup_types"], ["pullback"])
+        self.assertEqual(candidate["plan"]["max_entry_chase"], crypto["candidates"][0]["plan"]["max_chase_price"])
+        self.assertEqual(candidate["review"]["why_interesting"], "The close is above the 50-day average. Relative return uses BTC as its benchmark.")
+        self.assertIn("remains unverified", candidate["review"]["why_not_actionable"])
+        self.assertEqual(set(candidate["quote"]), set(exporter.QUOTE_FIELDS))
+        self.assertEqual(candidate["quote"]["observed_at"], "2031-04-06T15:57:00Z")
+        self.assertEqual(candidate["quote"]["venue"], "Alpaca US")
+        self.assertNotIn("fresh", candidate["quote"])
+        self.assertNotIn("quantity", json.dumps(data))
+        self.assertNotIn("bid_size", json.dumps(data))
+
+    def test_crypto_drops_private_fields_and_every_sensitive_prose_surface(self):
+        review, scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        crypto = crypto_fixture()
+        crypto["wallet"] = {"address": "0x" + "a1" * 20, "balance": 43210.98}
+        crypto["metadata"].update(api_key="synthetic_key_93827164", local_path="/Users/example/secret-crypto.json")
+        poison = "The wallet owns 0.25 BTC. Funds on hand are $12345.67; entry is $110."
+        for field in ("observations", "lessons", "data_blockers"):
+            crypto[field].append(poison)
+        candidate = crypto["candidates"][0]
+        for field in exporter.REVIEW_FIELDS:
+            candidate["review"][field].append(poison)
+        candidate["blockers"].append(poison)
+        candidate["metrics"]["quantity"] = 0.314159
+        candidate["plan"]["budget"] = 98765.43
+        candidate["quote"].update(quantity=0.271828, account_id="synthetic-account-6789", token="synthetic_token_4567")
+        crypto["sources"].extend([
+            {"title": "Private evidence", "url": "crypto.json", "as_of": "2031-04-06"},
+            {"title": "Evidence", "url": "https://example.com/?token=synthetic", "as_of": "2031-04-06"},
+        ])
+        self.write_archive(review, scan, crypto)
+        data = exporter.export_logs(self.logs)
+        rendered = json.dumps(data)
+        for value in ("a1" * 20, "43210.98", "93827164", "secret-crypto", "12345.67", "0.25 BTC", "0.314159", "98765.43", "0.271828", "6789", "4567", "crypto.json"):
+            self.assertNotIn(value, rendered)
+        self.assertEqual(len(data["entries"][0]["crypto"]["sources"]), 1)
+        for text in (
+            "The reserve is 0.42 BTC.", "Recorded size: 17 DOGE.",
+            "Reference 0x" + "a1" * 20 + ".",
+            "Evidence is in reports/crypto-latest.json.",
+            "Read ../data/crypto-evidence.json for details.",
+            "The evidence path is project/local-ledger.csv.",
+        ):
+            self.assertEqual(exporter.public_text(text), "")
+
+    def test_crypto_symbols_quotes_and_unknown_data_are_not_fabricated(self):
+        review, scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        crypto = crypto_fixture()
+        candidate = crypto["candidates"][0]
+        candidate["quote"] = None
+        candidate["filters"] = {}
+        candidate["metrics"]["close"] = None
+        crypto["market_gate"]["passed"] = None
+        for symbol in ("ETH/USD", "SOL/USD", "bad/USD", "BTC/USDT", "../USD", "ABC123456789/USD", "USD"):
+            item = copy.deepcopy(candidate)
+            item["symbol"] = symbol
+            crypto["candidates"].append(item)
+        self.write_archive(review, scan, crypto)
+        public = exporter.export_logs(self.logs)["entries"][0]["crypto"]
+        self.assertEqual([item["symbol"] for item in public["candidates"]], ["BTC/USD", "ETH/USD", "SOL/USD"])
+        self.assertIsNone(public["market_gate"]["passed"])
+        self.assertTrue(all(item["quote"] is None for item in public["candidates"]))
+        self.assertTrue(all(item["metrics"]["close"] is None for item in public["candidates"]))
+        self.assertTrue(all(all(value is None for value in item["filters"].values()) for item in public["candidates"]))
+
+    def test_crypto_source_requires_utc_and_btc_benchmark(self):
+        for field, value in (("timezone", "America/Chicago"), ("benchmark", "ETH/USD")):
+            report = crypto_fixture()
+            if field == "timezone":
+                report["metadata"]["bar_timezone"] = value
+            else:
+                report["market_gate"]["benchmark"] = value
+            with self.subTest(field=field), self.assertRaises(exporter.ExportError):
+                exporter.export_crypto(report)
+
+    def test_expanded_equities_do_not_rewrite_baseline_history_or_invent_crypto(self):
+        older_review, older_scan = fixture()
+        older_scan["candidates"] = [dict(copy.deepcopy(older_scan["candidates"][0]), symbol=f"SYM{index}") for index in range(34)]
+        self.write_archive(older_review, older_scan)
+        newer_review, newer_scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        newer_scan["candidates"] = [dict(copy.deepcopy(newer_scan["candidates"][0]), symbol=f"SYM{index}") for index in range(60)]
+        self.write_archive(newer_review, newer_scan, crypto_fixture())
+        entries = exporter.export_logs(self.logs)["entries"]
+        self.assertEqual([len(entry["candidates"]) for entry in entries], [60, 34])
+        self.assertIsNotNone(entries[0]["crypto"])
+        self.assertIsNone(entries[1]["crypto"])
+        self.assertEqual(entries[1]["check_type"], "baseline_archive")
+
+    def test_historical_v1_compatibility_and_strict_v2_crypto_privacy_audit(self):
+        self.write_archive()
+        legacy = exporter.export_logs(self.logs)
+        legacy["schema_version"] = 1
+        for entry in legacy["entries"]:
+            entry.pop("crypto")
+        self.assertIsNone(exporter.validate_public_payload(legacy))
+        invalid_legacy = copy.deepcopy(legacy)
+        invalid_legacy["entries"][0]["crypto"] = None
+        with self.assertRaises(exporter.ExportError):
+            exporter.validate_public_payload(invalid_legacy)
+        invalid_legacy = copy.deepcopy(legacy)
+        invalid_legacy["entries"][0]["observations"].append("Funds on hand are $12345.67; entry is $110.")
+        with self.assertRaises(exporter.ExportError):
+            exporter.validate_public_payload(invalid_legacy)
+        review, scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        self.write_archive(review, scan, crypto_fixture())
+        good = exporter.export_logs(self.logs)
+        self.assertIsNone(exporter.validate_public_payload(good))
+        mutations = [
+            lambda crypto: crypto.update(wallet={"balance": 12345.67}),
+            lambda crypto: crypto["observations"].append("Recorded size: 0.42 BTC."),
+            lambda crypto: crypto["candidates"][0].update(sizing_status="within_limits"),
+            lambda crypto: crypto["candidates"][0].update(symbol="BTC/USDT"),
+            lambda crypto: crypto["candidates"][0]["quote"].update(bid_size=0.314159),
+            lambda crypto: crypto["candidates"][0]["quote"].update(venue="Broker account ****6789"),
+            lambda crypto: crypto["candidates"][0]["quote"].update(observed_at="now"),
+            lambda crypto: crypto["market_gate"].update(benchmark="SPY"),
+            lambda crypto: crypto.update(bar_timezone="America/Chicago"),
+            lambda crypto: crypto["sources"][0].update(url="https://example.com/?api_key=synthetic"),
+        ]
+        for mutate in mutations:
+            bad = copy.deepcopy(good)
+            mutate(bad["entries"][0]["crypto"])
             with self.assertRaises(exporter.ExportError):
                 exporter.validate_public_payload(bad)
 

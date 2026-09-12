@@ -4,7 +4,9 @@ A browsable swing-trade research journal: what was checked, which patterns appea
 
 **[Open the research dashboard](https://howardwhsrun.github.io/Agentic-Trader/)**
 
-The dashboard has an overview, dated research journal, searchable market universe, candidate details, strategy rules, and a learning guide. It uses real saved research snapshots. Baseline archives are labeled as archives; hypothetical price levels are not live quotes or executed trades.
+The dashboard has an overview, dated research journal, searchable stock/ETF universe, a separate crypto research view, candidate details, strategy rules, and a learning guide. It uses real saved research snapshots. Baseline archives are labeled as archives; hypothetical price levels are not live quotes or executed trades.
+
+The current coverage is 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. Both asset classes share the same position/risk limits and weekly entry ceiling. Crypto has no executable sizing or qualified alerts until its broker and event checks can be established.
 
 ## What is published
 
@@ -41,6 +43,6 @@ The publisher verifies the repository and branch, refuses unrelated changes, exp
 
 GitHub Pages publishes `main` → `/docs`, with `.nojekyll` for plain static files. See [GitHub's publishing-source documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
 
-The local monitor is scheduled for five weekday checks in America/Chicago: 08:45, 10:45, 12:45, 14:45, and 15:45. It follows the actual exchange calendar. The monitor publishes after saving each research log, including quiet checks with no opportunity. Local scheduling requires the host and Codex to be available; missed runs are never invented.
+The local monitor is scheduled for five weekday checks in America/Chicago: 08:45, 10:45, 12:45, 14:45, and 15:45. Equity checks follow the actual exchange calendar; crypto uses its own daily calendar within the same weekday schedule. No weekend checks are enabled. The monitor publishes after saving each research log, including quiet checks with no opportunity. Local scheduling requires the host and Codex to be available; missed runs are never invented.
 
 Research and alerts do not establish a trade, an investment return, or a proven strategy. Stop levels model planned risk; gaps and slippage can produce larger losses.
