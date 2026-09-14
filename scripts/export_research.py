@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Export a deliberately small public view of private research archives.
 
-Only review.json, scan.json, and an optional crypto.json are read. Account/config snapshots, markdown,
+Only review.json, scan.json, and an optional crypto.json are read. Holdings/account/config snapshots, markdown,
 positions, sizing amounts and unknown keys never enter the output schema.
 Free text passes a separate conservative privacy filter: sentences containing
 personal-finance context, identifiers, local paths or credentials are omitted.
@@ -65,7 +65,7 @@ QUOTE_FIELDS = ("bid", "ask", "spread_pct", "observed_at", "provider", "venue")
 SENTENCES = re.compile(r"(?<=[.!?。！？])\s+(?=[A-Z0-9\"'])|[\r\n]+")
 PRIVATE_CONTEXT = re.compile(
     r"\b(?:account\w*|acct|balance\w*|buying[ -]?power|purchasing[ -]?power|"
-    r"deposit\w*|withdraw\w*|holdings|holding\s+\d|portfolio|net[ -]?(?:worth|liquidation)|"
+    r"deposit\w*|withdraw\w*|holdings|holding(?![ -]+(?:window|period)\b)|portfolio|net[ -]?(?:worth|liquidation)|"
     r"wallet|bankroll|broker\w*|statement|cash|capital|margin|funds?|allocat\w*|I|we|my|our|"
     r"available[ -]?(?:cash|funds|capital)|"
     r"settled[ -]?cash|unsettled[ -]?cash|cash[ -]?(?:balance|available)|"

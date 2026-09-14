@@ -147,6 +147,7 @@ class ExportTests(unittest.TestCase):
         folder = self.write_archive(review, scan)
         (folder / "account.json").write_text("deliberately invalid JSON")
         (folder / "config.json").write_text("deliberately invalid JSON")
+        (folder / "holdings.json").write_text("deliberately invalid JSON with a private holding sentinel")
         (folder / "analysis.md").write_text("private markdown sentinel")
         read_paths = []
         original_read = exporter.read_object
@@ -179,6 +180,9 @@ class ExportTests(unittest.TestCase):
             "Broker reference ZX9217 remains linked.",
             "The balance is $17320.51.",
             "The portfolio contains 17 shares of XLK.",
+            "The current MSFT holding decision is hold.",
+            "The MSFT holding requires a partial trim.",
+            "Holding MSFT remains the current decision.",
             "Purchased 3.25 shares of XLK.",
             "The zero-share result prevented an entry.",
             "Open /Users/example/finance/secret-ledger.json for the details.",
@@ -208,6 +212,41 @@ class ExportTests(unittest.TestCase):
         for marker in ("31415", "27182", "16180", "14142", "12345", "17320", "4826", "ZZ981", "secret-ledger", "synthetic.person", "abcdef123", "余额"):
             self.assertNotIn(marker, public)
         self.assertEqual(data["entries"][0]["observations"], [])
+
+    def test_singular_holding_narrative_is_private_but_market_trends_survive(self):
+        private = "The current MSFT holding decision is hold."
+        public_trend = "MSFT closed at $421.25, above its $410.20 50-session average."
+        self.assertEqual(exporter.public_text(private + " " + public_trend), public_trend)
+        review, scan = fixture("intraday", "2031-04-06T16:01:00Z")
+        review["observations"] = [private + " " + public_trend]
+        folder = self.write_archive(review, scan, crypto_fixture())
+        # A separate private review may contain valid JSON, amounts, or new keys;
+        # none of it becomes an additional public source.
+        (folder / "holdings.json").write_text(json.dumps({
+            "checked_at": review["checked_at"],
+            "positions": [{"symbol": "MSFT", "decision": "hold", "current_quantity": 321.987,
+                           "reason": "private-holding-review-sentinel"}],
+        }))
+        original_read = exporter.read_object
+        def guarded_read(path):
+            self.assertIn(path.name, {"review.json", "scan.json", "crypto.json"})
+            return original_read(path)
+        with patch.object(exporter, "read_object", side_effect=guarded_read):
+            data = exporter.export_logs(self.logs)
+        self.assertEqual(data["entries"][0]["observations"], [public_trend])
+        for marker in ("holding decision", "321.987", "private-holding-review-sentinel"):
+            self.assertNotIn(marker, json.dumps(data))
+        # Audits must reject leaked ownership prose in historical v1 and v2 data.
+        for version in (1, 2):
+            historical = copy.deepcopy(data)
+            historical["schema_version"] = version
+            if version == 1:
+                for entry in historical["entries"]:
+                    entry.pop("crypto")
+            self.assertIsNone(exporter.validate_public_payload(historical))
+            historical["entries"][0]["observations"].append(private)
+            with self.subTest(version=version), self.assertRaises(exporter.ExportError):
+                exporter.validate_public_payload(historical)
 
     def test_every_money_amount_requires_its_own_direct_price_context(self):
         good = [
