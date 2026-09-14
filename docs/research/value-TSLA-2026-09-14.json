@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "symbol": "TSLA",
+  "checked_at": "2026-09-14T16:57:41.602189+00:00",
+  "scope": "Public company evidence and educational reverse valuation; no account information or trading instruction.",
+  "working_horizon_years": [
+    3,
+    5
+  ],
+  "horizon_status": "Working assumption pending user horizon; not silently imposed.",
+  "quote": {
+    "price_usd": 362.41,
+    "price_type": "midpoint of fresh bid/ask",
+    "quote_at": "2026-09-14T16:56:51.976Z",
+    "bid_usd": 362.37,
+    "ask_usd": 362.45,
+    "bid_ask_at": "2026-09-14T16:56:51.976Z",
+    "official_prior_close_usd": 365.44,
+    "official_prior_close_session": "2026-09-11",
+    "source": "Robinhood get_equity_quotes market data only; fresh quote supplied by parent agent"
+  },
+  "facts": {
+    "latest_reporting_period_end": "2026-06-30",
+    "units": "USD millions unless field specifies otherwise",
+    "q2_2026": {
+      "revenue": 28236,
+      "revenue_prior_year": 22496,
+      "automotive_revenue": 20516,
+      "automotive_regulatory_credit_revenue": 146,
+      "automotive_cost_of_revenue": 17053,
+      "energy_revenue": 3139,
+      "energy_gross_profit": 640,
+      "energy_prior_year_revenue": 2789,
+      "energy_prior_year_gross_profit": 846,
+      "operating_income": 398,
+      "common_net_income": 1114,
+      "diluted_eps_usd": 0.32,
+      "stock_based_compensation": 1151,
+      "diluted_weighted_average_shares_millions": 3540,
+      "effective_tax_benefit": 274
+    },
+    "h1_2026": {
+      "revenue": 50623,
+      "operating_income": 1339,
+      "common_net_income": 1591,
+      "diluted_eps_usd": 0.45,
+      "operating_cash_flow": 8634,
+      "capex_net_cash_excluding_finance_leases": 8282,
+      "free_cash_flow_derived": 352,
+      "stock_based_compensation_expense": 2181,
+      "diluted_weighted_average_shares_millions": 3538,
+      "spacex_unrealized_investment_gain_pretax": 1005,
+      "spacex_investment_cash_outflow": 2002,
+      "energy_revenue": 5547,
+      "energy_gross_profit": 1592
+    },
+    "h1_2025_comparative": {
+      "common_net_income": 1581,
+      "diluted_eps_usd": 0.45,
+      "operating_cash_flow": 4696,
+      "capex_net_cash_excluding_finance_leases": 3886,
+      "stock_based_compensation": 1208
+    },
+    "fy2025": {
+      "common_net_income": 3794,
+      "diluted_eps_usd": 1.08,
+      "operating_cash_flow": 14747,
+      "capex_net_cash_excluding_finance_leases": 8527,
+      "stock_based_compensation": 2825
+    },
+    "balance_sheet_2026_06_30": {
+      "cash_and_short_term_investments": 43524,
+      "debt_and_finance_leases_current": 1418,
+      "debt_and_finance_leases_noncurrent": 7924,
+      "net_cash_after_debt_and_finance_leases_derived": 34182,
+      "debt_principal_approximate": 9080,
+      "issued_and_outstanding_shares_millions_rounded": 3949,
+      "issued_and_outstanding_shares_at_2026_07_16": 3949547394,
+      "share_count_caveat": "Issued shares include restricted awards excluded from diluted EPS until earned; issued shares and diluted weighted averages are not interchangeable."
+    },
+    "management_2026_capex_guidance": {
+      "lower_bound_millions": 25000,
+      "wording": "in excess of",
+      "type": "management forecast, not realized spending"
+    }
+  },
+  "derived_trailing_12_months_through_2026_06_30": {
+    "construction": "FY2025 + H1 2026 - H1 2025",
+    "common_net_income_millions": 3804,
+    "approximate_diluted_eps_usd": 1.08,
+    "eps_caveat": "Reconstructed from rounded published period EPS, not a newly filed exact TTM EPS.",
+    "operating_cash_flow_millions": 18685,
+    "capex_millions": 12923,
+    "free_cash_flow_millions": 5762,
+    "stock_based_compensation_millions": 3798,
+    "fcf_less_sbc_sensitivity_millions": 1964,
+    "fcf_less_sbc_caveat": "Economic dilution sensitivity, not GAAP cash flow or a complete owner-earnings estimate; no double subtraction of SBC from GAAP EPS.",
+    "price_to_approximate_trailing_eps": 335.56
+  },
+  "business_separation": {
+    "observable_businesses": [
+      "Vehicle sales, leasing, software subscriptions, service and charging",
+      "Energy generation and storage"
+    ],
+    "future_opportunity_value": [
+      "Robotaxi expansion and Cybercab",
+      "Optimus and other AI deployment"
+    ],
+    "unresolved_inputs": [
+      "Separate sustainable Robotaxi/Optimus revenue, margins, capital needs and per-share cash generation",
+      "Fully normalized GAAP earnings after investment gains, currency changes, tax benefits and recurring SBC",
+      "Future restricted-award dilution and share-count path"
+    ],
+    "rule": "Do not capitalize promotional addressable-market claims as achieved earnings; do not assume the unmeasured opportunities have zero value either."
+  },
+  "reverse_valuation": {
+    "purpose": "Shows the future earnings hurdle implied by the observed price; does not estimate a fair value or exact sell price.",
+    "formula": "required EPS at year N = observed price * (1 + required annual return)^N / terminal P/E",
+    "dividends": "Assumed zero for this calculation; no separate cash addition because earnings include interest on cash.",
+    "terminal_multiple_rationale": "30x and 40x are explicit growth-company sensitivity assumptions, not observed comparables or proven fair multiples; 60x is a generous high-growth case and still requires durable growth beyond the horizon.",
+    "share_dilution": "EPS requirements already incorporate whatever share count exists then. Dollar earnings examples hold the Q2 diluted weighted share count constant at 3.54B; more shares require proportionately more earnings.",
+    "rows": [
+      {
+        "years": 3,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 30,
+        "required_terminal_eps_usd": 16.0789,
+        "eps_growth_cagr_from_trailing_pct": 146.005,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 56.919
+      },
+      {
+        "years": 3,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 40,
+        "required_terminal_eps_usd": 12.0592,
+        "eps_growth_cagr_from_trailing_pct": 123.511,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 42.69
+      },
+      {
+        "years": 3,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 60,
+        "required_terminal_eps_usd": 8.0395,
+        "eps_growth_cagr_from_trailing_pct": 95.255,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 28.46
+      },
+      {
+        "years": 3,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 30,
+        "required_terminal_eps_usd": 16.972,
+        "eps_growth_cagr_from_trailing_pct": 150.478,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 60.081
+      },
+      {
+        "years": 3,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 40,
+        "required_terminal_eps_usd": 12.729,
+        "eps_growth_cagr_from_trailing_pct": 127.574,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 45.061
+      },
+      {
+        "years": 3,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 60,
+        "required_terminal_eps_usd": 8.486,
+        "eps_growth_cagr_from_trailing_pct": 98.805,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 30.04
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 30,
+        "required_terminal_eps_usd": 19.4555,
+        "eps_growth_cagr_from_trailing_pct": 78.289,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 68.872
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 40,
+        "required_terminal_eps_usd": 14.5916,
+        "eps_growth_cagr_from_trailing_pct": 68.32,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 51.654
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 10.0,
+        "terminal_pe_assumption": 60,
+        "required_terminal_eps_usd": 9.7277,
+        "eps_growth_cagr_from_trailing_pct": 55.209,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 34.436
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 30,
+        "required_terminal_eps_usd": 21.2897,
+        "eps_growth_cagr_from_trailing_pct": 81.53,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 75.365
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 40,
+        "required_terminal_eps_usd": 15.9673,
+        "eps_growth_cagr_from_trailing_pct": 71.38,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 56.524
+      },
+      {
+        "years": 5,
+        "required_annual_return_pct": 12.0,
+        "terminal_pe_assumption": 60,
+        "required_terminal_eps_usd": 10.6448,
+        "eps_growth_cagr_from_trailing_pct": 58.031,
+        "illustrative_net_income_at_3_54bn_diluted_shares_usd_bn": 37.683
+      }
+    ]
+  },
+  "assessment": {
+    "classification": "Speculative growth exposure, not an established value bargain on these current earnings and cash-flow figures.",
+    "action_framework": "Do not sell simply at a recent chart high. Reassess if credible future per-share profits cannot support the price, if execution weakens, or if exposure exceeds an explicitly chosen risk budget.",
+    "exact_fair_value_or_sell_target_usd": null,
+    "why_no_exact_target": "The present evidence does not support a precise intrinsic value for future autonomy and robotics; a made-up range would not fix arbitrary chart exits.",
+    "technical_role": "Moving averages, volatility and support/resistance can guide review timing and staged execution. They are not intrinsic value or proof of a permanent business impairment."
+  },
+  "sources": [
+    {
+      "title": "Tesla Q2 2026 Form 10-Q",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm",
+      "observed_at": "2026-09-14T16:54:54Z",
+      "supports": "Q2/H1 financial statements, balance sheet, SBC, segments, capex guidance, future business discussion"
+    },
+    {
+      "title": "Tesla 2025 Form 10-K",
+      "url": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm",
+      "observed_at": "2026-09-14T16:55:00Z",
+      "supports": "FY2025 income, EPS, operating cash flow, capex and SBC; TTM construction"
+    },
+    {
+      "title": "Tesla Investor Relations quarterly archive",
+      "url": "https://ir.tesla.com/",
+      "observed_at": "2026-09-14T16:55:00Z",
+      "supports": "Q2 2026 latest quarterly report in archive; July22 earnings publication"
+    },
+    {
+      "title": "Tesla Q2 2026 production and deployments",
+      "url": "https://ir.tesla.com/press-release/tesla-second-quarter-2026-production-deliveries-and-deployments",
+      "observed_at": "2026-09-14T16:54:00Z",
+      "supports": "480126 vehicle deliveries and13.5GWh storage deployment; these do not substitute for profitability"
+    }
+  ],
+  "limitations": [
+    "No exhaustive news/catalyst review beyond primary quarterly filings.",
+    "Shareholder PDF returned a retrieval error; verified financial statements from SEC directly instead.",
+    "Valuation sensitivities are assumptions, not forecasts or guaranteed returns."
+  ]
+}

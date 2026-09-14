@@ -11,7 +11,7 @@ const state = {
 const pageNames = { overview: "Overview", journal: "Research journal", universe: "Market universe", crypto: "Crypto", strategy: "Strategy", learn: "Learn" };
 const decisionNames = {
   no_opportunity: "No opportunity", watch_only: "Watch only",
-  qualified_opportunity: "Qualified opportunity", monitor_failure: "Check needs attention",
+  qualified_opportunity: "Recorded scan qualification", monitor_failure: "Check needs attention",
 };
 const checkNames = { baseline_archive: "Archived baseline", intraday: "Intraday review", after_close: "After-close review", failed_check: "Failed check" };
 const moneyFormatter = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
@@ -137,13 +137,11 @@ function stats(entry) {
   const candidates = Array.isArray(entry.candidates) ? entry.candidates : null;
   const techCount = candidates ? candidates.filter((candidate) => candidate.technical_match === true).length : "—";
   const qualified = Object.hasOwn(decisionNames, entry.decision) ? (entry.decision === "qualified_opportunity" ? 1 : 0) : "—";
-  const rules = object(state.data?.risk_rules);
-  const weekly = numeric(rules.max_new_entries_per_week) ? rules.max_new_entries_per_week : "—";
   return el("div", { class: "stat-grid" }, [
     ["Equities reviewed", candidates ? candidates.length : "—", "U.S. stocks & unleveraged ETFs", "◎"],
     ["Equity technical matches", techCount, isArchive(entry) || isFailure(entry) ? "At the recorded equity signal session" : "Research candidates, still need checks", "⌁"],
-    ["Qualified opportunities", qualified, qualified === 0 ? "No new entry from this check" : "Lead opportunity; manual review required", "↗"],
-    ["Weekly entry ceiling", weekly, "A limit, never a target", "◷"],
+    ["Recorded scan qualifications", qualified, "Technical process result, not a value judgment", "↗"],
+    ["Valuation review", "Separate", "Read the company thesis and scenario assumptions", "◇"],
   ].map(([label, value, description, icon]) => el("div", { class: "stat-card" },
     el("div", { class: "stat-label" }, label, el("span", { class: "stat-icon", "aria-hidden": "true" }, icon)),
     el("div", { class: "stat-value" }, value), el("div", { class: "stat-description" }, description))));
@@ -181,18 +179,19 @@ function candidateCard(candidate, entry) {
 
 function overview(entry) {
   const archived = isArchive(entry), failed = isFailure(entry);
-  const heroTitle = failed ? "A pause for better information." : archived ? "A baseline. A disciplined beginning." : entry.decision === "qualified_opportunity" ? "One idea worth a closer look." : entry.decision === "watch_only" ? "Interesting. Not actionable yet." : "No trade is a decision.";
+  const heroTitle = failed ? "A pause for better information." : archived ? "A baseline. A disciplined beginning." : entry.decision === "qualified_opportunity" ? "One idea worth a closer look." : entry.decision === "watch_only" ? "Interesting. Not actionable yet." : "Let the business earn its place.";
   const heroCopy = failed ? "This review could not be completed. Any retained signals below are carried forward from an earlier snapshot and must not be treated as current." : archived ? "The starting point for the journal. Historical technical matches are recorded here with their limitations. No fresh opportunity is being called." : textValue(entry.summary);
   const candidates = array(entry.candidates).filter((candidate) => candidate.technical_match === true);
   const lesson = array(entry.lessons)[0];
   return [
-    title("The research desk", "A considered view of the market. Every opportunity has to earn its place.", date(entry.signal_session)),
-    el("section", { class: "hero" }, el("div", { class: "hero-copy" }, el("p", { class: "eyebrow" }, archived ? "THE OPENING RECORD" : "LATEST RESEARCH DECISION"), el("h2", {}, heroTitle), el("p", {}, heroCopy), el("a", { class: "text-link", href: entryUrl(entry) }, "Read the full check")), el("div", { class: "hero-graphic", "aria-hidden": "true" }, el("div", { class: "decision-emblem" }, el("span", { class: "emblem-symbol" }, failed ? "!" : "⌁"), el("span", { class: "emblem-text" }, archived ? "BASELINE ARCHIVE" : "STAY SELECTIVE")), el("span", { class: "graphic-caption" }, "PATIENCE IS PART OF THE PROCESS"))),
+    title("The research desk", "Business value first. Technical evidence helps with timing.", date(entry.signal_session)),
+    currentApproach(true),
+    el("section", { class: "hero" }, el("div", { class: "hero-copy" }, el("p", { class: "eyebrow" }, archived ? "THE OPENING RECORD" : "LATEST TECHNICAL RESEARCH RECORD"), el("h2", {}, heroTitle), el("p", {}, heroCopy), el("a", { class: "text-link", href: entryUrl(entry) }, "Read the full check")), el("div", { class: "hero-graphic", "aria-hidden": "true" }, el("div", { class: "decision-emblem" }, el("span", { class: "emblem-symbol" }, failed ? "!" : "⌁"), el("span", { class: "emblem-text" }, archived ? "BASELINE ARCHIVE" : "STAY SELECTIVE")), el("span", { class: "graphic-caption" }, "PATIENCE IS PART OF THE PROCESS"))),
     stats(entry), el("div", { class: "two-col" }, benchmarkPanel(entry), recentPanel()),
-    sectionHead("Equity ideas under the microscope", "Technical matches are starting points. All blockers remain visible.", "Explore the universe", "#universe"),
+    sectionHead("Equity ideas under the microscope", "The 60-symbol scanner supplies price and trend context. It does not measure fair value.", "Explore the universe", "#universe"),
     el("div", { class: "candidate-grid" }, candidates.length ? candidates.slice(0, 6).map((candidate) => candidateCard(candidate, entry)) : empty("No technical matches in this check", "An empty watchlist is a useful result. There is no need to manufacture a trade.")),
     cryptoSummary(entry),
-    el("section", { class: "lesson-strip" }, el("span", { class: "lesson-icon", "aria-hidden": "true" }, "◇"), el("div", {}, el("p", { class: "eyebrow" }, "A NOTE TO CARRY FORWARD"), el("h3", {}, "The decision matters as much as the outcome."), el("p", {}, lesson ? textValue(lesson) : "Keep a record of what was known, what was missing, and what would change the decision. This journal tracks research, not investment performance."))),
+    el("section", { class: "lesson-strip" }, el("span", { class: "lesson-icon", "aria-hidden": "true" }, "◇"), el("div", {}, el("p", { class: "eyebrow" }, "A LESSON FROM THIS RECORD"), el("h3", {}, "The decision matters as much as the outcome."), el("p", {}, lesson ? textValue(lesson) : "Keep a record of what was known, what was missing, and what would change the decision. This journal tracks research, not investment performance."))),
     el("p", { class: "section-note" }, `${textValue(entry.data_freshness)} All prices and indicators refer to the labeled snapshot. Refreshing this page only reloads published records; it does not request new market data.`),
   ];
 }
@@ -299,7 +298,7 @@ function journalDetail(entry) {
     el("div", { class: "panel-heading" }, badge(checkNames[entry.check_type] || "Research record"), decisionBadge(entry)),
     el("h2", {}, decisionLabel(entry)), el("p", { class: "dialog-source-date" }, `${date(entry.checked_at, true)} · Signal session ${date(entry.signal_session)}`),
     el("p", { class: "summary-copy" }, textValue(entry.summary)),
-    el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)}`),
+    el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)} Recorded scan decisions do not establish intrinsic value or a current buy/sell instruction.`),
     el("section", { class: "detail-section" }, el("h3", {}, "What the check observed"), itemList(entry.observations)),
     el("section", { class: "detail-section" }, el("h3", {}, "Why it cannot be treated as a buy signal"), itemList(entry.data_blockers, "No data blockers recorded. Candidate, account, earnings, and execution checks still apply.")),
     el("section", { class: "detail-section" }, el("h3", {}, "Stock & ETF technical candidates"), el("div", { class: "chips" }, array(entry.candidates).filter((candidate) => candidate.technical_match === true).map((candidate) => el("a", { class: "chip", href: candidateUrl(candidate, entry) }, `${candidate.symbol} ↗`))), array(entry.candidates).some((candidate) => candidate.technical_match === true) ? null : el("p", { class: "section-note" }, "No equity technical matches recorded.")),
@@ -325,7 +324,7 @@ function journal() {
     field("Decision", "journal-decision", selectControl([["all", "All decisions"], ...Object.entries(decisionNames)], state.journal.decision, (value) => { state.journal.decision = value; draw(); })),
     field("Check date · Chicago", "journal-date", selectControl(dateOptions, state.journal.date, (value) => { state.journal.date = value; draw(); })));
   draw();
-  return [title("Research journal", "An honest record of what was checked, what was missing, and what we learned."), filters, results];
+  return [title("Research journal", "An honest record of what was checked, what was missing, and what we learned."), el("div", { class: "note-box" }, "Earlier records preserve the swing-research method used at the time. Their fixed targets, stop scenarios, and scan decisions are historical evidence, not today’s investing instructions. The current approach uses business value and technical timing."), filters, results];
 }
 
 function universe(entry) {
@@ -363,7 +362,7 @@ function universe(entry) {
     results.replaceChildren(el("p", { class: "result-count" }, `${matches.length} of ${candidates.length} symbols · Select a symbol to inspect the full reasoning`), matches.length ? el("div", { class: "table-panel" }, el("div", { class: "table-scroll", tabindex: "0", "aria-label": "Market universe table; scroll horizontally for more columns" }, table), el("div", { class: "table-foot" }, `Signal session ${date(entry.signal_session)}. 20D vs SPY is a return difference in percentage points; bar lengths reflect absolute magnitude. All values are historical observations.`)) : empty("No symbols match these filters", "Clear a filter or search for another symbol."));
   };
   draw();
-  return [title("Stock & ETF universe", "Follow the evidence from the equity list to the individual idea. Crypto has its own research view.", `${candidates.length} symbols`), el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)}`),
+  return [title("Stock & ETF universe", "Price, trend, volume, and volatility research. A technical match does not establish investment value.", `${candidates.length} symbols`), el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)}`),
     el("div", { class: "filters" }, field("Research record", "universe-entry", selectControl(entries().map((record) => [record.id, `${date(record.checked_at, true)} · ${checkNames[record.check_type] || "Review"}`]), entry.id, (id) => { location.hash = `universe/entry/${encodeURIComponent(id)}`; }), true)),
     el("div", { class: "filters" },
       field("Search symbols or groups", "universe-search", el("input", { type: "search", placeholder: "e.g. AAPL or technology", value: state.universe.search, oninput: (event) => { state.universe.search = event.target.value; draw(); } }), true),
@@ -372,44 +371,64 @@ function universe(entry) {
       field("Group", "universe-sector", selectControl([["all", "All groups"], ...sectors.map((sector) => [sector, groupName(sector)])], state.universe.sector, (value) => { state.universe.sector = value; draw(); }))), results];
 }
 
+function currentApproach(compact = false) {
+  const steps = [
+    ["Understand the business", "Use filings to test the advantage, balance sheet, cash generation, capital needs, and growth per share."],
+    ["Estimate a value range", "Build bear, base, and bull cases with explicit growth, margins, reinvestment, discount rate, and valuation assumptions."],
+    ["Leave room for growth", "Compare price with that range and a margin of safety. Reaching chart resistance prompts a review; it does not automatically end a sound thesis."],
+    ["Use the chart for timing", "Map support, resistance, 50/200-day trends, volume, and ATR. Technical weakness triggers investigation alongside business evidence."],
+  ];
+  return el("section", { class: `value-approach${compact ? " compact" : ""}` },
+    el("div", { class: "value-approach-head" }, el("div", {}, el("p", { class: "eyebrow" }, "CURRENT APPROACH · UPDATED SEPTEMBER 14, 2026"), el("h2", {}, "Invest in value. Give growth time.")), badge("Fundamentals + technical timing", "teal")),
+    el("p", { class: "value-intro" }, "An investment decision starts with the business and the price paid for it. Technical levels help decide when to review or act; they do not substitute for valuation."),
+    compact ? el("div", { class: "value-path" }, "Business thesis", el("span", { "aria-hidden": "true" }, "→"), "Value range", el("span", { "aria-hidden": "true" }, "→"), "Margin of safety", el("span", { "aria-hidden": "true" }, "→"), "Technical timing") : el("div", { class: "value-grid" }, steps.map(([heading, copy], index) => el("article", {}, el("span", { class: "value-step" }, `0${index + 1}`), el("h3", {}, heading), el("p", {}, copy)))),
+    el("p", { class: "value-status" }, "The market scanner supplies technical evidence. Company fundamentals, scenario assumptions, and valuation uncertainty are assessed separately in the company review; no fair value is inferred from a chart pattern."),
+    el("div", { class: "value-review-links" }, el("a", { class: "text-link", href: "research/value-investing-review.html" }, "Read the company valuation review"), compact ? el("a", { class: "text-link", href: "#strategy" }, "Explore the investing approach") : null));
+}
+
 function strategy() {
   const rules = object(state.data?.risk_rules);
   const ruleValue = (key, suffix = "%") => numeric(rules[key]) ? `${rules[key]}${suffix}` : "—";
   const ruleCards = [
-    ["Maximum single position", ruleValue("max_position_pct"), "A ceiling on one position’s share of account equity, subject to the other limits."],
-    ["Planned risk per trade", ruleValue("risk_per_trade_pct"), "Entry-to-stop risk as a share of equity. It is planned risk, not a maximum possible loss."],
-    ["Combined open planned risk", ruleValue("max_open_risk_pct"), "Stocks, ETFs, and spot crypto share this one risk budget. Each candidate cannot use it independently."],
-    ["Total market exposure", ruleValue("max_total_exposure_pct"), "The combined exposure budget for holdings, pending orders, and new entries across all asset classes."],
-    ["Maximum group exposure", ruleValue("max_sector_exposure_pct"), "A concentration limit by group, including the crypto group. It cannot eliminate overlap or correlation."],
-    ["Maximum open positions", ruleValue("max_positions", ""), "Fewer moving parts to review. Cash is a valid allocation when the evidence is incomplete."],
+    ["Single-position guardrail", ruleValue("max_position_pct"), "Recorded exposure ceiling. Size depends on the account, concentration, and uncertainty in the thesis."],
+    ["Planned-risk guardrail", ruleValue("risk_per_trade_pct"), "A scenario loss budget, not a guaranteed loss cap or a reason to force a narrow technical stop."],
+    ["Combined planned risk", ruleValue("max_open_risk_pct"), "One shared modeled risk budget. Actual losses can exceed a price-based scenario."],
+    ["Total market exposure", ruleValue("max_total_exposure_pct"), "Recorded exposure allowance across the relevant account. Holdings and pending orders require reconciliation."],
+    ["Group concentration", ruleValue("max_sector_exposure_pct"), "A ceiling for correlated exposures, not proof of diversification."],
+    ["Open-position guardrail", ruleValue("max_positions", ""), "The recorded scanner limit. These risk settings alone do not establish investment suitability."],
   ];
-  return [title("The strategy", "Selective swing research, with the constraints written down before the excitement."),
-    el("div", { class: "strategy-grid" }, ruleCards.map(([label, value, copy]) => el("article", { class: "rule-card" }, el("p", { class: "eyebrow" }, label), el("div", { class: "rule-value" }, value), el("p", {}, copy)))),
-    el("div", { class: "two-col" }, el("section", { class: "panel" }, el("h2", {}, "One process. Five checkpoints."), el("p", { class: "section-note" }, "Scheduled weekday check times in America/Chicago. This is the intended cadence; the journal shows which checks actually completed."),
+  return [title("The investment approach", "Value and business quality guide the decision. Price action helps with timing."),
+    currentApproach(),
+    el("section", { class: "panel" }, el("h2", {}, "What would change the decision?"), el("div", { class: "decision-grid" },
+      el("article", {}, el("h3", {}, "Consider buying"), el("p", {}, "A supported business thesis, an attractive price relative to a conservative value range, acceptable downside, and a position size that fits the risk budget.")),
+      el("article", {}, el("h3", {}, "Continue holding"), el("p", {}, "The thesis remains intact and expected future returns still compensate for the risks. Allow normal price swings; a recent high or resistance line is a review area.")),
+      el("article", {}, el("h3", {}, "Consider trimming or exiting"), el("p", {}, "Evidence breaks the thesis, the price leaves too little return for the risk, or concentration becomes excessive. State the supporting facts and scenario math before recommending an amount.")))),
+    el("section", { class: "panel" }, el("h2", {}, "Each company needs a valuation worksheet"),
+      itemList(["Dated primary sources: filings, reported results, management guidance, and share count.", "Business drivers: revenue and cash-flow growth, durable margins, debt, dilution, and reinvestment needs.", "Bear / base / bull values: explicit assumptions and a consistent multi-year horizon, with downside and upside from the observed price.", "Margin of safety: a justified discount to a conservative estimate, with sensitivity to assumptions shown.", "Technical review zones: documented support and resistance, longer-term trend, and volatility. These are evidence to reassess, not arbitrary fixed profit caps."]),
+      el("div", { class: "note-box" }, "The linked company review records its evidence, assumptions, and remaining uncertainty. Missing inputs stay visible; chart patterns cannot fill a missing valuation model.")),
+    el("div", { class: "two-col" }, el("section", { class: "panel" }, el("h2", {}, "Five checks. No pressure to transact."), el("p", { class: "section-note" }, "Scheduled weekday times in America/Chicago. Checks review new evidence; an unchanged thesis does not require a new trade. The journal records checks that actually completed."),
       el("div", { class: "schedule-list" }, array(state.data?.schedule).map((time) => el("span", { class: "schedule-time" }, time))),
-      el("p", { class: "section-note" }, "Equity indicators use completed exchange sessions. Crypto indicators use complete UTC calendar days. Crypto trades 24/7, but these reviews run at scheduled weekday checkpoints, not continuously or on weekends."),
-      el("div", { class: "note-box" }, `At most ${ruleValue("max_new_entries_per_week", "")} new entry per week across all assets. This is a shared ceiling, not a weekly quota or an income promise.`)),
-      el("section", { class: "panel" }, el("h2", {}, "What belongs in the plan"), itemList(["Long U.S. stocks, unleveraged ETFs, and spot crypto.", "No borrowing, options, short selling, derivatives, or leveraged/inverse products.", "Hold for several days to weeks; verify earnings and relevant token or market events first.", "Use liquid assets and confirm Robinhood eligibility, fees, and protective-order support.", "Every new entry requires a current account and execution review. Crypto sizing remains pending until eligibility is verified."]))),
-    el("section", { class: "panel" }, el("h2", {}, "From a scan to a decision"), el("ol", { class: "process-list" },
-      el("li", {}, el("div", {}, el("strong", {}, "Confirm the information"), "Use the equity exchange calendar or crypto UTC-day boundary as appropriate. Check prices, corporate actions or token events, the source venue, and whether the data is current enough to use.")),
-      el("li", {}, el("div", {}, el("strong", {}, "Let the market and setup qualify"), "Inspect the benchmark trend, liquidity, relative strength, and the breakout or pullback setup. A technical match is only the beginning.")),
-      el("li", {}, el("div", {}, el("strong", {}, "Make the risk fit"), "Reconcile holdings and pending orders across stocks, ETFs, and crypto, event dates, unleveraged buying power, settlement status, weekly entries, and the shared risk budget. Recalculate size at the intended entry and include venue spreads and fees.")),
-      el("li", {}, el("div", {}, el("strong", {}, "Record a reasoned decision"), "Publish the observations, blockers, and what would change the decision. Missing information, poor sizing, or an unattractive entry means no opportunity.")))),
-    el("div", { class: "note-box" }, "Stops are not guarantees. Gaps, slippage, and periods when stops do not execute can produce larger losses than planned. A stop-limit can remain unfilled. An illustrative 2R objective is arithmetic, not a forecast."),
-    el("p", { class: "section-note" }, "Risk settings are the values recorded with the published research, not a statement that any order is suitable or approved. The public journal contains no private balances or position sizes.")];
+      el("p", { class: "section-note" }, "Completed exchange sessions drive equity indicators; complete UTC days drive crypto indicators. Monitoring is not continuous or enabled on weekends.")),
+      el("section", { class: "panel" }, el("h2", {}, "Stocks and crypto need different theses"), itemList(["Stocks represent businesses: value depends on future cash flows and what shareholders retain.", "Bitcoin and Ether do not provide the same claim on corporate cash flows. Keep adoption, token economics, network risks, and valuation uncertainty explicit.", "Crypto remains a separate speculative research view; a technical match does not turn it into a conventional value investment.", "Use no borrowing, options, short selling, or leveraged/inverse products."]))),
+    sectionHead("Recorded risk guardrails", "These are the latest exported scanner settings. They do not replace a company-specific investment assessment."),
+    el("div", { class: "strategy-grid" }, ruleCards.map(([label, value, copy]) => el("article", { class: "rule-card" }, el("p", { class: "eyebrow" }, label), el("div", { class: "rule-value" }, value), el("p", {}, copy)))),
+    el("p", { class: "section-note" }, "Earlier swing-era logs remain unchanged for learning. Their days-to-weeks horizon, fixed 2R objectives, and entry limits describe that historical process. A weekly entry ceiling is not an investing goal. The public journal excludes private accounts, quantities, and personalized instructions.")];
 }
 
 function learn() {
   const cards = [
-    ["R: make risk comparable", "One R is the planned entry-to-stop distance per unit: a share for equities or a base coin for crypto. Multiply by the actual quantity for planned dollar risk. A 2R objective is arithmetic; it is not a likely return, and losses can exceed 1R.", "Planned risk = (entry − stop) × quantity · 2R = entry + 2 × (entry − stop)"],
+    ["Value: a range, not an exact number", "Estimate what the business can distribute to shareholders over time. Different assumptions for growth, margins, reinvestment, dilution, and risk produce different values. A useful estimate shows those assumptions and bear, base, and bull cases.", "Scenario upside / downside = scenario value ÷ observed price − 1"],
+    ["Margin of safety: room to be wrong", "An attractive company can be an unattractive investment at the wrong price. A margin of safety compares the price with a conservative value estimate; it should reflect business risk and uncertainty, rather than use the same percentage for every stock.", "Margin of safety = 1 − price ÷ conservative estimated value"],
+    ["Resistance: a review area", "A prior high may mark selling interest, but it does not cap a business’s future value. Reaching resistance calls for reassessing valuation, momentum, and the thesis. It does not automatically justify selling a growing business.", "Technical review zone ≠ intrinsic value ≠ automatic sell order"],
+    ["R: historical technical risk math", "One R is the planned entry-to-stop distance per unit: a share for equities or a base coin for crypto. Multiply by the actual quantity for planned dollar risk. A 2R objective is arithmetic; it is not a likely return, and losses can exceed 1R.", "Planned risk = (entry − stop) × quantity · 2R = entry + 2 × (entry − stop)"],
     ["Relative strength: compared with what?", "Stock and ETF research compares 20-session returns with SPY. Crypto research compares 20 completed UTC-day returns with BTC. Positive values mean outperformance over that window, not necessarily a price gain or a prediction.", "Relative strength = asset return − its labeled benchmark return"],
     ["Relative volume: participation", "Relative volume compares the latest completed session’s share volume with the average of the preceding 20 sessions. Higher volume can add context to a price move. It does not establish that buyers will keep pushing the price higher.", "Relative volume = last session volume ÷ prior 20-session mean"],
     ["Trend: a useful filter", "Moving averages summarize past prices. A price above a rising longer-term average can support a trend thesis, but these indicators lag and can reverse. The market gate is a filter, not a prediction or a guarantee of a low-risk entry.", "SMA = average closing price over the labeled session window"],
-    ["Earnings: a different kind of risk", "A company’s earnings announcement can move its price sharply while the regular market is closed. A planned stop cannot guarantee protection through that move. Dates must be verified; an unknown date is a blocker, not evidence that no announcement is coming.", "Unknown event calendar → incomplete trade review"],
-    ["No opportunity: a complete answer", "A setup can look attractive and still be unsuitable at the available price or under the account’s limits. Recording a rejection protects the process from a weekly trading quota. This journal tracks research decisions, not profit, win rate, or evidence of a proven edge.", "Interesting setup + unresolved blocker ≠ qualified opportunity"],
+    ["Earnings: test the thesis", "Reported earnings and cash flows help test growth, margins, capital needs, and valuation assumptions. Announcements can also move prices sharply outside regular hours. Verify dates and reassess the business evidence; a price gap alone does not explain whether the thesis changed.", "New results → update assumptions → reassess value and risk"],
+    ["Waiting: a valid investment decision", "A business can be attractive while its price offers too little prospective return. Waiting for a better price or firmer evidence is a complete decision. This journal records research; it does not establish investment performance or a proven edge.", "Good business + demanding price ≠ attractive investment"],
     ["Crypto: a different clock and venue", "Crypto has no scheduled overnight market closure. Daily candles here use UTC days and volume is venue-specific, not global participation. BTC is the benchmark. Quotes can differ from Robinhood’s price, spread, and fees; account and protective-order eligibility require manual verification before sizing.", "24/7 market ≠ continuous monitoring · One shared risk budget"],
   ];
-  return [title("Understand the decision", "A short field guide to the language and limits of this research process."), el("div", { class: "learn-grid" }, cards.map(([heading, copy, formula], index) => el("article", { class: "learn-card" }, el("span", { class: "learn-number" }, `FIELD NOTE 0${index + 1}`), el("h2", {}, heading), el("p", {}, copy), el("div", { class: "formula" }, formula)))),
+  return [title("Understand the decision", "A short field guide to the language and limits of this research process."), el("div", { class: "learn-grid" }, cards.map(([heading, copy, formula], index) => el("article", { class: "learn-card" }, el("span", { class: "learn-number" }, `FIELD NOTE ${String(index + 1).padStart(2, "0")}`), el("h2", {}, heading), el("p", {}, copy), el("div", { class: "formula" }, formula)))),
     el("div", { class: "note-box" }, "These explanations describe the rules used in this journal. They are not evidence that the strategy will make money. Verify the actual security, account constraints, and order behavior before making an investment decision.")];
 }
 
@@ -420,7 +439,7 @@ function openCryptoCandidate(candidate, entry) {
   const close = () => { location.hash = `crypto/entry/${encodeURIComponent(entry.id)}`; };
   const metricFields = [["Completed UTC-day close", cryptoMoney(metrics.close)], ["20-day return vs BTC", pp(metrics.relative_return_20)], ["Venue-relative volume", ratio(metrics.relative_volume)], ["14-day ATR · USD / coin", cryptoMoney(metrics.atr14)]];
   const planRows = [["Entry trigger · USD", cryptoMoney(plan.entry)], ["Stop / invalidation · USD", cryptoMoney(plan.stop)], ["Illustrative 2R objective · USD", cryptoMoney(plan.target_2r)], ["Chase-rule ceiling · USD", cryptoMoney(plan.max_entry_chase)], ["Planned stop distance", percent(plan.stop_distance_pct)]];
-  const scenario = el("section", {}, el("h3", {}, Object.keys(plan).length ? "Recorded hypothetical scenario" : "No scenario generated"),
+  const scenario = el("section", {}, el("h3", {}, Object.keys(plan).length ? "Recorded technical scenario" : "No scenario generated"),
     Object.keys(plan).length ? el("table", { class: "plan-table" }, el("tbody", {}, planRows.map(([label, value]) => el("tr", {}, el("th", { scope: "row" }, label), el("td", {}, value))))) : el("p", {}, "The recorded crypto rules did not generate a valid entry-and-stop scenario for this asset."),
     el("p", { class: "section-note" }, "Levels are USD per base coin. No coin quantity is approved. A 2R objective is arithmetic; actual losses can exceed planned entry-to-stop risk."));
   const technical = el("section", {}, el("h3", {}, "UTC daily evidence"),
@@ -457,12 +476,12 @@ function openCandidate(candidate, entry) {
   const content = el("div", {},
     el("header", { class: "dialog-head" }, el("div", {}, badge(sourceState(entry), "amber"), el("h2", { id: "candidate-title" }, candidate.symbol), el("p", {}, `${securityName(candidate.kind)} · ${groupName(candidate.sector)} · ${date(candidate.last_date || entry.signal_session)}`)), el("button", { class: "icon-button dialog-close", "aria-label": "Close candidate details", onclick: close }, "×")),
     el("div", { class: "dialog-body" },
-      el("div", { class: "note-box" }, isArchive(entry) || isFailure(entry) ? "Historical research only. These levels are retained for the record and are not current entry instructions." : "Research only. Verify current prices, events, account limits, and orders before using any scenario."),
+      el("div", { class: "note-box" }, isArchive(entry) || isFailure(entry) ? "Historical research only. These levels are retained for the record and are not current entry instructions." : "Technical research only. These recorded levels are not a current investing sell plan. A valuation range and business thesis must guide the decision; resistance and a 2R calculation are review context."),
       el("div", { class: "dialog-stat-grid" }, fields.map(([label, value]) => el("div", { class: "dialog-stat" }, el("span", {}, label), el("strong", {}, value)))),
-      el("div", { class: "dialog-columns" }, el("section", {}, el("h3", {}, Object.keys(plan).length ? "Recorded hypothetical scenario" : "No scenario generated"), Object.keys(plan).length ? el("table", { class: "plan-table" }, el("tbody", {}, [
+      el("div", { class: "dialog-columns" }, el("section", {}, el("h3", {}, Object.keys(plan).length ? "Recorded technical scenario" : "No scenario generated"), Object.keys(plan).length ? el("table", { class: "plan-table" }, el("tbody", {}, [
         ["Entry trigger", money(plan.entry)], ["Stop / invalidation", money(plan.stop)], ["Illustrative 2R objective", money(plan.target_2r)], ["Chase-rule ceiling", money(plan.max_entry_chase)], ["Planned stop distance", percent(plan.stop_distance_pct)],
       ].map(([key, value]) => el("tr", {}, el("th", { scope: "row" }, key), el("td", {}, value))))) : el("p", {}, "The recorded technical rules did not produce a valid entry-and-stop scenario for this symbol."),
-      el("p", { class: "section-note" }, "The objective is arithmetic, not a price forecast. Actual loss can exceed planned entry-to-stop risk.")),
+      el("p", { class: "section-note" }, "These technical levels do not estimate intrinsic value. The 2R objective is arithmetic, not a forecast or an automatic profit-taking instruction. Actual losses can exceed planned risk.")),
       el("section", {}, el("h3", {}, "Technical evidence"), el("div", { class: "filter-list" }, Object.entries(object(candidate.filters)).map(([key, passed]) => el("div", { class: "filter-item" }, el("span", { class: `filter-mark${passed === true ? "" : " fail"}`, "aria-hidden": "true" }, passed === true ? "✓" : "—"), el("span", {}, `${words(key)}: ${passed === true ? "passed" : passed === false ? "not met" : "unknown"}`)))),
       el("p", {}, `20 / 50 / 200-day averages: ${money(metrics.sma20)} / ${money(metrics.sma50)} / ${money(metrics.sma200)}. Prior 20-session high: ${money(metrics.prior20_high)}. Security 20-session return: ${percent(metrics.return_20, true)}.`))),
       textSection("Why it was interesting", review.why_interesting || (candidate.technical_match === true ? `Matched the recorded ${array(candidate.setup_types).map(words).join(" and ") || "technical"} setup. A match alone does not qualify an opportunity.` : "This symbol was part of the research universe but did not match a recorded technical setup.")),

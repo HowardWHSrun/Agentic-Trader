@@ -1,12 +1,14 @@
 # Agentic Trader
 
-A browsable swing-trade research journal: what was checked, which patterns appeared, why a setup was rejected, and what the evidence can teach.
+A browsable investing research journal: business value guides the approach, technical evidence helps with timing, and dated records show what was known.
 
 **[Open the research dashboard](https://howardwhsrun.github.io/Agentic-Trader/)**
 
 The dashboard has an overview, dated research journal, searchable stock/ETF universe, a separate crypto research view, candidate details, strategy rules, and a learning guide. It uses real saved research snapshots. Baseline archives are labeled as archives; hypothetical price levels are not live quotes or executed trades.
 
-The current coverage is 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. Both asset classes share the same position/risk limits and weekly entry ceiling. Crypto has no executable sizing or qualified alerts until its broker and event checks can be established.
+The current coverage is 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. The scanner retains its recorded position/risk guardrails. Its technical results do not establish fair value or an investment recommendation. Crypto has no executable sizing or qualified alerts until its broker and event checks can be established.
+
+The current Strategy view explains thesis review, bear/base/bull valuation scenarios, cash-flow growth, margin of safety, and technical review zones. The separately published company review presents dated sources and valuation assumptions; the technical scanner itself does not calculate intrinsic value. Earlier swing-era logs and their hypothetical entry/stop/2R scenarios remain historical records; chart resistance is not an automatic current exit instruction.
 
 ## What is published
 

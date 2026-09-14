@@ -1,0 +1,356 @@
+{
+  "symbol": "MSFT",
+  "checked_at": "2026-09-14T16:58:52.366968+00:00",
+  "financial_period": "FY2026 ended 2026-06-30",
+  "sources": [
+    {
+      "title": "Microsoft FY2026 Q4 release and financial statements",
+      "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast",
+      "published": "2026-07-29",
+      "period_end": "2026-06-30",
+      "accessed_at": "2026-09-14T16:58:52.366968+00:00"
+    }
+  ],
+  "quote": {
+    "source": "Robinhood get_equity_quotes, public market data only",
+    "bid": 507.92,
+    "ask": 508.0,
+    "bid_ask_at": "2026-09-14T16:56:31.685333378Z",
+    "last_trade": 508.0305,
+    "last_trade_at": "2026-09-14T16:56:32.667613268Z",
+    "valuation_reference_midpoint": 507.96
+  },
+  "facts_usd_millions": {
+    "revenue": 331839,
+    "prior_revenue": 281724,
+    "operating_income": 155237,
+    "net_income": 133749,
+    "operating_cash_flow": 182935,
+    "prior_operating_cash_flow": 136162,
+    "cash_capex": 115948,
+    "prior_cash_capex": 64551,
+    "sbc": 12405,
+    "prior_sbc": 11974,
+    "cash_and_short_term_investments": 76843,
+    "current_debt": 9227,
+    "long_term_debt": 31067,
+    "quarter_diluted_shares_millions": 7443,
+    "prior_quarter_diluted_shares_millions": 7461
+  },
+  "eps": {
+    "gaap_fy": 17.95,
+    "openai_adjusted_fy": 17.28,
+    "openai_adjusted_not_fully_normalized": true
+  },
+  "business_evidence": "Q4 Azure and other cloud revenue grew 43%; commercial remaining obligations were $678B. Enterprise distribution and recurring software/cloud use support a durable-growth thesis; these do not guarantee capex returns.",
+  "normalization": "Cash capex rose sharply. Cash FCF declined despite earnings growth. Separating maintenance from growth capex is not verified. Current FCF may understate mature earnings power, while finance leases and future commitments can understate the complete investment burden. OpenAI-adjusted EPS still includes other discrete items; do not treat it as normalized owner cash.",
+  "fundamental_review_conditions": [
+    "Review if cloud demand/backlog conversion weakens across subsequent releases while investment remains elevated.",
+    "Review if cash generation after capex and SBC persistently deteriorates without credible evidence of improving returns on that investment.",
+    "Review major loss of enterprise competitive position or material balance-sheet/commitment deterioration."
+  ],
+  "interpretation": "Growth evidence supports room for the business to expand. Present price still requires substantial eventual cash-flow recovery. A technical resistance level alone does not establish overvaluation or justify liquidating a long-horizon holding.",
+  "derived": {
+    "revenue_growth_pct": 17.788686799846666,
+    "cash_fcf_usd_millions": 66987,
+    "prior_cash_fcf_usd_millions": 71611,
+    "cash_fcf_yoy_pct": -6.457108544776635,
+    "liquid_assets_less_stated_borrowings_usd_millions": 36549,
+    "eps_multiple_openai_adjusted": 29.39583333333333,
+    "owner_cash_flow_proxy_usd_millions": 54582,
+    "owner_cash_flow_proxy_per_share": 7.333333333333333,
+    "price_to_owner_cash_flow_proxy": 69.26727272727273,
+    "liquid_assets_less_stated_borrowings_caveat": "Not total net cash after leases, commitments and required operating liquidity."
+  },
+  "valuation_model": {
+    "type": "reverse_cash_flow_sensitivity_not_price_target",
+    "horizon_years": 5,
+    "horizon_status": "working assumption pending user preference",
+    "owner_cash_flow_proxy": "Operating cash flow minus cash property/equipment purchases minus stock-based compensation; not a company-defined GAAP measure or full FCFE.",
+    "formula": "P = sum(F0*(1+g)^t/(1+r)^t, t=1..5) + M*F0*(1+g)^5/(1+r)^5; solve g for a given reference price P.",
+    "required_returns": [
+      0.1,
+      0.12
+    ],
+    "terminal_multiples": [
+      20,
+      25,
+      30
+    ],
+    "assumption_rationale": "10% and 12% are analyst hurdle-rate sensitivities, not promised returns. The 20\u201330x terminal range represents 5.0%\u20133.33% year-five cash-flow yields and deliberately tests multiple compression; it is a judgment grid, not observed intrinsic value or an assertion that these multiples are deserved.",
+    "share_treatment": "Divide by latest quarter diluted weighted-average shares and keep shares fixed. Deduct SBC as an economic cost. Do not additionally assume buyback-driven share reduction or a separate dilution charge.",
+    "cash_debt_treatment": "No excess-cash or investment value added and no second debt subtraction: cash flow already includes interest. This is not a full equity bridge; debt principal, finance leases, restricted/operating cash needs, and all capital commitments need a full model before any intrinsic-value estimate.",
+    "distribution_treatment": "Assumes modeled post-investment cash is distributable. Do not count dividends or buybacks again. Growth must be achieved after the modeled reinvestment burden.",
+    "timing": "Five full annual periods with no fiscal-date stub adjustment; appropriate for sensitivity, not a precise valuation.",
+    "sell_policy": "A resistance touch or a model cell is a review trigger, not an automatic sale. Sell only after a supported thesis break, portfolio-risk need, or valuation review demonstrating inadequate prospective return with reasonable assumptions.",
+    "base_owner_cash_flow_per_share": 7.333333333333333,
+    "reverse_growth_requirements": [
+      {
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "required_five_year_cagr": 0.3667177872011259,
+        "year_five_cash_flow_per_share": 34.970002156721264
+      },
+      {
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "required_five_year_cagr": 0.31268080895468786,
+        "year_five_cash_flow_per_share": 28.582295585912252
+      },
+      {
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "required_five_year_cagr": 0.2695039887392593,
+        "year_five_cash_flow_per_share": 24.18086179478199
+      },
+      {
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "required_five_year_cagr": 0.3915672015138737,
+        "year_five_cash_flow_per_share": 38.266817630678354
+      },
+      {
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "required_five_year_cagr": 0.33654773275386407,
+        "year_five_cash_flow_per_share": 31.27690663988211
+      },
+      {
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "required_five_year_cagr": 0.2925858794436095,
+        "year_five_cash_flow_per_share": 26.460525347028376
+      }
+    ],
+    "sensitivity_grid": [
+      {
+        "growth": 0.05,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 148.1885501331876
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 183.33333333333331
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 225.1514198142202
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 274.5719554675225
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 332.6073113744506
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.1,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 400.3566696263915
+      },
+      {
+        "growth": 0.05,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 177.24579946724947
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 219.99999999999997
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 270.94422056781167
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 331.22382350932287
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 402.0870329895497
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.1,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 484.88937458734586
+      },
+      {
+        "growth": 0.05,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 206.30304880131138
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 256.6666666666667
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 316.7370213214031
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 387.8756915511233
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 471.56675460464885
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.1,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 569.4220795483003
+      },
+      {
+        "growth": 0.05,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 136.5538692474365
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 168.77936614647052
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 207.11084731400007
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 252.39782902957086
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 305.5658951147254
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.12,
+        "terminal_multiple": 20,
+        "illustrative_present_value": 367.61997382309494
+      },
+      {
+        "growth": 0.05,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 163.10773849487302
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 202.28707574459378
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 248.95844375043816
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 304.16894746236665
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 369.05970424664866
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.12,
+        "terminal_multiple": 25,
+        "illustrative_present_value": 444.86990098788107
+      },
+      {
+        "growth": 0.05,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 189.66160774230957
+      },
+      {
+        "growth": 0.1,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 235.79478534271706
+      },
+      {
+        "growth": 0.15,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 290.8060401868762
+      },
+      {
+        "growth": 0.2,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 355.9400658951625
+      },
+      {
+        "growth": 0.25,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 432.553513378572
+      },
+      {
+        "growth": 0.3,
+        "required_return": 0.12,
+        "terminal_multiple": 30,
+        "illustrative_present_value": 522.1198281526673
+      }
+    ],
+    "not_a_fair_value_range": true
+  },
+  "technical_context": {
+    "source": "Robinhood get_equity_historicals: daily regular-session bars, split adjustment; downloaded 2026-09-12T20:57:34.101Z. Alpaca provided only calendar and close cross-checks.",
+    "last_completed_session": "2026-09-11",
+    "close": 495.63,
+    "sma20": 494.434,
+    "sma50": 453.6687999999999,
+    "sma200": 431.2575499999999,
+    "twenty_session_low": 477.1505,
+    "sixty_session_high": 517.78,
+    "purpose": "Trend and drawdown review zones, not company valuation, guaranteed support, or automatic exits."
+  }
+}
