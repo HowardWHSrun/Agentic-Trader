@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-09-14T20:49:15.283311Z",
+  "updated_at": "2026-09-14T20:54:06.957208Z",
   "timezone": "America/Chicago",
   "schedule": [
     "08:45",
@@ -19,6 +19,2479 @@
     "max_new_entries_per_week": 1
   },
   "entries": [
+    {
+      "id": "20260914T205406.957208Z-after_close",
+      "checked_at": "2026-09-14T20:54:06.957208Z",
+      "check_type": "after_close",
+      "decision": "watch_only",
+      "summary": "No material change in this follow-up check. The latest completed equity daily bar remains unavailable; current technical qualification is still blocked.",
+      "data_freshness": "The original source remains unchanged.",
+      "signal_session": "2026-09-14",
+      "scan_generated_at": "2026-09-14T20:53:34.002374Z",
+      "market_gate": {
+        "passed": false,
+        "benchmarks": {
+          "SPY": {
+            "close": 764.29,
+            "sma50": 758.6164000000001,
+            "sma200": 714.2339499999999,
+            "last_date": "2026-09-11"
+          },
+          "QQQ": {
+            "close": 714.88,
+            "sma50": 710.4063999999998,
+            "sma200": 660.1389000000001,
+            "last_date": "2026-09-11"
+          }
+        }
+      },
+      "data_blockers": [
+        "Data download timestamp precedes expected_session.",
+        "Exchange calendar: daily bars were downloaded before the expected session completed."
+      ],
+      "observations": [
+        "There is no new completed-session technical evidence to assess.",
+        "This check follows the previous review by minutes. The same provider publication delay is recorded without inventing candles or repeating a new full-universe download.",
+        "Dated fundamental and valuation limitations are unchanged; current quotes alone do not support a new buy, trim or exit price.",
+        "Previously reviewed product announcements are carried forward as dated evidence rather than described as newly reported events.",
+        "Fresh Alpaca crypto quotes accompany unchanged completed-day history; no qualifying technical pattern or verified value opportunity is established."
+      ],
+      "lessons": [
+        "Distinguish a new observation from a material change: repeated checks do not require repeated trades.",
+        "A delayed daily bar should keep technical qualification blocked, even when live quotes are available."
+      ],
+      "sources": [
+        {
+          "title": "Microsoft Investor Relations",
+          "url": "https://www.microsoft.com/en-us/investor/default",
+          "as_of": "2026-09-14T20:37:37Z"
+        },
+        {
+          "title": "Microsoft corporate blog",
+          "url": "https://blogs.microsoft.com/",
+          "as_of": "2026-09-14T20:37:37Z"
+        },
+        {
+          "title": "Apple newsroom archive",
+          "url": "https://www.apple.com/newsroom/archive/",
+          "as_of": "2026-09-14T20:37:37Z"
+        },
+        {
+          "title": "Tesla press releases",
+          "url": "https://ir.tesla.com/press",
+          "as_of": "2026-09-14T20:37:37Z"
+        },
+        {
+          "title": "Dated company expectations models",
+          "url": "https://howardwhsrun.github.io/Agentic-Trader/research/value-investing-review.html",
+          "as_of": "2026-09-14T16:58:52Z"
+        }
+      ],
+      "candidates": [
+        {
+          "symbol": "SPY",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 764.29,
+            "sma20": 766.8790000000001,
+            "sma50": 758.6164000000001,
+            "sma200": 714.2339499999999,
+            "atr14": 5.598735714285697,
+            "relative_return_20": 0.0,
+            "return_20": -1.74705610119813,
+            "relative_volume": 1.234094897339975,
+            "prior20_high": 779.37
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "SPY: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QQQ",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 714.88,
+            "sma20": 715.6679999999999,
+            "sma50": 710.4063999999998,
+            "sma200": 660.1389000000001,
+            "atr14": 7.793914285714274,
+            "relative_return_20": -0.6010800060047394,
+            "return_20": -2.3481361072028695,
+            "relative_volume": 0.8627651632836368,
+            "prior20_high": 734.58
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "QQQ: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "IWM",
+          "kind": "etf",
+          "sector": "small_caps",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 288.89,
+            "sma20": 296.6015,
+            "sma50": 296.28059999999994,
+            "sma200": 273.8322,
+            "atr14": 3.045714285714285,
+            "relative_return_20": -3.0667824490489877,
+            "return_20": -4.813838550247118,
+            "relative_volume": 1.5007971631177488,
+            "prior20_high": 305.18
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "IWM: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIA",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 525.79,
+            "sma20": 531.5445000000002,
+            "sma50": 529.1946,
+            "sma200": 499.89374999999995,
+            "atr14": 4.468928571428584,
+            "relative_return_20": -0.5061089264087215,
+            "return_20": -2.2531650276068516,
+            "relative_volume": 1.1285606059984257,
+            "prior20_high": 539.967
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "DIA: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLK",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 187.67,
+            "sma20": 185.52749999999997,
+            "sma50": 182.72660000000005,
+            "sma200": 161.33489999999995,
+            "atr14": 3.0307142857142844,
+            "relative_return_20": 0.12206265359104851,
+            "return_20": -1.6249934476070815,
+            "relative_volume": 1.0748876639849974,
+            "prior20_high": 191.75
+          },
+          "plan": {
+            "entry": 188.65,
+            "stop": 184.1,
+            "target_2r": 197.75,
+            "max_entry_chase": 189.4,
+            "stop_distance_pct": 2.411873840445269
+          },
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLK: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLF",
+          "kind": "etf",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 57.25,
+            "sma20": 57.6985,
+            "sma50": 57.114399999999996,
+            "sma200": 53.60154999999999,
+            "atr14": 0.6629928571428582,
+            "relative_return_20": 0.013448136900162666,
+            "return_20": -1.7336079642979674,
+            "relative_volume": 1.1936496578340186,
+            "prior20_high": 58.6
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLF: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLI",
+          "kind": "etf",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 172.37,
+            "sma20": 177.5825,
+            "sma50": 180.32040000000003,
+            "sma200": 171.20399999999998,
+            "atr14": 2.312499999999998,
+            "relative_return_20": -5.476152898209797,
+            "return_20": -7.223208999407927,
+            "relative_volume": 0.8295611564601637,
+            "prior20_high": 187.39
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLI: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLV",
+          "kind": "etf",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 165.36,
+            "sma20": 170.88549999999998,
+            "sma50": 166.23699999999997,
+            "sma200": 155.64380000000006,
+            "atr14": 2.146978571428566,
+            "relative_return_20": -0.046506079583419346,
+            "return_20": -1.7935621807815494,
+            "relative_volume": 0.8453473878814642,
+            "prior20_high": 176.595
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLV: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLE",
+          "kind": "etf",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 65.14,
+            "sma20": 63.718500000000006,
+            "sma50": 60.13919999999998,
+            "sma200": 55.23355000000002,
+            "atr14": 1.2092500000000004,
+            "relative_return_20": 8.42900827938352,
+            "return_20": 6.681952178185391,
+            "relative_volume": 1.1616652616883756,
+            "prior20_high": 66.17
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLE: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLP",
+          "kind": "etf",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 83.38,
+            "sma20": 85.20549999999999,
+            "sma50": 84.994,
+            "sma200": 83.45060000000004,
+            "atr14": 0.8996428571428561,
+            "relative_return_20": -1.2994555267088481,
+            "return_20": -3.046511627906978,
+            "relative_volume": 1.127014731152526,
+            "prior20_high": 87.465
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLP: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLY",
+          "kind": "etf",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 112.96,
+            "sma20": 115.99399999999999,
+            "sma50": 115.93879999999997,
+            "sma200": 116.98634999999999,
+            "atr14": 1.4214285714285708,
+            "relative_return_20": -2.887810931305046,
+            "return_20": -4.634867032503176,
+            "relative_volume": 0.8344428043544045,
+            "prior20_high": 119.175
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLY: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLU",
+          "kind": "etf",
+          "sector": "utilities",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 42.39,
+            "sma20": 43.19450000000001,
+            "sma50": 44.21939999999999,
+            "sma200": 44.63487500000003,
+            "atr14": 0.6139714285714274,
+            "relative_return_20": -1.9995379042514583,
+            "return_20": -3.7465940054495883,
+            "relative_volume": 0.7607331265723891,
+            "prior20_high": 44.6501
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XLU: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SMH",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 568.53,
+            "sma20": 563.4460000000001,
+            "sma50": 569.1037999999999,
+            "sma200": 482.16015000000004,
+            "atr14": 13.781428571428576,
+            "relative_return_20": -1.74798735344609,
+            "return_20": -3.49504345464422,
+            "relative_volume": 0.7668035745145902,
+            "prior20_high": 600.3699
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "SMH: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AAPL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 332.27,
+            "sma20": 316.62600000000003,
+            "sma50": 317.9742,
+            "sma200": 284.95335,
+            "atr14": 7.844628571428574,
+            "relative_return_20": 10.595251082525515,
+            "return_20": 8.848194981327385,
+            "relative_volume": 1.207115042563515,
+            "prior20_high": 330.81
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "AAPL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "",
+            "why_not_actionable": "The previously logged product rollout adds no newly reported financial results. Growth expectations and valuation need further substantiation.",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "MSFT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 495.63,
+            "sma20": 494.434,
+            "sma50": 453.6687999999999,
+            "sma200": 431.2575499999999,
+            "atr14": 10.057321428571425,
+            "relative_return_20": 1.4954863056740653,
+            "return_20": -0.2515697955240648,
+            "relative_volume": 0.6840115951803427,
+            "prior20_high": 517.78
+          },
+          "plan": {
+            "entry": 498.98,
+            "stop": 483.89,
+            "target_2r": 529.16,
+            "max_entry_chase": 501.49,
+            "stop_distance_pct": 3.0241693053829812
+          },
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "MSFT: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "Recurring enterprise and cloud demand continue to support the previously documented growth thesis.",
+            "why_not_actionable": "",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "NVDA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 218.29,
+            "sma20": 220.1625,
+            "sma50": 212.5840000000001,
+            "sma200": 197.4727000000001,
+            "atr14": 7.692857142857144,
+            "relative_return_20": -1.3643509116736063,
+            "return_20": -3.1114070128717364,
+            "relative_volume": 0.6946459975977165,
+            "prior20_high": 234.76
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "NVDA: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMZN",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 256.78,
+            "sma20": 258.9605,
+            "sma50": 255.25279999999995,
+            "sma200": 239.79769999999996,
+            "atr14": 5.629285714285713,
+            "relative_return_20": -1.4023423071298668,
+            "return_20": -3.149398408327997,
+            "relative_volume": 0.8294832070808021,
+            "prior20_high": 269.58
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "AMZN: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GOOGL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 338.5,
+            "sma20": 341.05550000000005,
+            "sma50": 347.1792,
+            "sma200": 336.8105500000001,
+            "atr14": 7.321714285714287,
+            "relative_return_20": -0.5222590622156575,
+            "return_20": -2.2693151634137876,
+            "relative_volume": 1.0945578258324076,
+            "prior20_high": 351.6
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "GOOGL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "META",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 648.03,
+            "sma20": 586.4670000000001,
+            "sma50": 600.9022,
+            "sma200": 623.2309,
+            "atr14": 21.324742857142862,
+            "relative_return_20": 10.665152811956645,
+            "return_20": 8.918096710758515,
+            "relative_volume": 0.9612265245894382,
+            "prior20_high": 663.5
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "META: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AVGO",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 361.99,
+            "sma20": 367.49375,
+            "sma50": 383.0853000000002,
+            "sma200": 370.20265000000006,
+            "atr14": 10.38878571428572,
+            "relative_return_20": -11.615157292129142,
+            "return_20": -13.362213393327272,
+            "relative_volume": 0.8351155540190415,
+            "prior20_high": 424.92
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "AVGO: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 516.13,
+            "sma20": 482.03475,
+            "sma50": 496.54840000000013,
+            "sma200": 346.91242500000016,
+            "atr14": 19.039057142857132,
+            "relative_return_20": 8.60405699144885,
+            "return_20": 6.85700089025072,
+            "relative_volume": 1.056718509591607,
+            "prior20_high": 526.79
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "AMD: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "TSLA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 365.44,
+            "sma20": 355.12975,
+            "sma50": 354.4981,
+            "sma200": 398.92545000000007,
+            "atr14": 14.271778571428582,
+            "relative_return_20": 9.242055512893621,
+            "return_20": 7.494999411695491,
+            "relative_volume": 0.7581860322225868,
+            "prior20_high": 384.04
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "TSLA: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "Energy and possible future autonomy remain potential growth drivers.",
+            "why_not_actionable": "No new verified economics support a change in the existing valuation assessment; future businesses remain speculative.",
+            "what_would_change": "Measurable commercial economics and a supported valuation offering adequate prospective return."
+          }
+        },
+        {
+          "symbol": "JPM",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 356.23,
+            "sma20": 356.738,
+            "sma50": 351.7386,
+            "sma200": 319.4364500000001,
+            "atr14": 5.60793571428571,
+            "relative_return_20": -0.14768653877322846,
+            "return_20": -1.8947426399713585,
+            "relative_volume": 0.9646865531540368,
+            "prior20_high": 366.5
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "JPM: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "COST",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 904.77,
+            "sma20": 937.7629999999999,
+            "sma50": 940.7849000000001,
+            "sma200": 960.4721500000003,
+            "atr14": 14.61270714285715,
+            "relative_return_20": -4.187341154091163,
+            "return_20": -5.9343972552892925,
+            "relative_volume": 0.9563799741716594,
+            "prior20_high": 978.7
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "COST: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "WMT",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 107.15,
+            "sma20": 107.2885,
+            "sma50": 110.33060000000002,
+            "sma200": 118.72090000000001,
+            "atr14": 1.8976214285714275,
+            "relative_return_20": -5.658751019437879,
+            "return_20": -7.40580712063601,
+            "relative_volume": 0.6143704084357047,
+            "prior20_high": 116.87
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "WMT: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "V",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 370.45,
+            "sma20": 372.9605,
+            "sma50": 365.2256,
+            "sma200": 334.9533999999999,
+            "atr14": 5.666878571428575,
+            "relative_return_20": 3.1152323222954137,
+            "return_20": 1.3681762210972837,
+            "relative_volume": 0.5379101027263828,
+            "prior20_high": 385.5699
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "V: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MA",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 569.19,
+            "sma20": 580.7605000000001,
+            "sma50": 562.2783999999999,
+            "sma200": 531.0841000000001,
+            "atr14": 8.819721428571427,
+            "relative_return_20": 2.126218065080765,
+            "return_20": 0.3791619638826349,
+            "relative_volume": 0.7716870448449449,
+            "prior20_high": 601.23
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "MA: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CAT",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 818.57,
+            "sma20": 817.231,
+            "sma50": 856.1844,
+            "sma200": 778.5409499999997,
+            "atr14": 20.490642857142866,
+            "relative_return_20": -2.4689513876855584,
+            "return_20": -4.2160074888836885,
+            "relative_volume": 0.7660492763934934,
+            "prior20_high": 887.909
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "CAT: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GE",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 323.66,
+            "sma20": 343.41299999999995,
+            "sma50": 353.54979999999995,
+            "sma200": 321.9924500000002,
+            "atr14": 7.828564285714281,
+            "relative_return_20": -8.506936800310294,
+            "return_20": -10.253992901508424,
+            "relative_volume": 0.6828586648643562,
+            "prior20_high": 375.58
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "GE: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UBER",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 71.67,
+            "sma20": 76.11949999999999,
+            "sma50": 73.928,
+            "sma200": 76.02590000000005,
+            "atr14": 2.512421428571429,
+            "relative_return_20": -3.8011779525709666,
+            "return_20": -5.548234053769097,
+            "relative_volume": 1.5458495282252747,
+            "prior20_high": 82.365
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "UBER: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NFLX",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 77.4,
+            "sma20": 79.444,
+            "sma50": 75.70080000000002,
+            "sma200": 86.24419999999998,
+            "atr14": 2.0989214285714266,
+            "relative_return_20": 0.6734364692963068,
+            "return_20": -1.0736196319018232,
+            "relative_volume": 0.7913439326540599,
+            "prior20_high": 83.6
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "NFLX: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PLTR",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 167.23,
+            "sma20": 175.55500000000004,
+            "sma50": 153.9268,
+            "sma200": 151.51977499999992,
+            "atr14": 7.634964285714288,
+            "relative_return_20": -4.8335818519888445,
+            "return_20": -6.580637953186974,
+            "relative_volume": 0.5192196485882993,
+            "prior20_high": 188.37
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "PLTR: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "LLY",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1115.7,
+            "sma20": 1183.1245,
+            "sma50": 1184.6546000000003,
+            "sma200": 1064.8479499999996,
+            "atr14": 27.77657857142856,
+            "relative_return_20": -5.970065486891196,
+            "return_20": -7.717121588089326,
+            "relative_volume": 0.7437958699396516,
+            "prior20_high": 1292.65
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "LLY: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XOM",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 165.99,
+            "sma20": 162.331,
+            "sma50": 155.17059999999998,
+            "sma200": 145.66885,
+            "atr14": 3.404285714285718,
+            "relative_return_20": 6.3999783633505665,
+            "return_20": 4.652922262152437,
+            "relative_volume": 0.8220743368121574,
+            "prior20_high": 168.64
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "XOM: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 247.72,
+            "sma20": 230.6335,
+            "sma50": 198.6066,
+            "sma200": 201.09724999999997,
+            "atr14": 11.931214285714287,
+            "relative_return_20": 24.764387381925157,
+            "return_20": 23.017331280727028,
+            "relative_volume": 0.5814001250870547,
+            "prior20_high": 268.27
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "CRM: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ORCL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 150.28,
+            "sma20": 149.37800000000001,
+            "sma50": 140.67919999999998,
+            "sma200": 167.6445,
+            "atr14": 7.491071428571429,
+            "relative_return_20": -2.0552739461709657,
+            "return_20": -3.8023300473690957,
+            "relative_volume": 3.3527421631184193,
+            "prior20_high": 170.7
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "ORCL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ADBE",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 252.23,
+            "sma20": 271.481,
+            "sma50": 252.6082,
+            "sma200": 266.604725,
+            "atr14": 10.454749999999995,
+            "relative_return_20": -5.0036555702130165,
+            "return_20": -6.750711671411147,
+            "relative_volume": 2.3043380632002446,
+            "prior20_high": 294.53
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "ADBE: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SHOP",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 128.79,
+            "sma20": 144.48899999999998,
+            "sma50": 135.13260000000002,
+            "sma200": 130.98935,
+            "atr14": 6.23489285714286,
+            "relative_return_20": -17.012800077443146,
+            "return_20": -18.759856178641275,
+            "relative_volume": 1.4359555636992751,
+            "prior20_high": 158.87
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "SHOP: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRWD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 206.74,
+            "sma20": 207.51350000000002,
+            "sma50": 202.5826,
+            "sma200": 144.12390000000002,
+            "atr14": 13.368471428571427,
+            "relative_return_20": -6.584429732172149,
+            "return_20": -8.331485833370278,
+            "relative_volume": 0.6428245540410111,
+            "prior20_high": 233.88
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "CRWD: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PANW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 330.65,
+            "sma20": 353.2515,
+            "sma50": 349.5434,
+            "sma200": 235.9287000000001,
+            "atr14": 19.35380714285714,
+            "relative_return_20": -14.755469151327127,
+            "return_20": -16.502525252525256,
+            "relative_volume": 0.7730964147427635,
+            "prior20_high": 398.88
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "PANW: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SNOW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 328.99,
+            "sma20": 327.6065,
+            "sma50": 303.5094000000001,
+            "sma200": 220.64455,
+            "atr14": 17.712735714285717,
+            "relative_return_20": -0.7397540238833766,
+            "return_20": -2.4868101250815067,
+            "relative_volume": 0.8549289784549855,
+            "prior20_high": 384.56
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "SNOW: stale history ends 2026-09-11, expected 2026-09-14.",
+            "SNOW: potential split/corporate-action discontinuity on 2026-05-28 (overnight change 35.2%); verify adjusted data.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NET",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 306.53,
+            "sma20": 294.09700000000004,
+            "sma50": 285.0996,
+            "sma200": 224.57445000000007,
+            "atr14": 16.28743878571428,
+            "relative_return_20": -5.5981060666826625,
+            "return_20": -7.345162167880792,
+            "relative_volume": 0.7778865511171505,
+            "prior20_high": 332.22
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "NET: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DDOG",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 221.21,
+            "sma20": 229.152,
+            "sma50": 246.53959999999998,
+            "sma200": 177.4112750000001,
+            "atr14": 11.787135714285716,
+            "relative_return_20": -10.554719985068918,
+            "return_20": -12.301776086267047,
+            "relative_volume": 0.4862108652588921,
+            "prior20_high": 257.96
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "DDOG: stale history ends 2026-09-11, expected 2026-09-14.",
+            "DDOG: potential split/corporate-action discontinuity on 2026-05-07 (overnight change 30.8%); verify adjusted data.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MU",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 975.26,
+            "sma20": 962.80675,
+            "sma50": 928.6099000000004,
+            "sma200": 622.0672249999999,
+            "atr14": 44.149835714285736,
+            "relative_return_20": 4.424377306045313,
+            "return_20": 2.677321204847183,
+            "relative_volume": 0.8101003710845536,
+            "prior20_high": 1042.4
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "MU: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QCOM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 181.97,
+            "sma20": 166.85200000000003,
+            "sma50": 168.60179999999994,
+            "sma200": 168.10455000000002,
+            "atr14": 6.679485714285712,
+            "relative_return_20": 12.172445991361368,
+            "return_20": 10.425389890163238,
+            "relative_volume": 1.0740626888652702,
+            "prior20_high": 183.49
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "QCOM: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "INTC",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 102.94,
+            "sma20": 94.60925,
+            "sma50": 98.3523,
+            "sma200": 75.53697499999998,
+            "atr14": 4.581057142857145,
+            "relative_return_20": 0.19770644549804706,
+            "return_20": -1.549349655700083,
+            "relative_volume": 0.93338384735574,
+            "prior20_high": 107.57
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "INTC: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMAT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 456.49,
+            "sma20": 475.55,
+            "sma50": 516.8533999999999,
+            "sma200": 411.80117500000006,
+            "atr14": 15.419278571428574,
+            "relative_return_20": -12.85428336825223,
+            "return_20": -14.601339469450359,
+            "relative_volume": 0.606006160045385,
+            "prior20_high": 563.755
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "AMAT: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DELL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-11",
+          "technical_match": true,
+          "setup_types": [
+            "breakout"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 567.29,
+            "sma20": 479.37350000000004,
+            "sma50": 448.897,
+            "sma200": 261.7564999999999,
+            "atr14": 32.92366428571429,
+            "relative_return_20": 16.4646553408495,
+            "return_20": 14.717599239651369,
+            "relative_volume": 1.700308991709073,
+            "prior20_high": 562.9899
+          },
+          "plan": {
+            "entry": 567.76,
+            "stop": 502.95,
+            "target_2r": 697.38,
+            "max_entry_chase": 575.99,
+            "stop_distance_pct": 11.415034521628858
+          },
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "DELL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "DELL: potential split/corporate-action discontinuity on 2026-05-29 (overnight change 31.8%); verify adjusted data.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Planned stop is invalid or more than 8 percent below entry.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BAC",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 62.69,
+            "sma20": 62.618500000000004,
+            "sma50": 62.004,
+            "sma200": 55.093450000000004,
+            "atr14": 1.0953928571428568,
+            "relative_return_20": -0.43737204671887575,
+            "return_20": -2.184428147917006,
+            "relative_volume": 0.9606032328789849,
+            "prior20_high": 65.225
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "BAC: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GS",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1029.18,
+            "sma20": 1031.4119999999998,
+            "sma50": 1044.5725999999997,
+            "sma200": 953.1020499999998,
+            "atr14": 22.156120214285654,
+            "relative_return_20": 0.4570490996731347,
+            "return_20": -1.2900070015249954,
+            "relative_volume": 0.6517553155976916,
+            "prior20_high": 1063.52
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "GS: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SOFI",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 17.32,
+            "sma20": 18.11025,
+            "sma50": 17.829899999999995,
+            "sma200": 19.8043,
+            "atr14": 0.74535,
+            "relative_return_20": -4.275732829892476,
+            "return_20": -6.022788931090606,
+            "relative_volume": 0.5868127954404067,
+            "prior20_high": 19.495
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "SOFI: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 109.82,
+            "sma20": 112.42275,
+            "sma50": 119.38579999999997,
+            "sma200": 108.61857499999996,
+            "atr14": 3.5630071428571433,
+            "relative_return_20": -11.335650665719166,
+            "return_20": -13.082706766917296,
+            "relative_volume": 1.7820279128224625,
+            "prior20_high": 128.498
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "UAL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 79.91,
+            "sma20": 81.35450000000002,
+            "sma50": 85.44159999999998,
+            "sma200": 74.63119999999995,
+            "atr14": 2.0699285714285725,
+            "relative_return_20": -10.737885307190876,
+            "return_20": -12.484941408389005,
+            "relative_volume": 0.9518391821361373,
+            "prior20_high": 92.21
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "DAL: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BA",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 210.45,
+            "sma20": 213.14950000000005,
+            "sma50": 218.71899999999997,
+            "sma200": 220.73660000000004,
+            "atr14": 4.186535714285711,
+            "relative_return_20": -6.884038415365069,
+            "return_20": -8.631094516563198,
+            "relative_volume": 0.8151027672454424,
+            "prior20_high": 233.58
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "BA: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CVX",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 214.06,
+            "sma20": 206.46900000000005,
+            "sma50": 194.74220000000003,
+            "sma200": 182.34395,
+            "atr14": 4.1216357142857145,
+            "relative_return_20": 10.022220491688781,
+            "return_20": 8.275164390490652,
+            "relative_volume": 0.8507738814108216,
+            "prior20_high": 217.4
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "CVX: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "OXY",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 61.46,
+            "sma20": 60.138999999999996,
+            "sma50": 57.097999999999985,
+            "sma200": 52.79285000000002,
+            "atr14": 1.432857142857143,
+            "relative_return_20": 8.263520572601946,
+            "return_20": 6.516464471403816,
+            "relative_volume": 1.0947410111679656,
+            "prior20_high": 62.24
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "OXY: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UNH",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 379.09,
+            "sma20": 394.1965,
+            "sma50": 409.1662,
+            "sma200": 353.026,
+            "atr14": 10.180314285714283,
+            "relative_return_20": -3.2572039098277883,
+            "return_20": -5.004260011025918,
+            "relative_volume": 1.6422047114383889,
+            "prior20_high": 407.32
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "UNH: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ABBV",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 257.12,
+            "sma20": 258.246,
+            "sma50": 254.50739999999993,
+            "sma200": 228.73605000000006,
+            "atr14": 5.384978571428568,
+            "relative_return_20": 4.258817523732217,
+            "return_20": 2.5117614225340867,
+            "relative_volume": 0.9922088165293466,
+            "prior20_high": 266.965
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "ABBV: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIS",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 106.55,
+            "sma20": 106.92849999999999,
+            "sma50": 101.85440000000003,
+            "sma200": 103.98145000000001,
+            "atr14": 2.2285714285714286,
+            "relative_return_20": 3.416903429442397,
+            "return_20": 1.6698473282442672,
+            "relative_volume": 0.9564903581738822,
+            "prior20_high": 111.87
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "DIS: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NKE",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-11",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 36.8,
+            "sma20": 39.011,
+            "sma50": 41.15699999999999,
+            "sma200": 50.91684999999997,
+            "atr14": 0.9394285714285725,
+            "relative_return_20": -8.997547342895974,
+            "return_20": -10.744603444094103,
+            "relative_volume": 0.686016299534982,
+            "prior20_high": 41.47
+          },
+          "plan": null,
+          "blockers": [
+            "Data download timestamp precedes expected_session.",
+            "Exchange calendar: daily bars were downloaded before the expected session completed.",
+            "NKE: stale history ends 2026-09-11, expected 2026-09-14.",
+            "Market gate failed: Exchange calendar: daily bars were downloaded before the expected session completed. SPY: stale history ends 2026-09-11, expected 2026-09-14. QQQ: stale history ends 2026-09-11, expected 2026-09-14. Session/download timestamps are not valid.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        }
+      ],
+      "notification": {
+        "sent": false,
+        "reason": "No material action change."
+      },
+      "crypto": {
+        "signal_session": "2026-09-13",
+        "scan_generated_at": "2026-09-14T20:53:34.098708Z",
+        "provider": "Alpaca",
+        "feed": "us",
+        "bar_timezone": "UTC",
+        "market_gate": {
+          "passed": true,
+          "benchmark": "BTC/USD"
+        },
+        "data_blockers": [],
+        "observations": [
+          "Alpaca US bars include trades and quote midpoints; this is a venue-specific indicative price series.",
+          "Daily volume and the close-times-volume estimate are Alpaca venue observations, not consolidated worldwide crypto turnover.",
+          "Alpaca quotes show another venue's bid and ask; Robinhood execution price, fees, and available depth can differ."
+        ],
+        "lessons": [
+          "Crypto daily candles close at 00:00 UTC every calendar day; weekends are not missing stock-market sessions.",
+          "A bullish trend alone is not an entry signal. A completed-day setup and sufficient verified execution information are separate requirements.",
+          "A narrow spread does not prove enough order-book depth, and stop orders do not guarantee a maximum loss."
+        ],
+        "sources": [
+          {
+            "title": "Alpaca historical crypto bars API",
+            "url": "https://docs.alpaca.markets/us/reference/cryptobars-1",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Alpaca market-data FAQ: crypto venue and quote-midpoint bars",
+            "url": "https://docs.alpaca.markets/us/docs/market-data-faq",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood trading with your agent",
+            "url": "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood buying and selling crypto: order types and trading hours",
+            "url": "https://robinhood.com/us/en/support/articles/cryptocurrency-investing/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood crypto availability",
+            "url": "https://robinhood.com/us/en/support/articles/coin-availability/",
+            "as_of": "2026-09-12"
+          }
+        ],
+        "candidates": [
+          {
+            "symbol": "BTC/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-13",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": true,
+              "venue_quote_review_passed": true
+            },
+            "metrics": {
+              "close": 76805.278,
+              "sma20": 78481.8295,
+              "sma50": 71159.80331999998,
+              "sma200": 70139.14261958946,
+              "atr14": 2082.4933598622147,
+              "relative_return_20": 0.0,
+              "return_20": -2.755110386889048,
+              "relative_volume": 0.3356021750526771,
+              "prior20_high": 82233.502538071
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. BTC is the crypto benchmark; it is not required to outperform itself.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 79232.23,
+              "ask": 79261.2,
+              "spread_pct": 0.03655672036374147,
+              "observed_at": "2026-09-14T20:52:21.524871Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          },
+          {
+            "symbol": "ETH/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-13",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": true,
+              "venue_quote_review_passed": true
+            },
+            "metrics": {
+              "close": 2476.5845,
+              "sma20": 2470.6505749999997,
+              "sma50": 2186.02781,
+              "sma200": 2057.9342306083277,
+              "atr14": 90.0572794045,
+              "relative_return_20": 2.501112124379734,
+              "return_20": -0.253998262509314,
+              "relative_volume": 0.585766041485234,
+              "prior20_high": 2664.8535
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. The 20-day return exceeds BTC on the same UTC calendar dates.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 2582.08,
+              "ask": 2582.68,
+              "spread_pct": 0.02323438068757925,
+              "observed_at": "2026-09-14T20:52:21.328191Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          }
+        ]
+      }
+    },
     {
       "id": "20260914T204915.283311Z-after_close",
       "checked_at": "2026-09-14T20:49:15.283311Z",
