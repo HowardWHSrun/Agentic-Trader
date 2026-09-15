@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-09-15T16:52:16.059668Z",
+  "updated_at": "2026-09-15T17:06:10.141648Z",
   "timezone": "America/Chicago",
   "schedule": [
     "08:45",
@@ -19,6 +19,2300 @@
     "max_new_entries_per_week": 1
   },
   "entries": [
+    {
+      "id": "20260915T170610.141648Z-intraday",
+      "checked_at": "2026-09-15T17:06:10.141648Z",
+      "check_type": "intraday",
+      "decision": "watch_only",
+      "summary": "No new purchase recommendation. Company stances now distinguish retention from adding: retain Microsoft, Apple and Alphabet without adding; reduce speculative Tesla exposure.",
+      "data_freshness": "Alphabet research is newly compiled from Q2/H1 and FY2025 primary statements, subsequent August financing and a bounded current regulatory check. Earlier crypto report remains explicitly carried forward; no new crypto market check is claimed.",
+      "signal_session": "2026-09-14",
+      "scan_generated_at": "2026-09-15T17:04:58.002394Z",
+      "market_gate": {
+        "passed": false,
+        "benchmarks": {
+          "SPY": {
+            "close": 760.88,
+            "sma50": 758.9384000000001,
+            "sma200": 714.6946999999999,
+            "last_date": "2026-09-14"
+          },
+          "QQQ": {
+            "close": 709.18,
+            "sma50": 710.3379999999999,
+            "sma200": 660.6590000000001,
+            "last_date": "2026-09-14"
+          }
+        }
+      },
+      "data_blockers": [],
+      "observations": [
+        "A current action and valuation completeness answer different questions. A supported retention call does not certify a bargain.",
+        "Alphabet Search and Cloud operating growth supports retention.",
+        "Tesla has the greatest reliance on future business economics in this four-company comparison. Weak current operating profitability and demanding earnings assumptions favor reducing speculative exposure.",
+        "A specific current primary ad-tech remedies order could not be verified. No Google regulatory relief or quantified valuation benefit is assumed."
+      ],
+      "lessons": [
+        "Lead with the action, then the strongest evidence and what would reverse it. Unknown fair value should limit confidence without automatically erasing every useful current judgment.",
+        "A trim can address speculative exposure without claiming an exact intrinsic sell price. Routine checks must not turn one trim into repeated selling."
+      ],
+      "sources": [
+        {
+          "title": "Microsoft FY2026 financial results",
+          "url": "https://www.microsoft.com/en-us/investor/earnings/fy-2026-q4/press-release-webcast",
+          "as_of": "2026-09-15T17:06:10.141648+00:00"
+        },
+        {
+          "title": "Dated company research and decisive stances",
+          "url": "https://howardwhsrun.github.io/Agentic-Trader/research/value-investing-review.html",
+          "as_of": "2026-09-15T17:06:10.141648+00:00"
+        }
+      ],
+      "candidates": [
+        {
+          "symbol": "SPY",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 760.88,
+            "sma20": 766.106,
+            "sma50": 758.9384000000001,
+            "sma200": 714.6946999999999,
+            "atr14": 5.7930214285714134,
+            "relative_return_20": 0.0,
+            "return_20": -1.9913955225803193,
+            "relative_volume": 1.1771064909670017,
+            "prior20_high": 778.8
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QQQ",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 709.18,
+            "sma20": 714.5735,
+            "sma50": 710.3379999999999,
+            "sma200": 660.6590000000001,
+            "atr14": 7.893914285714272,
+            "relative_return_20": -1.0028457949405878,
+            "return_20": -2.994241317520907,
+            "relative_volume": 1.149424565601755,
+            "prior20_high": 734.58
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "IWM",
+          "kind": "etf",
+          "sector": "small_caps",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 287.91,
+            "sma20": 295.7425,
+            "sma50": 296.08719999999994,
+            "sma200": 274.07225,
+            "atr14": 3.061785714285711,
+            "relative_return_20": -3.6397297191516076,
+            "return_20": -5.631125241731927,
+            "relative_volume": 1.4362600343301979,
+            "prior20_high": 305.18
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIA",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 524.49,
+            "sma20": 530.929,
+            "sma50": 529.1268000000001,
+            "sma200": 500.19399999999996,
+            "atr14": 4.543214285714295,
+            "relative_return_20": -0.3018235534256286,
+            "return_20": -2.293219076005948,
+            "relative_volume": 0.8671673498759876,
+            "prior20_high": 538.28
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLK",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 184.28,
+            "sma20": 185.24099999999999,
+            "sma50": 182.80040000000008,
+            "sma200": 161.55702499999995,
+            "atr14": 3.1089285714285677,
+            "relative_return_20": -1.0242352336956584,
+            "return_20": -3.0156307562759777,
+            "relative_volume": 1.3853488324150598,
+            "prior20_high": 191.75
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLF",
+          "kind": "etf",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 57.03,
+            "sma20": 57.64200000000001,
+            "sma50": 57.1426,
+            "sma200": 53.62725,
+            "atr14": 0.6568571428571437,
+            "relative_return_20": 0.04847942904525615,
+            "return_20": -1.9429160935350631,
+            "relative_volume": 1.287060897666255,
+            "prior20_high": 58.6
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLI",
+          "kind": "etf",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 169.93,
+            "sma20": 176.7535,
+            "sma50": 180.04080000000005,
+            "sma200": 171.30364999999998,
+            "atr14": 2.4614285714285677,
+            "relative_return_20": -6.8982082520162145,
+            "return_20": -8.889603774596534,
+            "relative_volume": 1.0895778186751333,
+            "prior20_high": 187.39
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLV",
+          "kind": "etf",
+          "sector": "healthcare",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 167.75,
+            "sma20": 170.90449999999998,
+            "sma50": 166.31719999999999,
+            "sma200": 155.70625000000007,
+            "atr14": 2.2769785714285677,
+            "relative_return_20": 2.2184374058329848,
+            "return_20": 0.2270418832526655,
+            "relative_volume": 1.2254676563518767,
+            "prior20_high": 176.595
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLE",
+          "kind": "etf",
+          "sector": "energy",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 64.53,
+            "sma20": 63.8495,
+            "sma50": 60.365399999999994,
+            "sma200": 55.33327500000003,
+            "atr14": 1.2599642857142856,
+            "relative_return_20": 6.2233451268445705,
+            "return_20": 4.231949604264251,
+            "relative_volume": 1.7633863113421109,
+            "prior20_high": 66.17
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLP",
+          "kind": "etf",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 84.42,
+            "sma20": 85.122,
+            "sma50": 84.9826,
+            "sma200": 83.48770000000002,
+            "atr14": 0.9017999999999985,
+            "relative_return_20": 0.05156511254430507,
+            "return_20": -1.9398304100360142,
+            "relative_volume": 1.0913371427618237,
+            "prior20_high": 87.465
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLY",
+          "kind": "etf",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 112.85,
+            "sma20": 115.72649999999999,
+            "sma50": 115.85339999999998,
+            "sma200": 116.97932499999997,
+            "atr14": 1.4499999999999988,
+            "relative_return_20": -2.5348312117682514,
+            "return_20": -4.526226734348571,
+            "relative_volume": 0.9703464184239847,
+            "prior20_high": 119.175
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLU",
+          "kind": "etf",
+          "sector": "utilities",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 41.82,
+            "sma20": 43.07000000000001,
+            "sma50": 44.14059999999999,
+            "sma200": 44.62110000000003,
+            "atr14": 0.6232571428571418,
+            "relative_return_20": -3.6281034618475765,
+            "return_20": -5.619498984427896,
+            "relative_volume": 1.1905865353362632,
+            "prior20_high": 44.6501
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SMH",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 541.5,
+            "sma20": 561.1300000000001,
+            "sma50": 568.0879999999999,
+            "sma200": 483.17205,
+            "atr14": 14.576428571428576,
+            "relative_return_20": -5.888567731477057,
+            "return_20": -7.879963254057376,
+            "relative_volume": 1.5854639025545814,
+            "prior20_high": 600.3699
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AAPL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 333.08,
+            "sma20": 317.9835,
+            "sma50": 318.4632,
+            "sma200": 285.23915,
+            "atr14": 7.855342857142863,
+            "relative_return_20": 10.865974674673918,
+            "return_20": 8.874579152093599,
+            "relative_volume": 0.9232561422159826,
+            "prior20_high": 336.22
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "",
+            "why_not_actionable": "Premium growth expectations and temporary earnings benefits do not establish a bargain.",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "MSFT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 505.41,
+            "sma20": 494.93449999999996,
+            "sma50": 455.96719999999993,
+            "sma200": 431.4145999999999,
+            "atr14": 10.476135714285707,
+            "relative_return_20": 4.011984945269065,
+            "return_20": 2.0205894226887455,
+            "relative_volume": 1.1102193998174992,
+            "prior20_high": 517.78
+          },
+          "plan": {
+            "entry": 509.96,
+            "stop": 484.95,
+            "target_2r": 559.98,
+            "max_entry_chase": 512.57,
+            "stop_distance_pct": 4.904306220095694
+          },
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "Enterprise and cloud growth support retention.",
+            "why_not_actionable": "",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "NVDA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 210.96,
+            "sma20": 219.45250000000001,
+            "sma50": 212.90660000000008,
+            "sma200": 197.6147500000001,
+            "atr14": 7.765714285714286,
+            "relative_return_20": -4.315230876424825,
+            "return_20": -6.306626399005144,
+            "relative_volume": 1.0356110403236776,
+            "prior20_high": 234.76
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMZN",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 253.54,
+            "sma20": 258.505,
+            "sma50": 255.4702,
+            "sma200": 239.93399999999997,
+            "atr14": 5.7257142857142815,
+            "relative_return_20": -1.4770986712136946,
+            "return_20": -3.468494193794014,
+            "relative_volume": 1.0753555772127217,
+            "prior20_high": 267.56
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GOOGL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 349.39,
+            "sma20": 341.2300000000001,
+            "sma50": 346.9688,
+            "sma200": 336.9646000000001,
+            "atr14": 7.486000000000002,
+            "relative_return_20": 3.000357650362928,
+            "return_20": 1.0089621277826089,
+            "relative_volume": 1.5668369936211586,
+            "prior20_high": 351.6
+          },
+          "plan": {
+            "entry": 349.92,
+            "stop": 326.99,
+            "target_2r": 395.78,
+            "max_entry_chase": 351.79,
+            "stop_distance_pct": 6.552926383173297
+          },
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "Search and Cloud operating growth support retention.",
+            "why_not_actionable": "",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "META",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 665.6,
+            "sma20": 590.2545000000001,
+            "sma50": 602.5562,
+            "sma200": 623.49365,
+            "atr14": 21.714028571428578,
+            "relative_return_20": 14.833643551740284,
+            "return_20": 12.842248029159965,
+            "relative_volume": 1.080277421455433,
+            "prior20_high": 664.24
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AVGO",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 344.72,
+            "sma20": 365.08025000000004,
+            "sma50": 382.7707000000002,
+            "sma200": 370.03645000000006,
+            "atr14": 10.984500000000006,
+            "relative_return_20": -10.291359763813734,
+            "return_20": -12.282755286394053,
+            "relative_volume": 1.268684682244998,
+            "prior20_high": 412.5
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 493.41,
+            "sma20": 480.98574999999994,
+            "sma50": 496.06020000000007,
+            "sma200": 348.30422500000014,
+            "atr14": 20.006914285714277,
+            "relative_return_20": -2.0872218688930744,
+            "return_20": -4.078617391473394,
+            "relative_volume": 1.3769635696036966,
+            "prior20_high": 526.79
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "TSLA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 358.97,
+            "sma20": 355.96475,
+            "sma50": 353.80850000000004,
+            "sma200": 398.63140000000004,
+            "atr14": 13.96535000000001,
+            "relative_return_20": 6.870584466980945,
+            "return_20": 4.879188944400625,
+            "relative_volume": 0.8213299813282694,
+            "prior20_high": 384.04
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "REDUCE SPECULATIVE EXPOSURE. Preserve a smaller participation in potential future businesses.",
+            "why_not_actionable": "",
+            "what_would_change": ""
+          }
+        },
+        {
+          "symbol": "JPM",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 350.13,
+            "sma20": 356.1025000000001,
+            "sma50": 352.05180000000007,
+            "sma200": 319.6971000000001,
+            "atr14": 5.7497214285714255,
+            "relative_return_20": -1.5115258752809946,
+            "return_20": -3.502921397861314,
+            "relative_volume": 1.7275824522997039,
+            "prior20_high": 365.9
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "COST",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 918.91,
+            "sma20": 935.6535,
+            "sma50": 940.1297000000002,
+            "sma200": 960.6361000000002,
+            "atr14": 13.931657142857157,
+            "relative_return_20": -2.398366208769187,
+            "return_20": -4.389761731349506,
+            "relative_volume": 1.0734161651286833,
+            "prior20_high": 978.7
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "WMT",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 109.08,
+            "sma20": 106.97900000000001,
+            "sma50": 110.2754,
+            "sma200": 118.74600000000002,
+            "atr14": 1.87547857142857,
+            "relative_return_20": -3.3786053449480935,
+            "return_20": -5.370000867528413,
+            "relative_volume": 0.8593229479044077,
+            "prior20_high": 116.87
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "V",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 375.28,
+            "sma20": 373.51699999999994,
+            "sma50": 365.4886,
+            "sma200": 335.18329999999986,
+            "atr14": 5.262235714285721,
+            "relative_return_20": 5.047828311266289,
+            "return_20": 3.05643278868597,
+            "relative_volume": 0.9900961491928045,
+            "prior20_high": 385.5699
+          },
+          "plan": {
+            "entry": 377.18,
+            "stop": 364.99,
+            "target_2r": 401.56,
+            "max_entry_chase": 378.49,
+            "stop_distance_pct": 3.2318786786149847
+          },
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MA",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 574.42,
+            "sma20": 581.017,
+            "sma50": 562.9789999999998,
+            "sma200": 531.2669500000002,
+            "atr14": 8.361149999999993,
+            "relative_return_20": 2.8925179733523265,
+            "return_20": 0.9011224507720073,
+            "relative_volume": 0.9425678441495791,
+            "prior20_high": 601.23
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CAT",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 784.0,
+            "sma20": 813.6025,
+            "sma50": 852.5938000000001,
+            "sma200": 779.6629499999998,
+            "atr14": 22.083428571428588,
+            "relative_return_20": -6.4807667058423455,
+            "return_20": -8.472162228422665,
+            "relative_volume": 1.034786797842566,
+            "prior20_high": 887.909
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GE",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 317.56,
+            "sma20": 340.87199999999996,
+            "sma50": 352.3506,
+            "sma200": 322.1100000000001,
+            "atr14": 8.08785,
+            "relative_return_20": -11.804141694423864,
+            "return_20": -13.795537217004183,
+            "relative_volume": 1.3937831466716741,
+            "prior20_high": 375.58
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UBER",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 72.63,
+            "sma20": 75.9535,
+            "sma50": 73.89199999999998,
+            "sma200": 75.97060000000005,
+            "atr14": 2.5068999999999995,
+            "relative_return_20": -2.3799013832788045,
+            "return_20": -4.371296905859124,
+            "relative_volume": 1.1224818758255408,
+            "prior20_high": 82.365
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NFLX",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 80.32,
+            "sma20": 79.552,
+            "sma50": 75.75420000000003,
+            "sma200": 86.11094999999999,
+            "atr14": 2.243214285714283,
+            "relative_return_20": 4.754957446838248,
+            "return_20": 2.763561924257929,
+            "relative_volume": 1.140181422496957,
+            "prior20_high": 83.6
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PLTR",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 173.31,
+            "sma20": 175.51850000000005,
+            "sma50": 154.807,
+            "sma200": 151.57507499999994,
+            "atr14": 7.585671428571432,
+            "relative_return_20": 1.5719517165587171,
+            "return_20": -0.41944380602160214,
+            "relative_volume": 1.0183290390658832,
+            "prior20_high": 188.37
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "LLY",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1138.28,
+            "sma20": 1181.0305,
+            "sma50": 1183.1420000000005,
+            "sma200": 1065.1885499999996,
+            "atr14": 28.28086428571427,
+            "relative_return_20": -1.55727584401405,
+            "return_20": -3.548671366594369,
+            "relative_volume": 0.8637782268071623,
+            "prior20_high": 1292.65
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XOM",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 165.08,
+            "sma20": 162.57999999999998,
+            "sma50": 155.7304,
+            "sma200": 145.9144,
+            "atr14": 3.5785714285714323,
+            "relative_return_20": 5.101951425141227,
+            "return_20": 3.1105559025609075,
+            "relative_volume": 1.005300702869499,
+            "prior20_high": 168.64
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 259.43,
+            "sma20": 233.79450000000003,
+            "sma50": 200.47299999999998,
+            "sma200": 201.2603,
+            "atr14": 12.408357142857144,
+            "relative_return_20": 34.211975513406465,
+            "return_20": 32.220579990826145,
+            "relative_volume": 0.7863712106241428,
+            "prior20_high": 268.27
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ORCL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 144.79,
+            "sma20": 149.09150000000002,
+            "sma50": 140.76959999999997,
+            "sma200": 167.36705,
+            "atr14": 7.780357142857143,
+            "relative_return_20": -1.8154075600665176,
+            "return_20": -3.806803082646837,
+            "relative_volume": 1.577433371727689,
+            "prior20_high": 170.7
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ADBE",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 265.6,
+            "sma20": 271.56,
+            "sma50": 253.5258,
+            "sma200": 266.33907500000004,
+            "atr14": 11.034392857142857,
+            "relative_return_20": 2.589835034738508,
+            "return_20": 0.5984395121581887,
+            "relative_volume": 1.1545369622319153,
+            "prior20_high": 294.53
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SHOP",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 133.89,
+            "sma20": 143.482,
+            "sma50": 135.42120000000006,
+            "sma200": 130.88225,
+            "atr14": 6.364892857142862,
+            "relative_return_20": -11.08397940438197,
+            "return_20": -13.07537492696229,
+            "relative_volume": 0.9998491316959913,
+            "prior20_high": 158.87
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRWD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": true,
+          "setup_types": [
+            "breakout"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 235.38,
+            "sma20": 208.43500000000003,
+            "sma50": 203.4106,
+            "sma200": 144.66727500000002,
+            "atr14": 15.20132857142857,
+            "relative_return_20": 10.48644046381102,
+            "return_20": 8.4950449412307,
+            "relative_volume": 2.443935508878256,
+            "prior20_high": 233.88
+          },
+          "plan": {
+            "entry": 239.38,
+            "stop": 202.74,
+            "target_2r": 312.66,
+            "max_entry_chase": 243.18,
+            "stop_distance_pct": 15.306207703233353
+          },
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Planned stop is invalid or more than 8 percent below entry.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PANW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 373.94,
+            "sma20": 352.735,
+            "sma50": 350.061,
+            "sma200": 236.87895000000012,
+            "atr14": 22.005707142857144,
+            "relative_return_20": -0.6968184936062105,
+            "return_20": -2.6882140161865298,
+            "relative_volume": 1.9841123936843386,
+            "prior20_high": 397.3061
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SNOW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 332.35,
+            "sma20": 327.778,
+            "sma50": 304.95340000000004,
+            "sma200": 221.09635000000003,
+            "atr14": 18.17880714285715,
+            "relative_return_20": 3.0342022841028715,
+            "return_20": 1.0428067615225523,
+            "relative_volume": 0.898022996941579,
+            "prior20_high": 384.56
+          },
+          "plan": null,
+          "blockers": [
+            "SNOW: potential split/corporate-action discontinuity on 2026-05-28 (overnight change 35.2%); verify adjusted data.",
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NET",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 330.36,
+            "sma20": 294.826,
+            "sma50": 286.8586,
+            "sma200": 225.25630000000004,
+            "atr14": 17.36708164285714,
+            "relative_return_20": 6.608534036735758,
+            "return_20": 4.617138514155439,
+            "relative_volume": 1.4724180932795539,
+            "prior20_high": 331.9495
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DDOG",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 230.05,
+            "sma20": 227.88150000000002,
+            "sma50": 245.9334,
+            "sma200": 177.76932500000012,
+            "atr14": 12.002492857142858,
+            "relative_return_20": -7.95536717999542,
+            "return_20": -9.94676270257574,
+            "relative_volume": 0.7742284264855858,
+            "prior20_high": 257.96
+          },
+          "plan": null,
+          "blockers": [
+            "DDOG: potential split/corporate-action discontinuity on 2026-05-07 (overnight change 30.8%); verify adjusted data.",
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MU",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 924.03,
+            "sma20": 960.4252499999999,
+            "sma50": 927.5793000000002,
+            "sma200": 625.5677249999999,
+            "atr14": 43.68447857142859,
+            "relative_return_20": -2.910524902259648,
+            "return_20": -4.901920424839967,
+            "relative_volume": 1.0403851907784363,
+            "prior20_high": 1042.4
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QCOM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 180.15,
+            "sma20": 167.57,
+            "sma50": 168.67979999999997,
+            "sma200": 168.18000000000004,
+            "atr14": 7.174842857142855,
+            "relative_return_20": 10.65295532715238,
+            "return_20": 8.661559804572061,
+            "relative_volume": 1.2586822611919168,
+            "prior20_high": 185.46
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "INTC",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 97.19,
+            "sma20": 94.34375000000001,
+            "sma50": 97.8891,
+            "sma200": 75.84397499999999,
+            "atr14": 4.830107142857145,
+            "relative_return_20": -3.189092282297734,
+            "return_20": -5.180487804878053,
+            "relative_volume": 1.051829393493158,
+            "prior20_high": 106.87
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMAT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 424.21,
+            "sma20": 471.40149999999994,
+            "sma50": 513.2767999999999,
+            "sma200": 412.76767500000017,
+            "atr14": 16.722135714285717,
+            "relative_return_20": -14.367688037496972,
+            "return_20": -16.35908356007729,
+            "relative_volume": 1.2050678175849732,
+            "prior20_high": 539.81
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DELL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 534.28,
+            "sma20": 481.547,
+            "sma50": 451.6962,
+            "sma200": 263.7917999999999,
+            "atr14": 33.91437857142857,
+            "relative_return_20": 10.848183281590916,
+            "return_20": 8.856787759010597,
+            "relative_volume": 1.0386114741062171,
+            "prior20_high": 567.75
+          },
+          "plan": null,
+          "blockers": [
+            "DELL: potential split/corporate-action discontinuity on 2026-05-29 (overnight change 31.8%); verify adjusted data.",
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BAC",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 59.47,
+            "sma20": 62.36749999999999,
+            "sma50": 62.01879999999999,
+            "sma200": 55.13115,
+            "atr14": 1.2761071428571427,
+            "relative_return_20": -5.792757059215303,
+            "return_20": -7.784152581795622,
+            "relative_volume": 2.1490708057268244,
+            "prior20_high": 65.225
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GS",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 988.45,
+            "sma20": 1028.8635,
+            "sma50": 1043.9215999999997,
+            "sma200": 954.0907499999998,
+            "atr14": 24.517548785714244,
+            "relative_return_20": -2.912300769582621,
+            "return_20": -4.90369629216294,
+            "relative_volume": 1.2470951116882232,
+            "prior20_high": 1063.52
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SOFI",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 17.65,
+            "sma20": 18.077999999999996,
+            "sma50": 17.8181,
+            "sma200": 19.75555,
+            "atr14": 0.7492785714285713,
+            "relative_return_20": -1.5341579073185785,
+            "return_20": -3.5255534298988978,
+            "relative_volume": 0.8299241864141957,
+            "prior20_high": 19.495
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 108.96,
+            "sma20": 111.60374999999999,
+            "sma50": 118.89859999999999,
+            "sma200": 108.68527499999995,
+            "atr14": 3.5851428571428587,
+            "relative_return_20": -11.07705828306832,
+            "return_20": -13.06845380564864,
+            "relative_volume": 1.163644911286106,
+            "prior20_high": 127.05
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 79.8,
+            "sma20": 80.87700000000001,
+            "sma50": 85.18259999999998,
+            "sma200": 74.72684999999996,
+            "atr14": 2.114928571428572,
+            "relative_return_20": -8.696908898236689,
+            "return_20": -10.688304420817008,
+            "relative_volume": 1.0645424490462168,
+            "prior20_high": 91.355
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BA",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 210.27,
+            "sma20": 212.0795,
+            "sma50": 218.3946,
+            "sma200": 220.89235,
+            "atr14": 4.072799999999995,
+            "relative_return_20": -7.245881638899366,
+            "return_20": -9.237277161479685,
+            "relative_volume": 0.6584787581052471,
+            "prior20_high": 233.43
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CVX",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 212.17,
+            "sma20": 207.07750000000001,
+            "sma50": 195.6016,
+            "sma200": 182.65605,
+            "atr14": 4.32377857142857,
+            "relative_return_20": 8.076395522580304,
+            "return_20": 6.084999999999985,
+            "relative_volume": 1.2081880153936895,
+            "prior20_high": 217.4
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "OXY",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 61.78,
+            "sma20": 60.30999999999999,
+            "sma50": 57.35539999999998,
+            "sma200": 52.894600000000025,
+            "atr14": 1.4096428571428576,
+            "relative_return_20": 7.851573726829808,
+            "return_20": 5.860178204249489,
+            "relative_volume": 1.2820443727960045,
+            "prior20_high": 62.24
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UNH",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 383.55,
+            "sma20": 393.2875,
+            "sma50": 408.33,
+            "sma200": 353.3485,
+            "atr14": 10.030314285714285,
+            "relative_return_20": -2.534032003369946,
+            "return_20": -4.525427525950265,
+            "relative_volume": 0.9475632622198915,
+            "prior20_high": 406.53
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ABBV",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-14",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 261.77,
+            "sma20": 258.8615,
+            "sma50": 254.52139999999997,
+            "sma200": 228.89735000000005,
+            "atr14": 5.639292857142855,
+            "relative_return_20": 6.926054385724711,
+            "return_20": 4.934658863144392,
+            "relative_volume": 1.0398207840274796,
+            "prior20_high": 266.965
+          },
+          "plan": {
+            "entry": 264.66,
+            "stop": 246.2,
+            "target_2r": 301.58,
+            "max_entry_chase": 266.06,
+            "stop_distance_pct": 6.974986775485529
+          },
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIS",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 108.59,
+            "sma20": 107.0155,
+            "sma50": 102.03620000000002,
+            "sma200": 104.01469999999999,
+            "atr14": 2.141428571428572,
+            "relative_return_20": 3.6198466222527648,
+            "return_20": 1.6284510996724455,
+            "relative_volume": 0.9442249894684277,
+            "prior20_high": 111.87
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NKE",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-14",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 37.05,
+            "sma20": 38.827,
+            "sma50": 41.01619999999999,
+            "sma200": 50.79244999999996,
+            "atr14": 0.9512142857142862,
+            "relative_return_20": -7.043713733496283,
+            "return_20": -9.035109256076602,
+            "relative_volume": 1.054592426451656,
+            "prior20_high": 41.34
+          },
+          "plan": null,
+          "blockers": [
+            "Market gate failed: QQQ: benchmark trend gate is not met.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        }
+      ],
+      "notification": {
+        "sent": false,
+        "reason": "No new-entry opportunity alert."
+      },
+      "crypto": {
+        "signal_session": "2026-09-14",
+        "scan_generated_at": "2026-09-15T16:46:52.772748Z",
+        "provider": "Alpaca",
+        "feed": "us",
+        "bar_timezone": "UTC",
+        "market_gate": {
+          "passed": true,
+          "benchmark": "BTC/USD"
+        },
+        "data_blockers": [],
+        "observations": [
+          "Alpaca US bars include trades and quote midpoints; this is a venue-specific indicative price series.",
+          "Daily volume and the close-times-volume estimate are Alpaca venue observations, not consolidated worldwide crypto turnover.",
+          "Alpaca quotes show another venue's bid and ask; Robinhood execution price, fees, and available depth can differ."
+        ],
+        "lessons": [
+          "Crypto daily candles close at 00:00 UTC every calendar day; weekends are not missing stock-market sessions.",
+          "A bullish trend alone is not an entry signal. A completed-day setup and sufficient verified execution information are separate requirements.",
+          "A narrow spread does not prove enough order-book depth, and stop orders do not guarantee a maximum loss."
+        ],
+        "sources": [
+          {
+            "title": "Alpaca historical crypto bars API",
+            "url": "https://docs.alpaca.markets/us/reference/cryptobars-1",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Alpaca market-data FAQ: crypto venue and quote-midpoint bars",
+            "url": "https://docs.alpaca.markets/us/docs/market-data-faq",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood trading with your agent",
+            "url": "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood buying and selling crypto: order types and trading hours",
+            "url": "https://robinhood.com/us/en/support/articles/cryptocurrency-investing/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood crypto availability",
+            "url": "https://robinhood.com/us/en/support/articles/coin-availability/",
+            "as_of": "2026-09-12"
+          }
+        ],
+        "candidates": [
+          {
+            "symbol": "BTC/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-14",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": true,
+              "venue_quote_review_passed": true
+            },
+            "metrics": {
+              "close": 78177.3755,
+              "sma20": 78464.15827500001,
+              "sma50": 71416.65537999998,
+              "sma200": 70192.61551458946,
+              "atr14": 2179.676467005072,
+              "relative_return_20": 0.0,
+              "return_20": -0.4500457145476755,
+              "relative_volume": 0.6533290138056579,
+              "prior20_high": 82233.502538071
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. BTC is the crypto benchmark; it is not required to outperform itself.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 76316.32,
+              "ask": 76336.2,
+              "spread_pct": 0.026046081649998443,
+              "observed_at": "2026-09-15T16:45:25.524310Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          },
+          {
+            "symbol": "ETH/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-14",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": true,
+              "venue_quote_review_passed": true
+            },
+            "metrics": {
+              "close": 2515.02,
+              "sma20": 2474.2623249999997,
+              "sma50": 2197.2570600000004,
+              "sma200": 2060.3717131083276,
+              "atr14": 94.48313023757139,
+              "relative_return_20": 3.407121347483044,
+              "return_20": 2.9570756329353687,
+              "relative_volume": 0.7720997268027084,
+              "prior20_high": 2664.8535
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. The 20-day return exceeds BTC on the same UTC calendar dates.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and this week's crypto entries have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 2419.148,
+              "ask": 2419.69,
+              "spread_pct": 0.02240207256369882,
+              "observed_at": "2026-09-15T16:45:07.931495Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          }
+        ]
+      }
+    },
     {
       "id": "20260915T165216.059668Z-intraday",
       "checked_at": "2026-09-15T16:52:16.059668Z",

@@ -383,7 +383,7 @@ function currentApproach(compact = false) {
     el("p", { class: "value-intro" }, "An investment decision starts with the business and the price paid for it. Technical levels help decide when to review or act; they do not substitute for valuation."),
     compact ? el("div", { class: "value-path" }, "Business thesis", el("span", { "aria-hidden": "true" }, "→"), "Value range", el("span", { "aria-hidden": "true" }, "→"), "Margin of safety", el("span", { "aria-hidden": "true" }, "→"), "Technical timing") : el("div", { class: "value-grid" }, steps.map(([heading, copy], index) => el("article", {}, el("span", { class: "value-step" }, `0${index + 1}`), el("h3", {}, heading), el("p", {}, copy)))),
     el("p", { class: "value-status" }, "The market scanner supplies technical evidence. Company fundamentals, scenario assumptions, and valuation uncertainty are assessed separately in the company review; no fair value is inferred from a chart pattern."),
-    el("div", { class: "value-review-links" }, el("a", { class: "text-link", href: "research/value-investing-review.html" }, "Read the company valuation review"), compact ? el("a", { class: "text-link", href: "#strategy" }, "Explore the investing approach") : null));
+    el("div", { class: "value-review-links" }, el("a", { class: "text-link", href: "research/value-investing-review.html" }, "Read the company calls and valuation review"), compact ? el("a", { class: "text-link", href: "#strategy" }, "Explore the investing approach") : null));
 }
 
 function strategy() {
