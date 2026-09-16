@@ -191,20 +191,79 @@ def _validate_json(contents, validator, failure):
         raise PublicationError(failure) from None
 
 
+def _observation_time(value):
+    if not isinstance(value, str):
+        raise ValueError("Timestamp required")
+    # Broker RFC3339 fractions may have fewer than three or more than six digits.
+    value = re.sub(r"\.(\d+)(?=Z$|[+-]\d{2}:\d{2}$)",
+                   lambda match: "." + match.group(1)[:6].ljust(6, "0"), value)
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.utcoffset() is None:
+        raise ValueError("Timezone required")
+    return parsed.astimezone(timezone.utc)
+
+
+def _required_portfolio_snapshot(logs, portfolio_source):
+    """Check the latest archived opt-in before any public checkout mutation."""
+    try:
+        entries = []
+        for path in logs.glob("*/*/review.json"):
+            review = json.loads(path.read_text(encoding="utf-8"))
+            entries.append((_observation_time(review["checked_at"]), path.parent.name, path.parent))
+        if not entries:
+            return None
+        checked_at, entry_id, folder = max(entries, key=lambda entry: entry[:2])
+        config_path = folder / "config.json"
+        if not config_path.exists():
+            return None  # Older archives did not require a portfolio opt-in.
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        if config.get("position_management", {}).get("public_portfolio_reporting", {}).get("enabled") is not True:
+            return None
+        if not ENTRY_ID.fullmatch(entry_id):
+            raise ValueError("Invalid entry id")
+        if portfolio_source is None:
+            raise PublicationError("The latest journal requires --portfolio-source for its authorized public portfolio snapshot.")
+        source = json.loads(portfolio_source.read_text(encoding="utf-8"))
+        if _observation_time(source["observed_at"]) != checked_at:
+            raise PublicationError("The required portfolio source timestamp must match the latest journal review; public files were not changed.")
+        return PORTFOLIO_HISTORY + entry_id + ".json"
+    except (OSError, UnicodeError, ValueError, TypeError, KeyError, AttributeError):
+        raise PublicationError("Cannot verify the latest journal's public portfolio requirement and matching source.") from None
+
+
 def _snapshot_path(research, portfolio):
     """Only pair a portfolio observation with the same journal check."""
     try:
         entry = research["entries"][0]
         if not isinstance(entry["id"], str) or not ENTRY_ID.fullmatch(entry["id"]):
             raise ValueError("Invalid entry id")
-        times = [datetime.fromisoformat(value.replace("Z", "+00:00")) for value in (entry["checked_at"], portfolio["updated_at"])]
-        if any(value.tzinfo is None or value.utcoffset() is None for value in times):
-            raise ValueError("Timezone required")
+        times = [_observation_time(value) for value in (entry["checked_at"], portfolio["updated_at"])]
         if times[0] != times[1]:
             return None
         return PORTFOLIO_HISTORY + entry["id"] + ".json"
     except (KeyError, IndexError, TypeError, ValueError, AttributeError):
         raise PublicationError("Cannot safely match portfolio data to the latest research entry.") from None
+
+
+def _prepare_exports(repo, logs, portfolio_source, validator, portfolio_validator, required_snapshot):
+    """Validate both exports and their pairing before replacing public files."""
+    with tempfile.TemporaryDirectory(prefix="agentic-trader-publish-") as staging:
+        target = Path(staging) / "research.json"
+        _run(repo, [sys.executable, str(repo / "scripts" / "export_research.py"), "--logs", str(logs), "--output", str(target)],
+             "The public research export failed validation; no new publish commit was created.")
+        contents = target.read_text(encoding="utf-8")
+        research = _validate_json(contents, validator, "The exported data failed public-data privacy validation.")
+        portfolio_contents, snapshot_path = None, None
+        if portfolio_source is not None:
+            portfolio_target = Path(staging) / "portfolio.json"
+            _run(repo, [sys.executable, str(repo / "scripts" / "export_portfolio.py"), "--input", str(portfolio_source), "--output", str(portfolio_target)],
+                 "The public portfolio export failed validation; no new publish commit was created.")
+            portfolio_contents = portfolio_target.read_text(encoding="utf-8")
+            public_portfolio = _validate_json(portfolio_contents, portfolio_validator, "The exported portfolio failed public-data privacy validation.")
+            snapshot_path = _snapshot_path(research, public_portfolio)
+        if required_snapshot is not None and snapshot_path != required_snapshot:
+            raise PublicationError("The required dated portfolio snapshot does not match the latest journal; public files were not changed.")
+        return contents, portfolio_contents, snapshot_path
 
 
 def _commit_contents(repo, commit, path):
@@ -285,6 +344,7 @@ def publish(logs, state_path, *, portfolio_source=None, _repo=None, _allowed_ori
     }
     try:
         _atomic_state(state_path, state)
+        required_snapshot = _required_portfolio_snapshot(logs, portfolio_source)
         _verify_repository(repo, allowed_origins)
         _verify_worktree(repo, include_portfolio)
         state["commit"] = _head(repo)
@@ -297,39 +357,26 @@ def publish(logs, state_path, *, portfolio_source=None, _repo=None, _allowed_ori
         validator = _validator(repo)
         start_head = _head(repo)
         state["commit"] = start_head
-        _run(
-            repo,
-            [sys.executable, str(repo / "scripts" / "export_research.py"), "--logs", str(logs), "--output", DATA_PATH],
-            "The public research export failed validation; no new publish commit was created.",
-        )
+        required_snapshot = _required_portfolio_snapshot(logs, portfolio_source)
         portfolio_validator = _validator(repo, "portfolio") if include_portfolio else None
-        if include_portfolio:
-            _run(repo, [sys.executable, str(repo / "scripts" / "export_portfolio.py"), "--input", str(portfolio_source), "--output", PORTFOLIO_PATH],
-                 "The public portfolio export failed validation; no new publish commit was created.")
+        contents, portfolio_contents, snapshot_path = _prepare_exports(
+            repo, logs, portfolio_source, validator, portfolio_validator, required_snapshot)
         if _head(repo) != start_head:
             raise PublicationError("The site history changed during export; publication stopped for review.")
         _verify_repository(repo, allowed_origins)
         _verify_worktree(repo, include_portfolio)
-        target = repo / DATA_PATH
-        if not target.is_file():
-            raise PublicationError("The exporter did not create the required public data file.")
-        try:
-            contents = target.read_text(encoding="utf-8")
-        except (OSError, UnicodeError):
-            raise PublicationError("The public data file is not readable UTF-8 JSON.") from None
-        research = _validate_json(contents, validator, "The exported data failed public-data privacy validation.")
-        snapshot_path = None
+        if snapshot_path:
+            snapshot = _safe_data_path(repo, snapshot_path)
+            if snapshot.exists() and snapshot.read_bytes() != portfolio_contents.encode("utf-8"):
+                raise PublicationError("The historical portfolio snapshot already exists with different contents; it will not be overwritten.")
+        _safe_data_path(repo, DATA_PATH).write_text(contents, encoding="utf-8")
         if include_portfolio:
             portfolio_target = _safe_data_path(repo, PORTFOLIO_PATH)
-            portfolio_contents = portfolio_target.read_text(encoding="utf-8")
-            public_portfolio = _validate_json(portfolio_contents, portfolio_validator, "The exported portfolio failed public-data privacy validation.")
-            snapshot_path = _snapshot_path(research, public_portfolio)
+            portfolio_target.write_text(portfolio_contents, encoding="utf-8")
             state["portfolio_history_path"] = snapshot_path
             state["portfolio_history_status"] = "matched" if snapshot_path else "skipped_timestamp_mismatch"
             if snapshot_path:
                 snapshot = _safe_data_path(repo, snapshot_path)
-                if snapshot.exists() and snapshot.read_bytes() != portfolio_target.read_bytes():
-                    raise PublicationError("The historical portfolio snapshot already exists with different contents; it will not be overwritten.")
                 if not snapshot.exists():
                     snapshot.parent.mkdir(parents=True, exist_ok=True)
                     # Exclusive creation prevents replacing an immutable observation.

@@ -288,6 +288,73 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertEqual(self.publish(source)["status"], "unchanged")
 
+    def archive_portfolio_requirement(self, enabled=True, entry_id=ENTRY_ID, checked_at=CHECKED_AT):
+        folder = self.logs / "2026-09-16" / entry_id
+        folder.mkdir(parents=True)
+        (folder / "review.json").write_text(json.dumps({"checked_at": checked_at}))
+        (folder / "config.json").write_text(json.dumps({
+            "position_management": {"public_portfolio_reporting": {"enabled": enabled}},
+        }))
+        return folder
+
+    def assert_publication_untouched(self, source=None):
+        before = {path.relative_to(self.repo): path.read_bytes() for path in (self.repo / "docs").rglob("*") if path.is_file()}
+        head = self.git("rev-parse", "HEAD")
+        remote = self.run_git(self.remote, "rev-parse", "main")
+        state = self.assert_failed(source)
+        after = {path.relative_to(self.repo): path.read_bytes() for path in (self.repo / "docs").rglob("*") if path.is_file()}
+        self.assertEqual(after, before)
+        self.assertEqual(self.git("rev-parse", "HEAD"), head)
+        self.assertEqual(self.run_git(self.remote, "rev-parse", "main"), remote)
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        return state
+
+    def test_authorized_latest_journal_requires_source_before_public_mutation(self):
+        self.install_portfolio_fixture()
+        self.archive_portfolio_requirement()
+        state = self.assert_publication_untouched()
+        self.assertIn("requires --portfolio-source", state["error"])
+
+    def test_authorized_latest_journal_rejects_mismatched_or_invalid_source_time(self):
+        source = self.install_portfolio_fixture("2026-09-16T15:44:59Z")
+        self.archive_portfolio_requirement()
+        for observed_at in ("2026-09-16T15:44:59Z", "2026-09-16T15:45:00", None):
+            with self.subTest(observed_at=observed_at):
+                payload = json.loads(source.read_text())
+                payload["observed_at"] = observed_at
+                source.write_text(json.dumps(payload))
+                before = source.read_bytes()
+                self.assert_publication_untouched(source)
+                self.assertEqual(source.read_bytes(), before)
+
+    def test_authorized_matching_source_guarantees_dated_snapshot(self):
+        source = self.install_portfolio_fixture("2026-09-16T10:45:00.000000000-05:00")
+        self.archive_portfolio_requirement()
+        result = self.publish(source)
+        archive = publisher.PORTFOLIO_HISTORY + ENTRY_ID + ".json"
+        self.assertEqual(result["portfolio_history_path"], archive)
+        self.assertEqual(result["portfolio_history_status"], "matched")
+        self.assertEqual((self.repo / archive).read_bytes(), (self.repo / publisher.PORTFOLIO_PATH).read_bytes())
+        self.assertEqual(self.publish(source)["status"], "unchanged")
+
+    def test_exported_timestamp_mismatch_does_not_replace_any_public_file(self):
+        source = self.install_portfolio_fixture()
+        self.archive_portfolio_requirement()
+        exporter = self.repo / "scripts" / "export_portfolio.py"
+        exporter.write_text(PORTFOLIO_EXPORTER.replace('source["observed_at"]', '"2026-09-16T15:44:59Z"'))
+        self.git("add", "scripts")
+        self.git("commit", "-m", "Deploy fixture exporter with different observation")
+        self.git("push", "origin", "main")
+        state = self.assert_publication_untouched(source)
+        self.assertIn("required dated portfolio snapshot", state["error"])
+
+    def test_requirement_uses_latest_review_time_and_preserves_legacy_opt_out(self):
+        self.install_portfolio_fixture()
+        self.archive_portfolio_requirement(True, "20260916T164500.000000Z-intraday", "2026-09-16T10:45:00-05:00")
+        self.archive_portfolio_requirement(False, ENTRY_ID, "2026-09-16T15:46:00Z")
+        self.assertEqual(self.publish()["status"], "deployment_pending")
+        self.assertFalse((self.repo / publisher.PORTFOLIO_PATH).exists())
+
     def test_portfolio_is_not_exported_without_flag_and_dirty_portfolio_is_blocked(self):
         self.install_portfolio_fixture()
         self.publish()
