@@ -33,6 +33,40 @@ if __name__ == "__main__":
     main()
 '''
 
+ENTRY_ID = "20260916T154500.000000Z-intraday"
+CHECKED_AT = "2026-09-16T15:45:00Z"
+PORTFOLIO_EXPORTER = '''import argparse
+import json
+from pathlib import Path
+
+def validate_public_payload(payload):
+    if not isinstance(payload, dict) or set(payload) != {"updated_at", "positions"}:
+        raise ValueError("Private extra fields rejected")
+    if not isinstance(payload["updated_at"], str) or not isinstance(payload["positions"], list):
+        raise ValueError("Invalid portfolio")
+    for position in payload["positions"]:
+        if set(position) != {"symbol", "quantity", "purchase_price"}:
+            raise ValueError("Private position identifiers rejected")
+        if not all(isinstance(value, str) for value in position.values()):
+            raise ValueError("Expected decimal strings")
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    source = json.loads(args.input.read_text())
+    if set(source) != {"observed_at", "positions"}:
+        raise ValueError("Unexpected private input")
+    payload = {"updated_at": source["observed_at"], "positions": source["positions"]}
+    validate_public_payload(payload)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(payload, sort_keys=True) + "\\n")
+
+if __name__ == "__main__":
+    main()
+'''
+
 
 class PublicationTests(unittest.TestCase):
     def setUp(self):
@@ -68,12 +102,12 @@ class PublicationTests(unittest.TestCase):
     def set_data(self, version):
         (self.logs / "value.json").write_text(json.dumps({"version": version}))
 
-    def publish(self):
-        return publisher.publish(self.logs, self.state, _repo=self.repo, _allowed_origins={str(self.remote)})
+    def publish(self, portfolio_source=None):
+        return publisher.publish(self.logs, self.state, portfolio_source=portfolio_source, _repo=self.repo, _allowed_origins={str(self.remote)})
 
-    def assert_failed(self):
+    def assert_failed(self, portfolio_source=None):
         with self.assertRaises(publisher.PublicationError):
-            self.publish()
+            self.publish(portfolio_source)
         state = json.loads(self.state.read_text())
         self.assertEqual(state["status"], "failed")
         self.assertTrue(state["error"])
@@ -222,6 +256,146 @@ class PublicationTests(unittest.TestCase):
                 with self.assertRaises(publisher.PublicationError):
                     publisher.publish(self.logs, unsafe, _repo=self.repo, _allowed_origins={str(self.remote)})
                 self.assertFalse(unsafe.exists())
+
+    def install_portfolio_fixture(self, observed_at=CHECKED_AT):
+        # A deployed exporter is part of the site baseline, never a data-publish change.
+        exporter = EXPORTER.replace('set(payload) != {"version"}', 'set(payload) not in ({"version"}, {"version", "entries"})')
+        (self.repo / "scripts" / "export_research.py").write_text(exporter)
+        (self.repo / "scripts" / "export_portfolio.py").write_text(PORTFOLIO_EXPORTER)
+        self.git("add", "scripts")
+        self.git("commit", "-m", "Deploy portfolio exporter")
+        self.git("push", "origin", "main")
+        (self.logs / "value.json").write_text(json.dumps({"version": 1, "entries": [{"id": ENTRY_ID, "checked_at": CHECKED_AT}]}))
+        self.portfolio_source = self.base / "private-portfolio.json"
+        self.portfolio_source.write_text(json.dumps({
+            "observed_at": observed_at,
+            "positions": [{"symbol": "MSFT", "quantity": "0.125", "purchase_price": "500.00"}],
+        }))
+        return self.portfolio_source
+
+    def test_optional_portfolio_publishes_only_validated_data_and_matching_snapshot(self):
+        source = self.install_portfolio_fixture("2026-09-16T10:45:00-05:00")
+        source_before = source.read_bytes()
+        result = self.publish(source)
+        archive = publisher.PORTFOLIO_HISTORY + ENTRY_ID + ".json"
+        self.assertEqual(result["portfolio_history_status"], "matched")
+        self.assertEqual(result["portfolio_history_path"], archive)
+        self.assertEqual(set(self.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD").splitlines()),
+                         {publisher.DATA_PATH, publisher.PORTFOLIO_PATH, archive})
+        self.assertEqual((self.repo / archive).read_bytes(), (self.repo / publisher.PORTFOLIO_PATH).read_bytes())
+        self.assertNotIn("observed_at", (self.repo / publisher.PORTFOLIO_PATH).read_text())
+        self.assertEqual(source.read_bytes(), source_before)
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertEqual(self.publish(source)["status"], "unchanged")
+
+    def test_portfolio_is_not_exported_without_flag_and_dirty_portfolio_is_blocked(self):
+        self.install_portfolio_fixture()
+        self.publish()
+        self.assertFalse((self.repo / publisher.PORTFOLIO_PATH).exists())
+        (self.repo / publisher.PORTFOLIO_PATH).write_text('{"private": "not-authorized-by-flag"}')
+        self.assert_failed()
+
+    def test_mismatched_observation_skips_history_without_pairing_wrong_prices(self):
+        source = self.install_portfolio_fixture("2026-09-16T15:44:59Z")
+        result = self.publish(source)
+        self.assertEqual(result["portfolio_history_status"], "skipped_timestamp_mismatch")
+        self.assertIsNone(result["portfolio_history_path"])
+        self.assertFalse((self.repo / publisher.PORTFOLIO_HISTORY).exists())
+        self.assertEqual(set(self.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD").splitlines()),
+                         {publisher.DATA_PATH, publisher.PORTFOLIO_PATH})
+
+    def test_portfolio_exporter_rejection_preserves_private_source_and_remote(self):
+        source = self.install_portfolio_fixture()
+        payload = json.loads(source.read_text())
+        payload["positions"][0]["account_id"] = "synthetic-secret-id"
+        source.write_text(json.dumps(payload))
+        before = source.read_bytes()
+        remote_before = self.run_git(self.remote, "rev-parse", "main")
+        state = self.assert_failed(source)
+        self.assertEqual(source.read_bytes(), before)
+        self.assertEqual(self.run_git(self.remote, "rev-parse", "main"), remote_before)
+        self.assertFalse((self.repo / publisher.PORTFOLIO_PATH).exists())
+        self.assertNotIn("synthetic-secret-id", json.dumps(state))
+
+    def test_portfolio_flag_does_not_allow_unrelated_changes(self):
+        source = self.install_portfolio_fixture()
+        (self.repo / "README.md").write_text("An unrelated site edit")
+        self.git("add", "README.md")
+        self.assert_failed(source)
+
+    def test_portfolio_and_history_symlinks_are_blocked_before_export(self):
+        source = self.install_portfolio_fixture()
+        outside = self.base / "outside"
+        outside.mkdir()
+        for path in (publisher.PORTFOLIO_PATH, publisher.PORTFOLIO_HISTORY.rstrip("/")):
+            with self.subTest(path=path):
+                target = self.repo / path
+                target.symlink_to(outside, target_is_directory=True)
+                self.assert_failed(source)
+                target.unlink()
+        self.assertEqual(list(outside.iterdir()), [])
+
+    def test_existing_portfolio_snapshot_is_never_overwritten(self):
+        source = self.install_portfolio_fixture()
+        self.publish(source)
+        archive = self.repo / (publisher.PORTFOLIO_HISTORY + ENTRY_ID + ".json")
+        before = archive.read_bytes()
+        remote_before = self.run_git(self.remote, "rev-parse", "main")
+        payload = json.loads(source.read_text())
+        payload["positions"][0]["quantity"] = "0.25"
+        source.write_text(json.dumps(payload))
+        self.assert_failed(source)
+        self.assertEqual(archive.read_bytes(), before)
+        self.assertEqual(self.run_git(self.remote, "rev-parse", "main"), remote_before)
+
+    def test_historical_private_portfolio_blocks_retry_after_cleanup(self):
+        source = self.install_portfolio_fixture()
+        target = self.repo / publisher.PORTFOLIO_PATH
+        target.write_text('{"account_id": "synthetic-secret-id"}')
+        self.git("add", publisher.PORTFOLIO_PATH)
+        self.git("commit", "-m", publisher.COMMIT_PREFIX + "invalid portfolio")
+        target.write_text(json.dumps({"updated_at": CHECKED_AT, "positions": []}))
+        self.git("add", publisher.PORTFOLIO_PATH)
+        self.git("commit", "-m", publisher.COMMIT_PREFIX + "cleaned portfolio")
+        state = self.assert_failed(source)
+        self.assertIn("privacy validation", state["error"])
+        self.assertNotIn("synthetic-secret-id", json.dumps(state))
+
+    def test_failed_portfolio_push_can_retry_validated_history_without_flag(self):
+        source = self.install_portfolio_fixture()
+        hook = self.remote / "hooks" / "pre-receive"
+        hook.write_text("#!/bin/sh\nexit 1\n")
+        hook.chmod(0o755)
+        self.assert_failed(source)
+        pending = self.git("rev-parse", "HEAD")
+        hook.unlink()
+        result = self.publish()
+        self.assertEqual(result["status"], "deployment_pending")
+        self.assertEqual(result["commit"], pending)
+
+    def test_pending_snapshot_with_wrong_entry_is_not_pushed(self):
+        source = self.install_portfolio_fixture()
+        self.publish(source)
+        original = self.repo / (publisher.PORTFOLIO_HISTORY + ENTRY_ID + ".json")
+        wrong = self.repo / (publisher.PORTFOLIO_HISTORY + "20260916T154600.000000Z-intraday.json")
+        wrong.write_bytes(original.read_bytes())
+        self.git("add", str(wrong.relative_to(self.repo)))
+        self.git("commit", "-m", publisher.COMMIT_PREFIX + "incorrect historical pairing")
+        state = self.assert_failed(source)
+        self.assertIn("does not match", state["error"])
+
+    def test_private_portfolio_source_inside_site_is_rejected(self):
+        path = self.repo / "private-source.json"
+        with self.assertRaises(publisher.PublicationError):
+            self.publish(path)
+        self.assertFalse(path.exists())
+
+    def test_state_cannot_overwrite_private_portfolio_input(self):
+        source = self.install_portfolio_fixture()
+        before = source.read_bytes()
+        with self.assertRaises(publisher.PublicationError):
+            publisher.publish(self.logs, source, portfolio_source=source, _repo=self.repo, _allowed_origins={str(self.remote)})
+        self.assertEqual(source.read_bytes(), before)
 
 
 if __name__ == "__main__":

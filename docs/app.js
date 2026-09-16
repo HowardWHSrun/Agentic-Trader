@@ -352,6 +352,7 @@ function journalDetail(entry) {
     el("p", { class: "summary-copy" }, textValue(entry.summary)),
     el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)} Recorded scan decisions do not establish intrinsic value or a current buy/sell instruction.`),
     marketQuoteSnapshot(entry),
+    el("section", { class: "detail-section" }, el("h3", {}, "My portfolio at this check"), el("p", { class: "section-note" }, "Purchase costs, shares owned, position values and unrealized gains or losses are recorded separately from market research. Personal snapshots begin with the September 16 portfolio update."), el("a", { class: "text-link", href: `portfolio.html?entry=${encodeURIComponent(entry.id)}` }, "Open this portfolio snapshot ↗")),
     el("section", { class: "detail-section" }, el("h3", {}, "What the check observed"), itemList(entry.observations)),
     el("section", { class: "detail-section" }, el("h3", {}, "Why it cannot be treated as a buy signal"), itemList(entry.data_blockers, "No data blockers recorded. Candidate, account, earnings, and execution checks still apply.")),
     el("section", { class: "detail-section" }, el("h3", {}, "Stock & ETF technical candidates"), el("div", { class: "chips" }, array(entry.candidates).filter((candidate) => candidate.technical_match === true).map((candidate) => el("a", { class: "chip", href: candidateUrl(candidate, entry) }, `${candidate.symbol} ↗`))), array(entry.candidates).some((candidate) => candidate.technical_match === true) ? null : el("p", { class: "section-note" }, "No equity technical matches recorded.")),
@@ -465,7 +466,7 @@ function strategy() {
       el("section", { class: "panel" }, el("h2", {}, "Stocks and crypto need different theses"), itemList(["Stocks represent businesses: value depends on future cash flows and what shareholders retain.", "Bitcoin and Ether do not provide the same claim on corporate cash flows. Keep adoption, token economics, network risks, and valuation uncertainty explicit.", "Crypto remains a separate speculative research view; a technical match does not turn it into a conventional value investment.", "Use no borrowing, options, short selling, or leveraged/inverse products."]))),
     sectionHead("Recorded risk guardrails", "These are the latest exported scanner settings. They do not replace a company-specific investment assessment."),
     el("div", { class: "strategy-grid" }, ruleCards.map(([label, value, copy]) => el("article", { class: "rule-card" }, el("p", { class: "eyebrow" }, label), el("div", { class: "rule-value" }, value), el("p", {}, copy)))),
-    el("p", { class: "section-note" }, "Earlier swing-era logs remain unchanged for learning. Their days-to-weeks horizon, fixed 2R objectives, and entry limits describe that historical process. A weekly entry ceiling is not an investing goal. The public journal excludes private accounts, quantities, and personalized instructions.")];
+    el("p", { class: "section-note" }, "Earlier swing-era logs remain unchanged for learning. Their days-to-weeks horizon, fixed 2R objectives, and entry limits describe that historical process. A weekly entry ceiling is not an investing goal. Market research is separate from the authorized My portfolio snapshots. Account identifiers and personalized trading instructions remain private.")];
 }
 
 function learn() {

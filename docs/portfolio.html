@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-mode="public">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#14292f">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="A dated view of portfolio positions, purchase costs, market values and unrealized gains or losses.">
+  <title>My portfolio · Agentic Trader</title>
+  <link rel="stylesheet" href="portfolio.css">
+  <script src="portfolio.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to portfolio</a>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="brand" href="https://howardwhsrun.github.io/Agentic-Trader/" aria-label="Agentic Trader research desk"><span class="brand-mark" aria-hidden="true">a↗</span><span>Agentic <span class="brand-sub">TRADER</span></span></a>
+      <a class="journal-link" href="https://howardwhsrun.github.io/Agentic-Trader/#journal">← Research journal</a>
+    </div>
+  </header>
+  <main id="main" tabindex="-1">
+    <div class="page-title"><div><p class="eyebrow">THE ACCOUNT VIEW</p><h1>My portfolio</h1><p class="page-subtitle">What you own, what you paid, and where each position stands.</p></div><span id="mode-label" class="badge">Dated snapshot</span></div>
+    <div class="snapshot-toolbar"><p id="snapshot-status" role="status">Opening the portfolio snapshot…</p><div class="toolbar-actions"><button id="refresh-portfolio" class="button" hidden>Refresh snapshot</button><label class="button file-button" for="portfolio-file">Open snapshot file<input id="portfolio-file" type="file" accept="application/json,.json"></label></div></div>
+    <p id="file-note" class="file-note" hidden>A selected file is read only in this tab. It is not uploaded or saved in browser storage.</p>
+    <div id="portfolio-view" aria-live="polite" aria-busy="true"></div>
+  </main>
+  <footer class="page-footer"><strong>AGENTIC TRADER</strong><p>Unrealized gains and losses describe open positions, not lifetime returns. Research and account snapshots are separate records.</p></footer>
+  <script id="portfolio-snapshot" type="application/json"></script>
+  <noscript><p class="noscript">JavaScript is required to display this portfolio snapshot.</p></noscript>
+</body>
+</html>
