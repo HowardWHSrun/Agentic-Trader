@@ -162,6 +162,87 @@ class ExportTests(unittest.TestCase):
             self.assertNotIn(secret, public)
         self.assertEqual(set(data["entries"][0]["candidates"][0]["plan"]), set(exporter.PLAN_FIELDS))
 
+    def test_current_quotes_export_only_dated_public_market_fields(self):
+        review, scan = fixture()
+        review["current_quotes"] = [{
+            "symbol": "XLK", "bid": "125.10", "ask": 125.12,
+            "observed_at": "2031-04-05T10:59:00.733880323-05:00", "source": "Robinhood",
+            "session": "regular", "last_price": 125.11, "last_trade_at": "2031-04-05T15:58:59Z",
+            "prior_close": "124.20", "prior_close_date": "2031-04-04",
+            "quantity": 0.314159, "cost_basis": 9876.54, "account_last4": "6789",
+            "is_holding": True, "token": "synthetic-private-token",
+        }, {"symbol": "NOTKNOWN", "bid": 17, "ask": 18, "observed_at": "2031-04-05T15:59:00Z"}]
+        folder = self.write_archive(review, scan)
+        (folder / "holdings.json").write_text("not valid JSON; never read")
+        (folder / "account.json").write_text("not valid JSON; never read")
+        data = exporter.export_logs(self.logs)
+        quotes = data["entries"][0]["current_quotes"]
+        self.assertEqual(len(quotes), 1)
+        self.assertEqual(set(quotes[0]), set(exporter.CURRENT_QUOTE_FIELDS + exporter.CURRENT_QUOTE_OPTIONAL_FIELDS))
+        self.assertEqual(quotes[0]["observed_at"], "2031-04-05T15:59:00.733880Z")
+        self.assertEqual(quotes[0]["bid"], 125.10)
+        self.assertEqual(quotes[0]["prior_close"], 124.20)
+        for sentinel in ("0.314159", "9876.54", "6789", "is_holding", "synthetic-private-token", "NOTKNOWN"):
+            self.assertNotIn(sentinel, json.dumps(data))
+        self.assertIsNone(exporter.validate_public_payload(data))
+
+    def test_current_quotes_unavailable_duplicates_and_historical_aliases(self):
+        base = {"symbol": "SPY", "bid": 125, "ask": 126,
+                "observed_at": "2031-04-05T15:58:00Z", "source": "Robinhood", "session": "regular"}
+        raw = [base, dict(base, bid=0, ask=float("nan"), observed_at="2031-04-05T15:59:00Z"),
+               {"symbol": "XLK", "bid": 11, "ask": 12,
+                "bid_observed_at": "2031-04-05T15:57:59Z", "ask_observed_at": "2031-04-05T15:58:01Z",
+                "last_trade": 11.5, "trade_observed_at": "2031-04-05T15:58:02Z",
+                "prior_session_close": {"price": "10.50", "date": "2031-04-04", "account_id": "never copied"},
+                "source": "Robinhood. My account has $12345.", "session": "regular"},
+               dict(base, symbol="QQQ"), dict(base, symbol="QQQ", bid=124),
+               dict(base, observed_at="invalid"), dict(base, symbol=["SPY"])]
+        quotes = exporter.export_current_quotes(raw, {"SPY", "XLK", "QQQ"})
+        self.assertEqual([q["symbol"] for q in quotes], ["SPY", "XLK"])
+        self.assertIsNone(quotes[0]["bid"])
+        self.assertIsNone(quotes[0]["ask"])
+        self.assertEqual(quotes[0]["observed_at"], "2031-04-05T15:59:00Z")
+        self.assertEqual(quotes[1]["observed_at"], "2031-04-05T15:57:59Z")
+        self.assertEqual(quotes[1]["last_price"], 11.5)
+        self.assertEqual(quotes[1]["prior_close"], 10.5)
+        self.assertEqual(quotes[1]["source"], "Robinhood.")
+        crossed = exporter.export_current_quotes([dict(base, bid=127)], {"SPY"})[0]
+        self.assertIsNone(crossed["bid"])
+        self.assertIsNone(crossed["ask"])
+        missing_dates = exporter.export_current_quotes([dict(base, last_price=125, prior_close=124)], {"SPY"})[0]
+        self.assertIsNone(missing_dates["last_price"])
+        self.assertIsNone(missing_dates["prior_close"])
+
+    def test_quote_privacy_audit_and_legacy_entries_without_quote_snapshots(self):
+        review, scan = fixture()
+        review["current_quotes"] = [{"symbol": "XLK", "bid": 125, "ask": 126,
+                                     "observed_at": "2031-04-05T15:59:00Z", "source": "Robinhood", "session": "regular"}]
+        self.write_archive(review, scan)
+        good = exporter.export_logs(self.logs)
+        for mutate in (
+            lambda q: q.update(quantity=0.1), lambda q: q.update(bid=0),
+            lambda q: q.update(ask=-1), lambda q: q.update(bid=True),
+            lambda q: q.update(bid=float("inf")), lambda q: q.update(observed_at="2031-04-05"),
+            lambda q: q.update(source="Account ending in 6789"), lambda q: q.update(symbol="NOTKNOWN"),
+            lambda q: q.update(session="my portfolio"), lambda q: q.update(last_price=125),
+        ):
+            bad = copy.deepcopy(good)
+            mutate(bad["entries"][0]["current_quotes"][0])
+            with self.assertRaises(exporter.ExportError):
+                exporter.validate_public_payload(bad)
+        duplicate = copy.deepcopy(good)
+        duplicate["entries"][0]["current_quotes"] *= 2
+        with self.assertRaises(exporter.ExportError):
+            exporter.validate_public_payload(duplicate)
+        for version in (1, 2):
+            legacy = copy.deepcopy(good)
+            legacy["schema_version"] = version
+            legacy["entries"][0].pop("current_quotes")
+            if version == 1:
+                legacy["entries"][0].pop("crypto")
+            self.assertIsNone(exporter.validate_public_payload(legacy))
+        self.assertEqual(exporter.export_current_quotes(None, {"XLK"}), [])
+
     def test_unseen_private_narratives_are_dropped_in_every_prose_field(self):
         sensitive = [
             "Future broker account 91827364 carries $31415.92.",

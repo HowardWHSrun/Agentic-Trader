@@ -3,6 +3,8 @@
 
 Only review.json, scan.json, and an optional crypto.json are read. Holdings/account/config snapshots, markdown,
 positions, sizing amounts and unknown keys never enter the output schema.
+Optional equity current_quotes contain only public market prices and provenance,
+never an indication that a quoted symbol is personally held.
 Free text passes a separate conservative privacy filter: sentences containing
 personal-finance context, identifiers, local paths or credentials are omitted.
 This is a publication boundary, not a lossless archive or a fresh market scan.
@@ -59,6 +61,9 @@ ENTRY_ID = re.compile(r"^\d{8}T\d{6}\.\d{6}Z-(?:baseline_archive|intraday|after_
 SYMBOL = re.compile(r"^[A-Z][A-Z0-9.-]{0,9}$")
 CRYPTO_SYMBOL = re.compile(r"^[A-Z0-9]{2,10}/USD$")
 QUOTE_FIELDS = ("bid", "ask", "spread_pct", "observed_at", "provider", "venue")
+CURRENT_QUOTE_FIELDS = ("symbol", "bid", "ask", "observed_at", "source", "session")
+CURRENT_QUOTE_OPTIONAL_FIELDS = ("last_price", "last_trade_at", "prior_close", "prior_close_date")
+QUOTE_SESSIONS = {"regular", "pre_market", "after_hours", "overnight", "closed", "unknown"}
 
 # Dropping whole sentences avoids leaving a private amount detached from its
 # context. Decimal points and ISO timestamps are not sentence boundaries.
@@ -350,6 +355,84 @@ def export_sources(raw_sources: object) -> list[dict]:
     return sources
 
 
+def positive_price(value: object) -> int | float | None:
+    """Accept finite positive market numbers, including broker decimal strings."""
+    if isinstance(value, str) and re.fullmatch(r"\d+(?:\.\d+)?", value):
+        try:
+            value = float(value)
+        except (ValueError, OverflowError):
+            return None
+    try:
+        clean = number(value)
+    except OverflowError:
+        return None
+    return clean if clean is not None and clean > 0 else None
+
+
+def quote_timestamp(value: object) -> str | None:
+    """Normalize valid RFC3339 quote fractions to Python's microsecond precision."""
+    if not isinstance(value, str) or not re.fullmatch(
+        r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})", value
+    ):
+        return None
+    normalized = re.sub(r"\.(\d+)(?=Z|[+-]\d{2}:\d{2}$)", lambda match: "." + match.group(1)[:6].ljust(6, "0"), value)
+    return iso_timestamp(normalized)
+
+
+def export_current_quotes(value: object, known_symbols: set[str]) -> list[dict]:
+    """Public quote contract: one newest dated observation per known equity.
+
+    Zero, missing, invalid or crossed bid/ask values become null, never zero-price
+    quotes. Invalid observation timestamps omit the row. Older archives may use
+    side timestamps (the earlier valid bid/ask time), last_trade / trade_observed_at
+    or prior_session_close; normalize those explicit market fields only.
+    Optional last/prior fields are paired, and a missing valid timestamp/date
+    suppresses its price. Conflicting observations at the same latest timestamp
+    omit that symbol instead of making an arbitrary choice. [] means unavailable,
+    not evidence of no holdings. No private snapshot is consulted.
+    """
+    latest = {}
+    conflicts = set()
+    for raw in value if isinstance(value, list) else []:
+        if not isinstance(raw, dict) or not isinstance(raw.get("symbol"), str) or raw["symbol"] not in known_symbols:
+            continue
+        observed_at = quote_timestamp(raw.get("observed_at"))
+        if observed_at is None and "observed_at" not in raw:
+            sides = [quote_timestamp(raw.get(key)) for key in ("bid_observed_at", "ask_observed_at")]
+            if all(sides):
+                observed_at = min(sides, key=lambda stamp: datetime.fromisoformat(stamp.replace("Z", "+00:00")))
+        if observed_at is None:
+            continue
+        bid, ask = positive_price(raw.get("bid")), positive_price(raw.get("ask"))
+        if bid is not None and ask is not None and bid > ask:
+            bid = ask = None
+        session = raw.get("session")
+        quote = {
+            "symbol": raw["symbol"], "bid": bid, "ask": ask,
+            "observed_at": observed_at, "source": public_text(raw.get("source")),
+            "session": session if isinstance(session, str) and session in QUOTE_SESSIONS else "unknown",
+        }
+        if any(key in raw for key in ("last_price", "last_trade_at", "last_trade", "trade_observed_at")):
+            stamp = quote_timestamp(raw.get("last_trade_at", raw.get("trade_observed_at")))
+            quote["last_trade_at"] = stamp
+            quote["last_price"] = positive_price(raw.get("last_price", raw.get("last_trade"))) if stamp else None
+        if any(key in raw for key in ("prior_close", "prior_close_date", "prior_session_close")):
+            prior = object_value(raw.get("prior_session_close"))
+            day = iso_date(raw.get("prior_close_date", prior.get("date")))
+            quote["prior_close_date"] = day
+            quote["prior_close"] = positive_price(raw.get("prior_close", prior.get("price"))) if day else None
+        symbol = quote["symbol"]
+        previous = latest.get(symbol)
+        current_time = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+        previous_time = datetime.fromisoformat(previous["observed_at"].replace("Z", "+00:00")) if previous else None
+        if previous is None or current_time > previous_time:
+            latest[symbol] = quote
+            conflicts.discard(symbol)
+        elif current_time == previous_time and quote != previous:
+            conflicts.add(symbol)
+    return [latest[symbol] for symbol in sorted(latest) if symbol not in conflicts]
+
+
 def export_crypto(report: dict) -> dict:
     metadata = object_value(report.get("metadata"))
     gate = object_value(report.get("market_gate"))
@@ -430,6 +513,7 @@ def export_entry(folder: Path) -> dict:
         "lessons": public_lines(review.get("lessons")),
         "sources": export_sources(review.get("sources")),
         "candidates": candidates,
+        "current_quotes": export_current_quotes(review.get("current_quotes"), {item["symbol"] for item in candidates} | {"SPY", "QQQ"}),
         "notification": {
             "sent": boolean(notification.get("sent")),
             "reason": public_text(notification.get("reason")),
@@ -512,6 +596,30 @@ def _validate_public_payload(payload: object) -> None:
             prose(source["title"])
             prose(source["as_of"])
 
+    def current_quotes(value: object, known_symbols: set[str]) -> None:
+        require(isinstance(value, list))
+        seen = set()
+        for quote in value:
+            require(isinstance(quote, dict))
+            optional = set(quote) & set(CURRENT_QUOTE_OPTIONAL_FIELDS)
+            keys(quote, set(CURRENT_QUOTE_FIELDS) | optional)
+            require(isinstance(quote["symbol"], str) and quote["symbol"] in known_symbols and quote["symbol"] not in seen)
+            seen.add(quote["symbol"])
+            stamp(quote["observed_at"], required=True)
+            prose(quote["source"])
+            require(quote["session"] in QUOTE_SESSIONS)
+            for field in ("bid", "ask"):
+                require(quote[field] is None or number(quote[field]) is not None and quote[field] > 0)
+            require(quote["bid"] is None or quote["ask"] is None or quote["bid"] <= quote["ask"])
+            require(("last_price" in optional) == ("last_trade_at" in optional))
+            require(("prior_close" in optional) == ("prior_close_date" in optional))
+            if "last_price" in optional:
+                stamp(quote["last_trade_at"])
+                require(quote["last_price"] is None or number(quote["last_price"]) is not None and quote["last_price"] > 0 and quote["last_trade_at"] is not None)
+            if "prior_close" in optional:
+                day(quote["prior_close_date"])
+                require(quote["prior_close"] is None or number(quote["prior_close"]) is not None and quote["prior_close"] > 0 and quote["prior_close_date"] is not None)
+
     def candidates(value: object, *, crypto: bool = False) -> None:
         require(isinstance(value, list))
         for candidate in value:
@@ -589,7 +697,8 @@ def _validate_public_payload(payload: object) -> None:
             "signal_session", "scan_generated_at", "market_gate", "data_blockers",
             "observations", "lessons", "sources", "candidates", "notification",
         )
-        keys(entry, entry_fields + (("crypto",) if payload["schema_version"] == 2 else ()))
+        # Historical v1/v2 payloads predate the optional quote snapshot.
+        keys(entry, entry_fields + (("crypto",) if payload["schema_version"] == 2 else ()) + (("current_quotes",) if "current_quotes" in entry else ()))
         if payload["schema_version"] == 2:
             crypto_report(entry["crypto"])
         require(isinstance(entry["id"], str) and ENTRY_ID.fullmatch(entry["id"]) is not None)
@@ -616,6 +725,8 @@ def _validate_public_payload(payload: object) -> None:
                 numeric(benchmark[field])
         sources(entry["sources"])
         candidates(entry["candidates"])
+        if "current_quotes" in entry:
+            current_quotes(entry["current_quotes"], {item["symbol"] for item in entry["candidates"]} | {"SPY", "QQQ"})
         keys(entry["notification"], ("sent", "reason"))
         boolish(entry["notification"]["sent"])
         prose(entry["notification"]["reason"])

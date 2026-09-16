@@ -177,6 +177,58 @@ function candidateCard(candidate, entry) {
     el("div", { class: "candidate-bottom" }, el("span", {}, array(candidate.setup_types).map(words).join(" · ") || "Technical review"), el("span", { class: "arrow-circle", "aria-hidden": "true" }, "↗")));
 }
 
+function quoteTime(value) {
+  if (typeof value !== "string" || !Number.isFinite(Date.parse(value))) return "Time not recorded";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", timeZone: "America/Chicago", timeZoneName: "short" }).format(new Date(value));
+}
+
+function quoteCard(quote, entry) {
+  const positivePrice = (value) => numeric(value) && value > 0;
+  const observedTime = Date.parse(quote.observed_at), checkedTime = Date.parse(entry.checked_at), tradeTime = Date.parse(quote.last_trade_at);
+  const hasTrade = positivePrice(quote.last_price) && Number.isFinite(tradeTime);
+  const hasSpread = positivePrice(quote.bid) && positivePrice(quote.ask) && quote.ask >= quote.bid;
+  const olderQuote = Number.isFinite(observedTime) && Number.isFinite(checkedTime) && checkedTime - observedTime > 15 * 60 * 1000;
+  const priorSession = olderQuote && localDate(quote.observed_at) !== localDate(entry.checked_at);
+  const olderTrade = hasTrade && Number.isFinite(checkedTime) && checkedTime - tradeTime > 15 * 60 * 1000;
+  const useTrade = hasTrade && (!olderTrade || !hasSpread || olderQuote);
+  const reference = useTrade ? quote.last_price : hasSpread ? Number(((quote.bid + quote.ask) / 2).toFixed(6)) : null;
+  const referenceLabel = useTrade ? "Last recorded trade" : hasSpread ? "Bid/ask midpoint" : "Reference unavailable";
+  const sessions = { regular: "Regular session", pre_market: "Pre-market", after_hours: "After-hours", overnight: "Overnight", closed: "Market closed", unknown: "Session not recorded" };
+  const names = { MSFT: "Microsoft", AAPL: "Apple", TSLA: "Tesla", GOOGL: "Alphabet · Class A", SPY: "S&P 500 ETF", QQQ: "Nasdaq-100 ETF" };
+  const quoteField = (label, value) => el("div", {}, el("dt", {}, label), el("dd", {}, value));
+  return el("article", { class: "market-quote-card", "aria-label": `${quote.symbol} recorded market prices` },
+    el("div", { class: "market-quote-top" }, el("div", {}, el("h4", {}, quote.symbol), el("p", {}, names[quote.symbol] || "Market quote")), badge(sessions[quote.session] || sessions.unknown)),
+    el("div", { class: "market-quote-reference" }, el("strong", {}, money(reference)), el("span", {}, referenceLabel)),
+    olderQuote || (useTrade && olderTrade) ? el("div", { class: "market-quote-age" }, olderQuote ? badge(priorSession ? "Prior-session quote" : "Older quote at review", "amber") : null, useTrade && olderTrade ? badge("Older trade at review", "amber") : null) : null,
+    el("dl", { class: "market-quote-spread" }, quoteField("Bid", positivePrice(quote.bid) ? money(quote.bid) : "—"), quoteField("Ask", positivePrice(quote.ask) ? money(quote.ask) : "—")),
+    el("dl", { class: "market-quote-meta" },
+      quoteField("Quote time", quoteTime(quote.observed_at)),
+      hasTrade ? quoteField(olderTrade ? "Earlier trade" : "Trade time", `${useTrade ? "" : `${money(quote.last_price)} · `}${quoteTime(quote.last_trade_at)}`) : null,
+      positivePrice(quote.prior_close) && quote.prior_close_date ? quoteField("Prior close", `${money(quote.prior_close)} · ${date(quote.prior_close_date)}`) : null,
+      quoteField("Source", typeof quote.source === "string" && quote.source.trim() ? quote.source : "Not recorded")));
+}
+
+function marketQuoteSnapshot(entry, overviewPanel = false) {
+  const trackedSymbols = ["MSFT", "AAPL", "TSLA", "GOOGL"];
+  const quotes = array(entry.current_quotes).filter((quote) => quote && typeof quote.symbol === "string");
+  const tracked = [
+    ...trackedSymbols.map((symbol) => quotes.find((quote) => quote.symbol === symbol)).filter(Boolean),
+    ...quotes.filter((quote) => ![...trackedSymbols, "SPY", "QQQ"].includes(quote.symbol)),
+  ];
+  const context = quotes.filter((quote) => ["SPY", "QQQ"].includes(quote.symbol));
+  const missing = trackedSymbols.filter((symbol) => !tracked.some((quote) => quote.symbol === symbol));
+  const heading = overviewPanel ? "h2" : "h3";
+  return el("section", { class: `market-quote-snapshot ${overviewPanel ? "panel market-quote-overview" : "detail-section"}`, "aria-label": "Market prices saved with this research check" },
+    el("div", { class: "market-quote-heading" }, el(heading, {}, "Market prices at this check"), badge("Saved snapshot")),
+    el("p", { class: "market-quote-intro" }, `Review: ${quoteTime(entry.checked_at)}. These dated prices are not live. A bid/ask midpoint is a quote reference, not a completed trade.`),
+    !tracked.length && !context.length ? empty("No prices were saved with this check", "This historical entry keeps its original evidence. Quotes from newer checks are never substituted.") : [
+      tracked.length ? el("div", { class: "market-quote-grid" }, tracked.map((quote) => quoteCard(quote, entry))) : null,
+      missing.length ? el("p", { class: "market-quote-missing" }, `No quote recorded for ${missing.join(", ")} in this entry. Newer prices are not substituted.`) : null,
+      context.length ? el("details", { class: "market-quote-context" }, el("summary", {}, "Benchmark quote context · SPY / QQQ"), el("div", { class: "market-quote-grid" }, context.map((quote) => quoteCard(quote, entry)))) : null,
+      el("p", { class: "market-quote-foot" }, "All prices are USD; times use Chicago time (CDT/CST). Older quotes and trades are more than 15 minutes before this review. A fresh bid/ask midpoint replaces an older trade as the reference. Daily closes used in technical research are shown separately."),
+    ]);
+}
+
 function overview(entry) {
   const archived = isArchive(entry), failed = isFailure(entry);
   const heroTitle = failed ? "A pause for better information." : archived ? "A baseline. A disciplined beginning." : entry.decision === "qualified_opportunity" ? "One idea worth a closer look." : entry.decision === "watch_only" ? "Interesting. Not actionable yet." : "Let the business earn its place.";
@@ -187,7 +239,7 @@ function overview(entry) {
     title("The research desk", "Business value first. Technical evidence helps with timing.", date(entry.signal_session)),
     currentApproach(true),
     el("section", { class: "hero" }, el("div", { class: "hero-copy" }, el("p", { class: "eyebrow" }, archived ? "THE OPENING RECORD" : "LATEST TECHNICAL RESEARCH RECORD"), el("h2", {}, heroTitle), el("p", {}, heroCopy), el("a", { class: "text-link", href: entryUrl(entry) }, "Read the full check")), el("div", { class: "hero-graphic", "aria-hidden": "true" }, el("div", { class: "decision-emblem" }, el("span", { class: "emblem-symbol" }, failed ? "!" : "⌁"), el("span", { class: "emblem-text" }, archived ? "BASELINE ARCHIVE" : "STAY SELECTIVE")), el("span", { class: "graphic-caption" }, "PATIENCE IS PART OF THE PROCESS"))),
-    stats(entry), el("div", { class: "two-col" }, benchmarkPanel(entry), recentPanel()),
+    stats(entry), marketQuoteSnapshot(entry, true), el("div", { class: "two-col" }, benchmarkPanel(entry), recentPanel()),
     sectionHead("Equity ideas under the microscope", "The 60-symbol scanner supplies price and trend context. It does not measure fair value.", "Explore the universe", "#universe"),
     el("div", { class: "candidate-grid" }, candidates.length ? candidates.slice(0, 6).map((candidate) => candidateCard(candidate, entry)) : empty("No technical matches in this check", "An empty watchlist is a useful result. There is no need to manufacture a trade.")),
     cryptoSummary(entry),
@@ -299,6 +351,7 @@ function journalDetail(entry) {
     el("h2", {}, decisionLabel(entry)), el("p", { class: "dialog-source-date" }, `${date(entry.checked_at, true)} · Signal session ${date(entry.signal_session)}`),
     el("p", { class: "summary-copy" }, textValue(entry.summary)),
     el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)} Recorded scan decisions do not establish intrinsic value or a current buy/sell instruction.`),
+    marketQuoteSnapshot(entry),
     el("section", { class: "detail-section" }, el("h3", {}, "What the check observed"), itemList(entry.observations)),
     el("section", { class: "detail-section" }, el("h3", {}, "Why it cannot be treated as a buy signal"), itemList(entry.data_blockers, "No data blockers recorded. Candidate, account, earnings, and execution checks still apply.")),
     el("section", { class: "detail-section" }, el("h3", {}, "Stock & ETF technical candidates"), el("div", { class: "chips" }, array(entry.candidates).filter((candidate) => candidate.technical_match === true).map((candidate) => el("a", { class: "chip", href: candidateUrl(candidate, entry) }, `${candidate.symbol} ↗`))), array(entry.candidates).some((candidate) => candidate.technical_match === true) ? null : el("p", { class: "section-note" }, "No equity technical matches recorded.")),
