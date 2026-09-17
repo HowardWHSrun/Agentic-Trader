@@ -85,6 +85,9 @@ PRIVATE_CONTEXT = re.compile(
     re.IGNORECASE,
 )
 SENSITIVE_LITERAL = re.compile(
+    r"(?:\b(?:remaining)?\d+(?:\.\d+)?[ -]?(?:shares?|contracts?|units?)\b)|"
+    r"(?:\b(?:half|quarter)[ -]share\b)|(?:\b(?:retained|remaining|other)\s+half\b)|"
+    r"(?:\b(?:take|sell|trim|retain)\s+(?:a\s+|the\s+)?half\b)|"
     r"(?:\b(?:api[ _-]?key|access[ _-]?token|refresh[ _-]?token|password|passwd|"
     r"secret|authorization|bearer|cookie|credential|session[ _-]?id)\b)|"
     r"(?:\b(?:sk|pk|ghp|github_pat|AKIA)[_-]?[A-Za-z0-9_-]{12,})|"
@@ -535,6 +538,9 @@ def export_logs(logs: Path) -> dict:
     # Rules describe the latest recorded scan, not a copied account/config file.
     # Missing settings remain unknown; historic defaults are never asserted.
     risk_rules = {key: number(latest_rules.get(key)) for key in RISK_RULES}
+    if "max_new_entries_per_day" in latest_rules:
+        risk_rules.pop("max_new_entries_per_week")
+        risk_rules["max_new_entries_per_day"] = number(latest_rules.get("max_new_entries_per_day"))
     payload = {
         "schema_version": 2,
         "updated_at": entries[0]["checked_at"],
@@ -684,7 +690,11 @@ def _validate_public_payload(payload: object) -> None:
     require(type(payload["schema_version"]) is int and payload["schema_version"] in {1, 2})
     require(payload["timezone"] == "America/Chicago")
     require(payload["schedule"] == ["08:45", "10:45", "12:45", "14:45", "15:45"])
-    keys(payload["risk_rules"], RISK_RULES)
+    rule_fields = set(RISK_RULES)
+    if "max_new_entries_per_day" in payload["risk_rules"]:
+        rule_fields.remove("max_new_entries_per_week")
+        rule_fields.add("max_new_entries_per_day")
+    keys(payload["risk_rules"], rule_fields)
     for value in payload["risk_rules"].values():
         numeric(value)
     stamp(payload["updated_at"], required=True)

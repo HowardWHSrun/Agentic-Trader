@@ -97,6 +97,36 @@ def crypto_fixture():
 
 
 class ExportTests(unittest.TestCase):
+    def test_recommendation_quantities_without_spaces_are_private(self):
+        review, scan = fixture()
+        review["candidate_reviews"][0]["what_would_change"] = (
+            "Recommend selling the remaining0.5share below support. "
+            "Take half off near resistance. Retain the other half. "
+            "Support is $123.45."
+        )
+        self.write_archive(review=review, scan=scan)
+        data = exporter.export_logs(self.logs)
+        text = json.dumps(data)
+        self.assertNotIn("remaining0.5share", text)
+        self.assertNotIn("Take half", text)
+        self.assertNotIn("other half", text)
+        self.assertIn("123.45", text)
+
+    def test_daily_entry_ceiling_replaces_weekly_without_private_activity(self):
+        review, scan = fixture()
+        scan["rules"].pop("max_new_entries_per_week")
+        scan["rules"]["max_new_entries_per_day"] = 1
+        scan["rules"]["daily_activity"] = {"entries_count": 987654, "private": True}
+        self.write_archive(review=review, scan=scan)
+        data = exporter.export_logs(self.logs)
+        self.assertEqual(data["risk_rules"]["max_new_entries_per_day"], 1)
+        self.assertNotIn("max_new_entries_per_week", data["risk_rules"])
+        self.assertNotIn("987654", json.dumps(data))
+        exporter.validate_public_payload(data)
+        data["risk_rules"]["max_new_entries_per_week"] = 1
+        with self.assertRaises(exporter.ExportError):
+            exporter.validate_public_payload(data)
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
