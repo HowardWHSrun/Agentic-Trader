@@ -10,7 +10,7 @@ const state = {
 };
 const pageNames = { overview: "Overview", journal: "Research journal", universe: "Market universe", crypto: "Crypto", strategy: "Strategy", learn: "Learn" };
 const decisionNames = {
-  no_opportunity: "No opportunity", watch_only: "Watch only",
+  no_opportunity: "New entries: none qualified", watch_only: "New entries: watchlist only",
   qualified_opportunity: "Recorded scan qualification", monitor_failure: "Check needs attention",
 };
 const checkNames = { baseline_archive: "Archived baseline", intraday: "Intraday review", after_close: "After-close review", failed_check: "Failed check" };
@@ -109,9 +109,9 @@ function entryUrl(entry, page = "journal") { return `#${page}/entry/${encodeURIC
 function candidateUrl(candidate, entry) { return `#${candidate.kind === "crypto" ? "crypto" : "universe"}/symbol/${encodeURIComponent(candidate.symbol)}/entry/${encodeURIComponent(entry.id)}`; }
 function isArchive(entry) { return entry?.check_type === "baseline_archive"; }
 function isFailure(entry) { return entry?.check_type === "failed_check" || entry?.decision === "monitor_failure"; }
-function decisionLabel(entry) { return decisionNames[entry?.decision] || "Decision not recorded"; }
+function decisionLabel(entry) { return ResearchActions.presentation(entry).heading; }
 function badge(text, tone = "") { return el("span", { class: `badge ${tone}` }, text); }
-function decisionBadge(entry) { return badge(decisionLabel(entry), isFailure(entry) ? "red" : entry.decision === "qualified_opportunity" ? "teal" : "amber"); }
+function decisionBadge(entry) { return badge(decisionLabel(entry), ResearchActions.presentation(entry).tone); }
 function sourceState(entry) { return isFailure(entry) ? "Carried-forward data · not a current check" : isArchive(entry) ? "Historical snapshot · not a fresh signal" : "Published snapshot · not a live quote"; }
 function title(text, subtitle, aside) { return el("div", { class: "page-heading" }, el("div", {}, el("h1", {}, text), el("p", {}, subtitle)), aside ? el("span", { class: "heading-count" }, aside) : null); }
 function sectionHead(heading, subtitle, linkText, href) { return el("div", { class: "section-head" }, el("div", {}, el("h2", {}, heading), subtitle ? el("p", {}, subtitle) : null), href ? el("a", { class: "text-link", href }, linkText) : null); }
@@ -119,6 +119,19 @@ function empty(titleText, copy) { return el("div", { class: "empty-card" }, el("
 function itemList(values, fallback = "Nothing recorded for this check.") { return el("ul", { class: "plain-list" }, (array(values).length ? values : [fallback]).map((value) => el("li", {}, textValue(value)))); }
 function ticker(candidate) { return el("span", { class: `ticker-icon ${candidate.kind === "crypto" ? "crypto" : candidate.kind === "stock" ? "stock" : "etf"}`, "aria-hidden": "true" }, String(candidate.symbol || "?").split("/")[0].slice(0, 4)); }
 function textSection(heading, text) { return el("section", { class: "detail-section" }, el("h3", {}, heading), el("p", {}, textValue(text))); }
+
+function recordedActionPanel(entry) {
+  const view = ResearchActions.presentation(entry);
+  if (!view.actions.length) return null;
+  return el("section", { class: "recorded-actions", "aria-label": "Recorded company actions" },
+    el("div", { class: "panel-heading" }, el("h2", {}, "Recorded company actions"), badge(view.entryLabel, entry.decision === "qualified_opportunity" ? "teal" : "amber")),
+    el("p", { class: "section-note" }, `${date(entry.checked_at, true)} · ${view.archived ? "Historical record" : "Published review"}. These are the recommendations recorded at this check; a recommendation is not a completed order.`),
+    el("div", { class: "recorded-action-grid" }, view.actions.map((action) => el("article", { class: `recorded-action ${action.action.toLowerCase()}` },
+      el("div", { class: "panel-heading" }, el("h3", {}, action.symbol), badge(action.label, ["EXIT", "TRIM"].includes(action.action) ? "red" : "teal")),
+      el("p", {}, action.reason),
+      action.condition ? el("details", {}, el("summary", {}, "Condition and next step"), el("p", {}, action.condition)) : null))),
+    el("p", { class: "section-note" }, "Refresh the quote and reconcile any later fills before acting. New-entry screening is shown separately from these company actions."));
+}
 
 function snapshotStatus(entry) {
   if (!entry) {
@@ -140,7 +153,7 @@ function stats(entry) {
   return el("div", { class: "stat-grid" }, [
     ["Equities reviewed", candidates ? candidates.length : "—", "U.S. stocks & unleveraged ETFs", "◎"],
     ["Equity technical matches", techCount, isArchive(entry) || isFailure(entry) ? "At the recorded equity signal session" : "Research candidates, still need checks", "⌁"],
-    ["Recorded scan qualifications", qualified, "Result of that dated check, not a fresh trade call", "↗"],
+    ["New buys qualified", qualified, "Existing-position exits are shown separately", "↗"],
     ["Current holding window", "1–5 days", "Trading sessions · overnight holds allowed", "◇"],
   ].map(([label, value, description, icon]) => el("div", { class: "stat-card" },
     el("div", { class: "stat-label" }, label, el("span", { class: "stat-icon", "aria-hidden": "true" }, icon)),
@@ -231,15 +244,16 @@ function marketQuoteSnapshot(entry, overviewPanel = false) {
 
 function overview(entry) {
   const archived = isArchive(entry), failed = isFailure(entry);
-  const heroTitle = failed ? "A pause for better information." : archived ? "A baseline. A disciplined beginning." : entry.decision === "qualified_opportunity" ? "One idea worth a closer look." : entry.decision === "watch_only" ? "Interesting. Not actionable yet." : "Wait for a setup worth taking.";
+  const actionView = ResearchActions.presentation(entry);
+  const heroTitle = actionView.actions.length ? actionView.heading : failed ? "A pause for better information." : archived ? "A baseline. A disciplined beginning." : entry.decision === "qualified_opportunity" ? "One idea worth a closer look." : "No new buy qualified in this check.";
   const heroCopy = failed ? "This review could not be completed. Any retained signals below are carried forward from an earlier snapshot and must not be treated as current." : archived ? "The starting point for the journal. Historical technical matches are recorded here with their limitations. No fresh opportunity is being called." : textValue(entry.summary);
   const candidates = array(entry.candidates).filter((candidate) => candidate.technical_match === true);
   const lesson = array(entry.lessons)[0];
   return [
     title("The research desk", "Short-term setups, verified catalysts and a clear risk plan.", date(entry.signal_session)),
     currentApproach(true),
-    el("section", { class: "hero" }, el("div", { class: "hero-copy" }, el("p", { class: "eyebrow" }, archived ? "THE OPENING RECORD" : "LATEST TECHNICAL RESEARCH RECORD"), el("h2", {}, heroTitle), el("p", {}, heroCopy), el("a", { class: "text-link", href: entryUrl(entry) }, "Read the full check")), el("div", { class: "hero-graphic", "aria-hidden": "true" }, el("div", { class: "decision-emblem" }, el("span", { class: "emblem-symbol" }, failed ? "!" : "⌁"), el("span", { class: "emblem-text" }, archived ? "BASELINE ARCHIVE" : "STAY SELECTIVE")), el("span", { class: "graphic-caption" }, "PATIENCE IS PART OF THE PROCESS"))),
-    stats(entry), marketQuoteSnapshot(entry, true), el("div", { class: "two-col" }, benchmarkPanel(entry), recentPanel()),
+    el("section", { class: "hero" }, el("div", { class: "hero-copy" }, el("p", { class: "eyebrow" }, archived ? "THE OPENING RECORD" : "LATEST TECHNICAL RESEARCH RECORD"), el("h2", {}, heroTitle), el("p", {}, heroCopy), el("a", { class: "text-link", href: entryUrl(entry) }, "Read the full check")), el("div", { class: "hero-graphic", "aria-hidden": "true" }, el("div", { class: "decision-emblem" }, el("span", { class: "emblem-symbol" }, failed ? "!" : "⌁"), el("span", { class: "emblem-text" }, archived ? "BASELINE ARCHIVE" : actionView.exitCount ? "SELL REVIEW" : actionView.trimCount ? "TRIM REVIEW" : "ENTRY REVIEW")), el("span", { class: "graphic-caption" }, "DATED ACTIONS AND EVIDENCE"))),
+    recordedActionPanel(entry), stats(entry), marketQuoteSnapshot(entry, true), el("div", { class: "two-col" }, benchmarkPanel(entry), recentPanel()),
     sectionHead("Equity ideas under the microscope", "The 60-symbol scanner supplies price, trend and volume context. Each setup still needs a current catalyst and risk review.", "Explore the universe", "#universe"),
     el("div", { class: "candidate-grid" }, candidates.length ? candidates.slice(0, 6).map((candidate) => candidateCard(candidate, entry)) : empty("No technical matches in this check", "An empty watchlist is a useful result. There is no need to manufacture a trade.")),
     cryptoSummary(entry),
@@ -350,7 +364,9 @@ function journalDetail(entry) {
     el("div", { class: "panel-heading" }, badge(checkNames[entry.check_type] || "Research record"), decisionBadge(entry)),
     el("h2", {}, decisionLabel(entry)), el("p", { class: "dialog-source-date" }, `${date(entry.checked_at, true)} · Signal session ${date(entry.signal_session)}`),
     el("p", { class: "summary-copy" }, textValue(entry.summary)),
-    el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)} Recorded scan decisions retain their original framework; they are not fresh buy/sell instructions.`),
+    recordedActionPanel(entry),
+    el("p", { class: "entry-screen-status" }, ResearchActions.presentation(entry).entryLabel),
+    el("div", { class: "note-box" }, `${sourceState(entry)}. ${textValue(entry.data_freshness)} The recorded company actions above and the separate new-entry screen both belong to this timestamp; opening this page does not create a fresh market check.`),
     marketQuoteSnapshot(entry),
     el("section", { class: "detail-section" }, el("h3", {}, "My portfolio at this check"), el("p", { class: "section-note" }, "Purchase costs, shares owned, position values and unrealized gains or losses are recorded separately from market research. Personal snapshots begin with the September 16 portfolio update."), el("a", { class: "text-link", href: `portfolio.html?entry=${encodeURIComponent(entry.id)}` }, "Open this portfolio snapshot ↗")),
     el("section", { class: "detail-section" }, el("h3", {}, "What the check observed"), itemList(entry.observations)),
@@ -375,7 +391,7 @@ function journal() {
   const dateOptions = [["all", "All dates"], ...[...new Set(entries().map((entry) => localDate(entry.checked_at)))].filter((value) => value !== "unknown").map((value) => [value, date(value)])];
   const filters = el("div", { class: "filters" },
     field("Search the journal", "journal-search", el("input", { type: "search", placeholder: "Search symbols, observations, lessons…", value: state.journal.search, oninput: (event) => { state.journal.search = event.target.value; draw(); } }), true),
-    field("Decision", "journal-decision", selectControl([["all", "All decisions"], ...Object.entries(decisionNames)], state.journal.decision, (value) => { state.journal.decision = value; draw(); })),
+    field("New-entry screen", "journal-decision", selectControl([["all", "All decisions"], ...Object.entries(decisionNames)], state.journal.decision, (value) => { state.journal.decision = value; draw(); })),
     field("Check date · Chicago", "journal-date", selectControl(dateOptions, state.journal.date, (value) => { state.journal.date = value; draw(); })));
   draw();
   return [title("Research journal", "An honest record of what was checked, what was missing, and what we learned."), el("div", { class: "note-box" }, "Earlier records retain their original strategy, dates and calls. Since September 17, the current approach uses technical and catalyst evidence over 1–5 trading days. A strategy change does not turn an older scan or value-based HOLD into a new trading signal."), filters, results];
@@ -540,7 +556,7 @@ function openCandidate(candidate, entry) {
       el("section", {}, el("h3", {}, "Technical evidence"), el("div", { class: "filter-list" }, Object.entries(object(candidate.filters)).map(([key, passed]) => el("div", { class: "filter-item" }, el("span", { class: `filter-mark${passed === true ? "" : " fail"}`, "aria-hidden": "true" }, passed === true ? "✓" : "—"), el("span", {}, `${words(key)}: ${passed === true ? "passed" : passed === false ? "not met" : "unknown"}`)))),
       el("p", {}, `20 / 50 / 200-day averages: ${money(metrics.sma20)} / ${money(metrics.sma50)} / ${money(metrics.sma200)}. Prior 20-session high: ${money(metrics.prior20_high)}. Security 20-session return: ${percent(metrics.return_20, true)}.`))),
       textSection("Why it was interesting", review.why_interesting || (candidate.technical_match === true ? `Matched the recorded ${array(candidate.setup_types).map(words).join(" and ") || "technical"} setup. A match alone does not qualify an opportunity.` : "This symbol was part of the research universe but did not match a recorded technical setup.")),
-      textSection("Why it was not actionable", review.why_not_actionable || "No complete, current trade approval is recorded for this symbol. Inspect every blocker below."),
+      textSection("New-entry constraints", review.why_not_actionable || "No complete new-entry clearance is recorded for this symbol. Existing-position actions are separate."),
       el("section", { class: "detail-section" }, el("h3", {}, "All recorded blockers"), itemList(candidate.blockers, "No candidate blockers recorded; this alone is not proof of a complete account or execution review.")),
       textSection("What would change the decision", review.what_would_change || "A fresh valid setup, reliable current data, verified events, and a complete account/execution review that fits all risk limits."),
       textSection("Sizing review", candidate.sizing_status === "within_limits" ? "Recorded as within limits for the reviewed scenario. Recheck after any price, holding, order, or risk-setting change; no private size is published here." : candidate.sizing_status === "does_not_fit" ? "The recorded scenario does not fit the applicable sizing constraints." : "Not evaluated. No position size or account capacity is implied."),
