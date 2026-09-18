@@ -1,6 +1,6 @@
 # Agentic Trader
 
-A browsable investing research journal: business value guides the approach, technical evidence helps with timing, and dated records show what was known.
+A browsable short-term trading research journal: dated technical and catalyst evidence, clear actions, defined risk and a 1–5-session review clock.
 
 **[Open the research dashboard](https://howardwhsrun.github.io/Agentic-Trader/)**
 
@@ -8,7 +8,7 @@ The dashboard has a [My portfolio view](https://howardwhsrun.github.io/Agentic-T
 
 The current coverage is 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. The scanner retains its recorded position/risk guardrails. Its technical results do not establish fair value or an investment recommendation. Crypto has no executable sizing or qualified alerts until its broker and event checks can be established.
 
-The current Strategy view explains thesis review, bear/base/bull valuation scenarios, cash-flow growth, margin of safety, and technical review zones. The separately published company review presents dated sources and valuation assumptions; the technical scanner itself does not calculate intrinsic value. Earlier swing-era logs and their hypothetical entry/stop/2R scenarios remain historical records; chart resistance is not an automatic current exit instruction.
+The current Strategy view explains confirmed entries, structural invalidation, real resistance, risk sizing and fixed review deadlines. The first successful regular-session check sends a daily action brief, with prompt material updates and at most one afternoon reminder for an unresolved sale. Other unchanged checks remain in the journal. Earlier value-investing studies stay dated historical background.
 
 ## What is published
 
