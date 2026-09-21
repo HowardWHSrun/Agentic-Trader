@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-09-18T18:09:37.891486Z",
+  "updated_at": "2026-09-21T14:50:04.718611Z",
   "timezone": "America/Chicago",
   "schedule": [
     "08:45",
@@ -19,6 +19,2613 @@
     "max_new_entries_per_day": 1
   },
   "entries": [
+    {
+      "id": "20260921T145004.718611Z-intraday",
+      "checked_at": "2026-09-21T14:50:04.718611Z",
+      "check_type": "intraday",
+      "decision": "watch_only",
+      "summary": "WAIT — fresh evidence supports no new BUY. The daily continuation screen passes its data and market gates; affordable intraday ideas still need confirmation and room to real resistance.",
+      "data_freshness": "Sixty complete split-adjusted equity histories through September 18 were refreshed and cross-checked against SIP closes. Intraday technical evidence uses completed regular bars through 14:40 UTC, September 21. New timed quotes accompany this review. Crypto evidence contains completed UTC daily bars through September 20; earlier venue-quote times remain explicit.",
+      "signal_session": "2026-09-18",
+      "scan_generated_at": "2026-09-21T14:50:04.816764Z",
+      "market_gate": {
+        "passed": true,
+        "benchmarks": {
+          "SPY": {
+            "close": 761.69,
+            "sma50": 759.7310000000001,
+            "sma200": 716.28155,
+            "last_date": "2026-09-18"
+          },
+          "QQQ": {
+            "close": 721.45,
+            "sma50": 709.9511999999999,
+            "sma200": 662.59925,
+            "last_date": "2026-09-18"
+          }
+        }
+      },
+      "data_blockers": [],
+      "observations": [
+        "Robinhood access is restored. Stop previous sale reminders.",
+        "The daily screen has five technical matches: QQQ, SMH, NVDA, AMD and MU. These are technical research matches, not buy calls.",
+        "SPY and QQQ passed the completed-daily market gate. Completed intraday bars also recovered above their session typical-price VWAP approximations; this is bar-derived context, not trade-exact VWAP or a tested intraday engine.",
+        "PLTR and INTC remain WATCH. SOFI and XLE are PASS on failed intraday strength. XLK has insufficient room to nearby resistance; September 21 is also a scheduled distribution date for XLK and XLE, so cross-session prices require adjustment awareness.",
+        "Issuer calendars and tentative earnings metadata show no verified scheduled PLTR or INTC earnings through September 28. Exact future-quarter dates remain unconfirmed; current news coverage has stated gaps. Recheck at any prospective trigger.",
+        "Intel verified a September 21 Googlebook product launch; no quantified financial uplift or finalized SK hynix production agreement was established. Do not infer the full cause of the opening gap.",
+        "BTC and ETH remain WATCH in a separate research-only lane. Completed September 20 bars did not confirm a breakout or pullback reclaim, and participation was below the daily threshold.",
+        "At most one new entry today. Whole-share stock stops are a documented regular-session order type; no stop has been submitted or accepted, and overnight gap risk remains."
+      ],
+      "lessons": [
+        "A verified sale completes an old exit objective. Recommendation text must not remain an active sale alert after the quantity reaches zero.",
+        "A mathematically attractive reward/risk number is invalid if its target skips nearer resistance. Check every intervening confirmed rebound high before treating a price map as actionable.",
+        "A conditional reclaim is not a falling-price limit buy. Confirm a completed bar, a supported higher low, matched-time volume and renewed resistance room.",
+        "Whole-share affordability and valid structural stops are practical constraints; do not tighten an exit merely to force a larger size.",
+        "The monitoring policy is unvalidated as a predictive strategy. Sampled checks cannot promise instant exits or a hard overnight loss limit."
+      ],
+      "sources": [
+        {
+          "title": "Robinhood timed equity market quotes and complete OHLCV histories",
+          "url": "https://robinhood.com/",
+          "as_of": "2026-09-21T14:48:57.483Z"
+        },
+        {
+          "title": "Skhynix Response",
+          "url": "https://news.skhynix.com/en/fact-10/",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Intel Events",
+          "url": "https://www.intc.com/news-events/ir-calendar",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Pltr Events",
+          "url": "https://investors.palantir.com/events.html",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Fed Calendar",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Bea Calendar",
+          "url": "https://www.bea.gov/news/schedule",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Bls Calendar",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Census Calendar",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Rh Stop",
+          "url": "https://robinhood.com/us/en/support/articles/stop-order/",
+          "as_of": "2026-09-21T14:45:21Z"
+        },
+        {
+          "title": "Rh Extended",
+          "url": "https://robinhood.com/us/en/support/articles/extendedhours-trading/",
+          "as_of": "2026-09-21T14:45:21Z"
+        }
+      ],
+      "candidates": [
+        {
+          "symbol": "SPY",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 761.69,
+            "sma20": 764.3034999999999,
+            "sma50": 759.7310000000001,
+            "sma200": 716.28155,
+            "atr14": 6.545285714285707,
+            "relative_return_20": 0.0,
+            "return_20": -0.11932861264095651,
+            "relative_volume": 1.6419109326911128,
+            "prior20_high": 775.3
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QQQ",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 721.45,
+            "sma20": 713.2355,
+            "sma50": 709.9511999999999,
+            "sma200": 662.59925,
+            "atr14": 8.319271428571426,
+            "relative_return_20": 1.599080486946447,
+            "return_20": 1.4797518743054905,
+            "relative_volume": 1.5827783334127654,
+            "prior20_high": 724.125
+          },
+          "plan": {
+            "entry": 721.74,
+            "stop": 699.16,
+            "target_2r": 766.9,
+            "max_entry_chase": 723.81,
+            "stop_distance_pct": 3.128550447529581
+          },
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "does_not_fit",
+          "review": null
+        },
+        {
+          "symbol": "IWM",
+          "kind": "etf",
+          "sector": "small_caps",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 284.1,
+            "sma20": 292.48800000000006,
+            "sma50": 295.14279999999997,
+            "sma200": 274.8311999999999,
+            "atr14": 3.5314285714285796,
+            "relative_return_20": -4.439410931149146,
+            "return_20": -4.558739543790102,
+            "relative_volume": 1.5440288420216757,
+            "prior20_high": 300.39
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIA",
+          "kind": "etf",
+          "sector": "broad_market",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 515.88,
+            "sma20": 528.019,
+            "sma50": 528.4304000000002,
+            "sma200": 501.06725000000006,
+            "atr14": 5.39499999999999,
+            "relative_return_20": -2.0853689286378763,
+            "return_20": -2.2046975412788328,
+            "relative_volume": 0.809129270669641,
+            "prior20_high": 537.73
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLK",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 189.6,
+            "sma20": 185.37349999999998,
+            "sma50": 183.11700000000005,
+            "sma200": 162.44164999999998,
+            "atr14": 2.9339285714285666,
+            "relative_return_20": 3.669301305158712,
+            "return_20": 3.5499726925177555,
+            "relative_volume": 1.094345157982333,
+            "prior20_high": 189.08
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "WATCH. Intraday benchmark recovery is positive, but nearby resistance restricts the trade.",
+            "why_not_actionable": "The local high price $193.185 and historical resistance price $194.30 leave insufficient room relative to the confirmed pivot price $192.14 with a sensible buffer and execution allowance. September 21 is a scheduled distribution date.",
+            "what_would_change": "Require a new confirmed base and at least 2:1 reward/risk before first resistance. Reconcile cross-session distribution adjustments."
+          }
+        },
+        {
+          "symbol": "XLF",
+          "kind": "etf",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 55.86,
+            "sma20": 57.3755,
+            "sma50": 57.178999999999995,
+            "sma200": 53.69129999999999,
+            "atr14": 0.7590000000000009,
+            "relative_return_20": -1.794631001055269,
+            "return_20": -1.9139596136962256,
+            "relative_volume": 1.1832262950271564,
+            "prior20_high": 58.6
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLI",
+          "kind": "etf",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 169.75,
+            "sma20": 173.98899999999998,
+            "sma50": 178.9778,
+            "sma200": 171.636,
+            "atr14": 2.433571428571424,
+            "relative_return_20": -5.454460117402993,
+            "return_20": -5.573788730043949,
+            "relative_volume": 1.1876890776378048,
+            "prior20_high": 182.03
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLV",
+          "kind": "etf",
+          "sector": "healthcare",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 168.39,
+            "sma20": 170.2935,
+            "sma50": 166.75239999999997,
+            "sma200": 155.91875000000005,
+            "atr14": 2.218171428571426,
+            "relative_return_20": -2.200991591547219,
+            "return_20": -2.3203202041881754,
+            "relative_volume": 1.5546469946109553,
+            "prior20_high": 175.82
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLE",
+          "kind": "etf",
+          "sector": "energy",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 64.31,
+            "sma20": 64.10749999999999,
+            "sma50": 61.176599999999986,
+            "sma200": 55.72787500000003,
+            "atr14": 1.3294642857142855,
+            "relative_return_20": 0.9977599851899721,
+            "return_20": 0.8784313725490156,
+            "relative_volume": 0.9767099430337199,
+            "prior20_high": 66.17
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "PASS. The completed 09:40 Chicago bar closed at price $62.825 below approximate session VWAP and the opening price $63.19.",
+            "why_not_actionable": "Participation above baseline accompanied weakness; no verified reclaim is established. September 21 is a scheduled distribution date.",
+            "what_would_change": "Require a fresh base and completed-bar reclaim, with distribution-aware levels and sufficient room to real resistance."
+          }
+        },
+        {
+          "symbol": "XLP",
+          "kind": "etf",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 82.8,
+            "sma20": 84.68350000000001,
+            "sma50": 84.91860000000001,
+            "sma200": 83.57630000000003,
+            "atr14": 0.8757285714285702,
+            "relative_return_20": -2.834257885249336,
+            "return_20": -2.9535864978902926,
+            "relative_volume": 1.0869343470451789,
+            "prior20_high": 87.465
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLY",
+          "kind": "etf",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 111.03,
+            "sma20": 114.48150000000001,
+            "sma50": 115.37199999999999,
+            "sma200": 116.84307499999997,
+            "atr14": 1.611071428571427,
+            "relative_return_20": -4.722975124074857,
+            "return_20": -4.842303736715814,
+            "relative_volume": 0.9297491099816213,
+            "prior20_high": 118.79
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XLU",
+          "kind": "etf",
+          "sector": "utilities",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 41.1,
+            "sma20": 42.542000000000016,
+            "sma50": 43.8194,
+            "sma200": 44.55340000000003,
+            "atr14": 0.6207642857142852,
+            "relative_return_20": -5.980739927455003,
+            "return_20": -6.100068540095959,
+            "relative_volume": 1.075390358900656,
+            "prior20_high": 44.26
+          },
+          "plan": null,
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SMH",
+          "kind": "etf",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 573.0,
+            "sma20": 557.8235000000001,
+            "sma50": 564.784,
+            "sma200": 487.3136500000001,
+            "atr14": 14.451742857142847,
+            "relative_return_20": 1.9588380767838642,
+            "return_20": 1.8395094641429077,
+            "relative_volume": 0.9702438319582418,
+            "prior20_high": 580.57
+          },
+          "plan": {
+            "entry": 580.82,
+            "stop": 536.28,
+            "target_2r": 669.9,
+            "max_entry_chase": 584.43,
+            "stop_distance_pct": 7.668468716641989
+          },
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "does_not_fit",
+          "review": null
+        },
+        {
+          "symbol": "AAPL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 336.13,
+            "sma20": 322.64,
+            "sma50": 320.14219999999995,
+            "sma200": 286.3412,
+            "atr14": 7.7001214285714354,
+            "relative_return_20": 8.095557330919146,
+            "return_20": 7.976228718278189,
+            "relative_volume": 2.1015633570050873,
+            "prior20_high": 338.34
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MSFT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 493.78,
+            "sma20": 497.50999999999993,
+            "sma50": 464.6805999999999,
+            "sma200": 431.6031499999998,
+            "atr14": 9.864171428571419,
+            "relative_return_20": 2.744289643504516,
+            "return_20": 2.6249610308635596,
+            "relative_volume": 1.9737947056960952,
+            "prior20_high": 517.78
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NVDA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 222.27,
+            "sma20": 218.87850000000003,
+            "sma50": 214.27260000000007,
+            "sma200": 198.37815000000003,
+            "atr14": 5.936785714285713,
+            "relative_return_20": 2.6187521773170075,
+            "return_20": 2.499423564676051,
+            "relative_volume": 1.4659046846230803,
+            "prior20_high": 234.76
+          },
+          "plan": {
+            "entry": 222.74,
+            "stop": 208.33,
+            "target_2r": 251.56,
+            "max_entry_chase": 224.22,
+            "stop_distance_pct": 6.469426236868097
+          },
+          "blockers": [
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "does_not_fit",
+          "review": null
+        },
+        {
+          "symbol": "AMZN",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 253.71,
+            "sma20": 256.1335,
+            "sma50": 255.8398,
+            "sma200": 240.30074999999997,
+            "atr14": 5.572857142857138,
+            "relative_return_20": -2.341168869193655,
+            "return_20": -2.4604974818346115,
+            "relative_volume": 1.6506496512735198,
+            "prior20_high": 267.56
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GOOGL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 349.54,
+            "sma20": 341.7865,
+            "sma50": 345.5772,
+            "sma200": 337.49589999999995,
+            "atr14": 8.164571428571431,
+            "relative_return_20": 2.7230213358041433,
+            "return_20": 2.603692723163187,
+            "relative_volume": 1.987819335402192,
+            "prior20_high": 351.6
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "META",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 665.75,
+            "sma20": 614.61,
+            "sma50": 607.3790000000001,
+            "sma200": 624.1584500000001,
+            "atr14": 21.78831428571429,
+            "relative_return_20": 22.08953911774326,
+            "return_20": 21.970210505102305,
+            "relative_volume": 1.5337960364363687,
+            "prior20_high": 685.31
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AVGO",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 357.61,
+            "sma20": 359.31775,
+            "sma50": 379.7549000000001,
+            "sma200": 369.0967000000001,
+            "atr14": 11.030807142857144,
+            "relative_return_20": -1.6442623001958867,
+            "return_20": -1.7635909128368432,
+            "relative_volume": 1.7187830518625904,
+            "prior20_high": 376.59
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "AMD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": true,
+          "setup_types": [
+            "breakout"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 559.82,
+            "sma20": 490.753,
+            "sma50": 495.8467000000001,
+            "sma200": 354.6239750000002,
+            "atr14": 22.32691428571427,
+            "relative_return_20": 19.368244909197607,
+            "return_20": 19.24891629655665,
+            "relative_volume": 1.7484101834998151,
+            "prior20_high": 551.42
+          },
+          "plan": {
+            "entry": 559.92,
+            "stop": 478.09,
+            "target_2r": 723.58,
+            "max_entry_chase": 565.5,
+            "stop_distance_pct": 14.614587798256894
+          },
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Planned stop is invalid or more than 8 percent below entry.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "TSLA",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 364.27,
+            "sma20": 359.60024999999996,
+            "sma50": 350.2455000000001,
+            "sma200": 397.32560000000007,
+            "atr14": 14.20804285714286,
+            "relative_return_20": 5.66506500182763,
+            "return_20": 5.545736389186673,
+            "relative_volume": 1.316928151613278,
+            "prior20_high": 384.04
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "JPM",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 349.67,
+            "sma20": 354.471,
+            "sma50": 353.19899999999996,
+            "sma200": 320.53585,
+            "atr14": 7.001299999999999,
+            "relative_return_20": -0.41544595712151855,
+            "return_20": -0.5347745697624751,
+            "relative_volume": 2.880396729090512,
+            "prior20_high": 362.86
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "COST",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 895.31,
+            "sma20": 924.6025000000002,
+            "sma50": 936.5392999999999,
+            "sma200": 960.4170500000001,
+            "atr14": 12.534185714285725,
+            "relative_return_20": -3.9727539574439974,
+            "return_20": -4.092082570084954,
+            "relative_volume": 2.076064252093885,
+            "prior20_high": 974.4947
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "WMT",
+          "kind": "stock",
+          "sector": "consumer_staples",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 106.73,
+            "sma20": 106.051,
+            "sma50": 109.9076,
+            "sma200": 118.70085000000005,
+            "atr14": 1.784785714285712,
+            "relative_return_20": 2.902456501701056,
+            "return_20": 2.7831278890600997,
+            "relative_volume": 1.6611857259171332,
+            "prior20_high": 109.735
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "V",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 368.29,
+            "sma20": 375.0375,
+            "sma50": 367.0804,
+            "sma200": 335.9413999999997,
+            "atr14": 5.3617357142857225,
+            "relative_return_20": 0.8192985358083216,
+            "return_20": 0.6999699231673651,
+            "relative_volume": 3.496541134290836,
+            "prior20_high": 385.5699
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MA",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 565.24,
+            "sma20": 580.4095000000001,
+            "sma50": 566.2631999999999,
+            "sma200": 531.6974000000004,
+            "atr14": 8.295085714285701,
+            "relative_return_20": -1.3810634758839258,
+            "return_20": -1.5003920885248823,
+            "relative_volume": 2.183752832775601,
+            "prior20_high": 601.23
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CAT",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 808.99,
+            "sma20": 804.5904999999999,
+            "sma50": 840.1400000000001,
+            "sma200": 784.1112499999998,
+            "atr14": 21.368500000000008,
+            "relative_return_20": -0.665571864431358,
+            "return_20": -0.7849004770723145,
+            "relative_volume": 2.0896163473732194,
+            "prior20_high": 834.45
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GE",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 314.27,
+            "sma20": 330.98699999999997,
+            "sma50": 348.0898,
+            "sma200": 322.46365000000014,
+            "atr14": 8.19767857142857,
+            "relative_return_20": -8.692765166374828,
+            "return_20": -8.812093779015784,
+            "relative_volume": 2.6860582971822358,
+            "prior20_high": 356.39
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UBER",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 70.5,
+            "sma20": 74.83000000000001,
+            "sma50": 73.67339999999999,
+            "sma200": 75.67215000000004,
+            "atr14": 2.129407142857143,
+            "relative_return_20": -10.128920909956108,
+            "return_20": -10.248249522597064,
+            "relative_volume": 1.184836320652662,
+            "prior20_high": 82.365
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NFLX",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 71.79,
+            "sma20": 78.915,
+            "sma50": 75.71720000000002,
+            "sma200": 85.48175,
+            "atr14": 2.417257142857142,
+            "relative_return_20": -10.299937671362036,
+            "return_20": -10.419266284002992,
+            "relative_volume": 4.315785293410923,
+            "prior20_high": 83.6
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PLTR",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 177.64,
+            "sma20": 175.89550000000003,
+            "sma50": 158.2592,
+            "sma200": 151.75267499999995,
+            "atr14": 7.1112785714285724,
+            "relative_return_20": 2.234757446855695,
+            "return_20": 2.1154288342147387,
+            "relative_volume": 1.3918031206011197,
+            "prior20_high": 188.37
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "WATCH. The trend is positive, but the current rally offers insufficient room to nearby resistance. A fresh base around support price $177.75 to support price $177.88 would merit reassessment.",
+            "why_not_actionable": "No BUY is established. A deep pullback would put resistance price $178.15, resistance price $179.59 to resistance price $179.66, and resistance price $180.055 back overhead. A farther target price $181.40 cannot establish unobstructed 2:1 reward/risk. Matched-time volume was 0.97 times the prior five-session mean.",
+            "what_would_change": "Require a new confirmed five-minute base and reclaim, renewed participation of at least 1.2 times the matching prior five-session window, favorable completed benchmark bars, and at least 2:1 reward/risk to the first real resistance after execution allowance. Review spread and events again. The provisional map expires at 15:00 Chicago on September 21; a price touch alone is insufficient."
+          }
+        },
+        {
+          "symbol": "LLY",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1152.93,
+            "sma20": 1163.3139999999999,
+            "sma50": 1177.3600000000004,
+            "sma200": 1066.3468499999994,
+            "atr14": 25.5019357142857,
+            "relative_return_20": -7.231201763443906,
+            "return_20": -7.350530376084863,
+            "relative_volume": 1.9953801866743495,
+            "prior20_high": 1280.28
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "XOM",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 163.54,
+            "sma20": 162.65550000000002,
+            "sma50": 157.78499999999997,
+            "sma200": 146.90250000000003,
+            "atr14": 3.8914285714285706,
+            "relative_return_20": -1.4515410834168296,
+            "return_20": -1.5708696960577861,
+            "relative_volume": 2.763050881509403,
+            "prior20_high": 169.64
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 237.92,
+            "sma20": 243.21099999999996,
+            "sma50": 206.92720000000006,
+            "sma200": 201.56689999999998,
+            "atr14": 9.147642857142856,
+            "relative_return_20": 15.934934901887898,
+            "return_20": 15.815606289246942,
+            "relative_volume": 1.350521456359418,
+            "prior20_high": 268.27
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ORCL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 147.61,
+            "sma20": 149.411,
+            "sma50": 141.00239999999997,
+            "sma200": 166.25120000000004,
+            "atr14": 8.235714285714284,
+            "relative_return_20": 4.018814781431013,
+            "return_20": 3.899486168790056,
+            "relative_volume": 1.3511886307109642,
+            "prior20_high": 170.7
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ADBE",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 248.92,
+            "sma20": 268.95900000000006,
+            "sma50": 256.0588,
+            "sma200": 264.988075,
+            "atr14": 10.170999999999996,
+            "relative_return_20": -8.439924932285958,
+            "return_20": -8.559253544926914,
+            "relative_volume": 1.9945050902535046,
+            "prior20_high": 294.53
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SHOP",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 128.5,
+            "sma20": 139.8785,
+            "sma50": 136.07140000000004,
+            "sma200": 130.3437,
+            "atr14": 6.036785714285719,
+            "relative_return_20": -12.572613227282947,
+            "return_20": -12.691941839923903,
+            "relative_volume": 1.4429436003762983,
+            "prior20_high": 156.49
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CRWD",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 237.65,
+            "sma20": 215.85550000000003,
+            "sma50": 207.08419999999998,
+            "sma200": 146.96931250000003,
+            "atr14": 13.119364285714282,
+            "relative_return_20": 24.97485031065504,
+            "return_20": 24.855521698014083,
+            "relative_volume": 1.5983317281285185,
+            "prior20_high": 250.32
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "PANW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 363.58,
+            "sma20": 354.24300000000005,
+            "sma50": 352.77920000000006,
+            "sma200": 240.57845000000012,
+            "atr14": 19.35533571428571,
+            "relative_return_20": 4.130084992089412,
+            "return_20": 4.010756379448455,
+            "relative_volume": 2.0971236031686993,
+            "prior20_high": 387.3325
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SNOW",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 332.43,
+            "sma20": 328.93200000000013,
+            "sma50": 310.3772000000001,
+            "sma200": 222.70935000000006,
+            "atr14": 18.569228571428578,
+            "relative_return_20": 3.586601170143522,
+            "return_20": 3.4672725575025654,
+            "relative_volume": 0.7872390709208625,
+            "prior20_high": 384.56
+          },
+          "plan": null,
+          "blockers": [
+            "SNOW: potential split/corporate-action discontinuity on 2026-05-28 (overnight change 35.2%); verify adjusted data.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NET",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 323.6,
+            "sma20": 301.339,
+            "sma50": 291.7354,
+            "sma200": 227.84395000000012,
+            "atr14": 17.631634285714284,
+            "relative_return_20": 16.14241849826715,
+            "return_20": 16.023089885626195,
+            "relative_volume": 1.490578603022086,
+            "prior20_high": 336.9
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DDOG",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 229.92,
+            "sma20": 226.26099999999997,
+            "sma50": 243.62760000000003,
+            "sma200": 179.22772500000008,
+            "atr14": 10.604978571428571,
+            "relative_return_20": -1.0116109702444587,
+            "return_20": -1.1309395828854152,
+            "relative_volume": 1.454137020034789,
+            "prior20_high": 251.99
+          },
+          "plan": null,
+          "blockers": [
+            "DDOG: potential split/corporate-action discontinuity on 2026-05-07 (overnight change 30.8%); verify adjusted data.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "MU",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": true,
+          "setup_types": [
+            "pullback_reclaim"
+          ],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 1015.8,
+            "sma20": 959.6005000000001,
+            "sma50": 927.2569000000004,
+            "sma200": 640.1463249999999,
+            "atr14": 42.97306428571432,
+            "relative_return_20": 4.375586759264783,
+            "return_20": 4.256258146623826,
+            "relative_volume": 1.4730071235800932,
+            "prior20_high": 1042.4
+          },
+          "plan": {
+            "entry": 1016.45,
+            "stop": 898.3,
+            "target_2r": 1252.75,
+            "max_entry_chase": 1027.19,
+            "stop_distance_pct": 11.623788676275272
+          },
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Planned stop is invalid or more than 8 percent below entry.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "QCOM",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 177.72,
+            "sma20": 172.27249999999998,
+            "sma50": 168.51879999999997,
+            "sma200": 168.55250000000007,
+            "atr14": 8.973585714285713,
+            "relative_return_20": 10.682971763070213,
+            "return_20": 10.563643150429257,
+            "relative_volume": 4.641082596335324,
+            "prior20_high": 191.91
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "INTC",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 108.6,
+            "sma20": 95.868,
+            "sma50": 97.0935,
+            "sma200": 77.15587499999997,
+            "atr14": 5.595792857142858,
+            "relative_return_20": 17.996241670276902,
+            "return_20": 17.876913057635946,
+            "relative_volume": 1.8726256842657598,
+            "prior20_high": 111.37
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "WATCH. Strong opening momentum accompanied newly verified product news, but chasing the extended move is unattractive. An orderly retest around support price $118.33 to support price $118.50 merits a new technical review.",
+            "why_not_actionable": "No BUY is established. Resistance price $119.06 and resistance price $119.53 would stand before the farther high price $121.28 after that pullback. The draft target price $121.20 therefore cannot support the previously estimated reward/risk.",
+            "what_would_change": "Build a new confirmed base with a structural invalidation and at least 2:1 room to the first real resistance, using completed five-minute bars and matched-time participation. Refresh events and quotes. The watch expires at 15:00 Chicago on September 21; the retest zone alone is not an entry trigger."
+          }
+        },
+        {
+          "symbol": "AMAT",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 444.57,
+            "sma20": 454.22649999999993,
+            "sma50": 501.11819999999983,
+            "sma200": 416.26312500000006,
+            "atr14": 17.759285714285717,
+            "relative_return_20": -10.28755556945936,
+            "return_20": -10.406884182100317,
+            "relative_volume": 2.343748294780334,
+            "prior20_high": 503.5
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DELL",
+          "kind": "stock",
+          "sector": "technology_growth",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 568.06,
+            "sma20": 503.6705,
+            "sma50": 462.736,
+            "sma200": 272.4849999999999,
+            "atr14": 37.19575000000001,
+            "relative_return_20": 30.773912540144508,
+            "return_20": 30.654583927503552,
+            "relative_volume": 1.1964455955565036,
+            "prior20_high": 593.9799
+          },
+          "plan": null,
+          "blockers": [
+            "DELL: potential split/corporate-action discontinuity on 2026-05-29 (overnight change 31.8%); verify adjusted data.",
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BAC",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 57.73,
+            "sma20": 61.3765,
+            "sma50": 61.93919999999999,
+            "sma200": 55.236,
+            "atr14": 1.3640357142857138,
+            "relative_return_20": -6.557037375073238,
+            "return_20": -6.6763659877141945,
+            "relative_volume": 1.4925730061297668,
+            "prior20_high": 63.83
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "GS",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 942.0,
+            "sma20": 1013.5005000000001,
+            "sma50": 1036.4063999999998,
+            "sma200": 956.8552000000001,
+            "atr14": 27.933255928571416,
+            "relative_return_20": -5.864003888980884,
+            "return_20": -5.983332501621841,
+            "relative_volume": 2.035627532391633,
+            "prior20_high": 1063.52
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "SOFI",
+          "kind": "stock",
+          "sector": "financials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 16.96,
+            "sma20": 17.842499999999998,
+            "sma50": 17.715900000000005,
+            "sma200": 19.515700000000002,
+            "atr14": 0.642492857142857,
+            "relative_return_20": -5.237814244501903,
+            "return_20": -5.35714285714286,
+            "relative_volume": 1.11149643147491,
+            "prior20_high": 19.495
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": {
+            "why_interesting": "PASS. The opening gap failed and the completed 09:40 Chicago bar closed at price $16.935 below approximate session VWAP.",
+            "why_not_actionable": "The daily trend screen fails and nearby resistance price $17.09 has not been reclaimed on the reviewed completed bars. Strong volume during a failed gap does not confirm buying strength.",
+            "what_would_change": "Require an independently confirmed base and reclaim with sufficient resistance room; current issuer event coverage also needs refresh."
+          }
+        },
+        {
+          "symbol": "UAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 108.71,
+            "sma20": 109.65875000000001,
+            "sma50": 117.16840000000002,
+            "sma200": 108.81522499999996,
+            "atr14": 3.590992857142857,
+            "relative_return_20": -2.566196407500476,
+            "return_20": -2.6855250201414327,
+            "relative_volume": 1.3256223634669246,
+            "prior20_high": 119.73
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DAL",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 79.62,
+            "sma20": 79.7855,
+            "sma50": 84.36679999999998,
+            "sma200": 75.03254999999996,
+            "atr14": 2.124044714285714,
+            "relative_return_20": -1.6571332674478634,
+            "return_20": -1.77646188008882,
+            "relative_volume": 4.628974212963101,
+            "prior20_high": 84.99
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "BA",
+          "kind": "stock",
+          "sector": "industrials",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 198.2,
+            "sma20": 208.1065,
+            "sma50": 216.24599999999998,
+            "sma200": 221.20250000000004,
+            "atr14": 5.3561285714285685,
+            "relative_return_20": -7.737482173040123,
+            "return_20": -7.856810785681079,
+            "relative_volume": 1.6927429041638662,
+            "prior20_high": 221.11
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "CVX",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 209.51,
+            "sma20": 208.5985,
+            "sma50": 198.76680000000005,
+            "sma200": 183.89945,
+            "atr14": 4.814300000000001,
+            "relative_return_20": 1.9368919114697403,
+            "return_20": 1.8175632988287838,
+            "relative_volume": 6.028290900720827,
+            "prior20_high": 217.78
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "OXY",
+          "kind": "stock",
+          "sector": "energy",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 58.84,
+            "sma20": 60.33799999999999,
+            "sma50": 58.048,
+            "sma200": 53.26380000000003,
+            "atr14": 1.5835714285714297,
+            "relative_return_20": -4.236978279426662,
+            "return_20": -4.356306892067618,
+            "relative_volume": 1.867303614112038,
+            "prior20_high": 63.77
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "UNH",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 376.9,
+            "sma20": 390.302,
+            "sma50": 404.3268,
+            "sma200": 354.3201499999999,
+            "atr14": 10.193885714285718,
+            "relative_return_20": -1.946411286020866,
+            "return_20": -2.0657398986618225,
+            "relative_volume": 1.814925221598984,
+            "prior20_high": 406.53
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "ABBV",
+          "kind": "stock",
+          "sector": "healthcare",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": true,
+            "minimum_price": true,
+            "positive_relative_strength": true,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 263.96,
+            "sma20": 259.6855,
+            "sma50": 255.35080000000002,
+            "sma200": 229.60365000000004,
+            "atr14": 5.549985714285709,
+            "relative_return_20": 0.932833558598245,
+            "return_20": 0.8135049459572885,
+            "relative_volume": 1.9546588198614643,
+            "prior20_high": 266.905
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "DIS",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 102.67,
+            "sma20": 107.00199999999998,
+            "sma50": 102.70960000000002,
+            "sma200": 104.03195,
+            "atr14": 2.2824999999999998,
+            "relative_return_20": -4.213507764548751,
+            "return_20": -4.332836377189708,
+            "relative_volume": 2.4549452540655294,
+            "prior20_high": 111.87
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        },
+        {
+          "symbol": "NKE",
+          "kind": "stock",
+          "sector": "consumer_discretionary",
+          "last_date": "2026-09-18",
+          "technical_match": false,
+          "setup_types": [],
+          "filters": {
+            "dollar_liquidity": true,
+            "long_trend": false,
+            "minimum_price": true,
+            "positive_relative_strength": false,
+            "valid_atr": true
+          },
+          "metrics": {
+            "close": 35.51,
+            "sma20": 37.99999999999999,
+            "sma50": 40.44919999999999,
+            "sma200": 50.22164999999995,
+            "atr14": 0.8907142857142861,
+            "relative_return_20": -11.569306055352092,
+            "return_20": -11.688634667993048,
+            "relative_volume": 1.8215652105951574,
+            "prior20_high": 41.34
+          },
+          "plan": null,
+          "blockers": [
+            "Stock earnings clearance is unknown; verify before considering a position.",
+            "Required next-session manual checks are not recorded; paper research only."
+          ],
+          "sizing_status": "not_evaluated",
+          "review": null
+        }
+      ],
+      "current_quotes": [
+        {
+          "symbol": "AAPL",
+          "bid": 336.69,
+          "ask": 336.73,
+          "observed_at": "2026-09-21T14:48:55.948549Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.499752Z",
+          "last_price": 336.73,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 336.13
+        },
+        {
+          "symbol": "GOOGL",
+          "bid": 356.03,
+          "ask": 356.07,
+          "observed_at": "2026-09-21T14:48:55.309326Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:55.874171Z",
+          "last_price": 356.1125,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 349.54
+        },
+        {
+          "symbol": "INTC",
+          "bid": 121.13,
+          "ask": 121.15,
+          "observed_at": "2026-09-21T14:48:56.370809Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.123408Z",
+          "last_price": 121.14,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 108.6
+        },
+        {
+          "symbol": "MSFT",
+          "bid": 493.67,
+          "ask": 493.8,
+          "observed_at": "2026-09-21T14:48:55.736838Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.481030Z",
+          "last_price": 493.705,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 493.78
+        },
+        {
+          "symbol": "PLTR",
+          "bid": 181.66,
+          "ask": 181.78,
+          "observed_at": "2026-09-21T14:48:54.831173Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:55.667617Z",
+          "last_price": 181.6925,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 177.64
+        },
+        {
+          "symbol": "QQQ",
+          "bid": 735.22,
+          "ask": 735.24,
+          "observed_at": "2026-09-21T14:48:56.357769Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.467791Z",
+          "last_price": 735.22,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 721.45
+        },
+        {
+          "symbol": "SOFI",
+          "bid": 16.99,
+          "ask": 17.0,
+          "observed_at": "2026-09-21T14:48:56.079726Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:55.270990Z",
+          "last_price": 16.9929,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 16.96
+        },
+        {
+          "symbol": "SPY",
+          "bid": 769.28,
+          "ask": 769.3,
+          "observed_at": "2026-09-21T14:48:56.909738Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.687220Z",
+          "last_price": 769.29,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 761.69
+        },
+        {
+          "symbol": "TSLA",
+          "bid": 375.3,
+          "ask": 375.4,
+          "observed_at": "2026-09-21T14:48:56.467172Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:56.887487Z",
+          "last_price": 375.3499,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 364.27
+        },
+        {
+          "symbol": "XLE",
+          "bid": 62.67,
+          "ask": 62.68,
+          "observed_at": "2026-09-21T14:48:56.916660Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:55.196396Z",
+          "last_price": 62.68,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 64.31
+        },
+        {
+          "symbol": "XLK",
+          "bid": 192.94,
+          "ask": 192.95,
+          "observed_at": "2026-09-21T14:48:56.853387Z",
+          "source": "Robinhood",
+          "session": "regular",
+          "last_trade_at": "2026-09-21T14:48:53.485529Z",
+          "last_price": 192.955,
+          "prior_close_date": "2026-09-18",
+          "prior_close": 189.6
+        }
+      ],
+      "notification": {
+        "sent": true,
+        "reason": "No order was placed."
+      },
+      "crypto": {
+        "signal_session": "2026-09-20",
+        "scan_generated_at": "2026-09-21T14:50:04.718611Z",
+        "provider": "Alpaca",
+        "feed": "us",
+        "bar_timezone": "UTC",
+        "market_gate": {
+          "passed": true,
+          "benchmark": "BTC/USD"
+        },
+        "data_blockers": [],
+        "observations": [
+          "Alpaca US bars include trades and quote midpoints; this is a venue-specific indicative price series.",
+          "Daily volume and the close-times-volume estimate are Alpaca venue observations, not consolidated worldwide crypto turnover.",
+          "Alpaca quotes show another venue's bid and ask; Robinhood execution price, fees, and available depth can differ.",
+          "Market bars and venue quotes retain their actual earlier observation times; stale quotes are not relabeled current."
+        ],
+        "lessons": [
+          "Crypto daily candles close at 00:00 UTC every calendar day; weekends are not missing stock-market sessions.",
+          "A bullish trend alone is not an entry signal. A completed-day setup and sufficient verified execution information are separate requirements.",
+          "A narrow spread does not prove enough order-book depth, and stop orders do not guarantee a maximum loss."
+        ],
+        "sources": [
+          {
+            "title": "Alpaca historical crypto bars API",
+            "url": "https://docs.alpaca.markets/us/reference/cryptobars-1",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Alpaca market-data FAQ: crypto venue and quote-midpoint bars",
+            "url": "https://docs.alpaca.markets/us/docs/market-data-faq",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood trading with your agent",
+            "url": "https://robinhood.com/us/en/support/articles/trading-with-your-agent/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood buying and selling crypto: order types and trading hours",
+            "url": "https://robinhood.com/us/en/support/articles/cryptocurrency-investing/",
+            "as_of": "2026-09-12"
+          },
+          {
+            "title": "Robinhood crypto availability",
+            "url": "https://robinhood.com/us/en/support/articles/coin-availability/",
+            "as_of": "2026-09-12"
+          }
+        ],
+        "candidates": [
+          {
+            "symbol": "BTC/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-20",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": false,
+              "venue_quote_review_passed": false
+            },
+            "metrics": {
+              "close": 81164.345,
+              "sma20": 78452.053725,
+              "sma50": 73208.92929,
+              "sma200": 70506.90950958946,
+              "atr14": 2121.3496607142856,
+              "relative_return_20": 0.0,
+              "return_20": 3.305764033399128,
+              "relative_volume": 0.26177995042632796,
+              "prior20_high": 82233.502538071
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "The Alpaca quote is older than five minutes; refresh spread and depth before further review.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and current entry-window activity have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. BTC is the crypto benchmark; it is not required to outperform itself.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. The Alpaca quote is older than five minutes; refresh spread and depth before further review. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and current entry-window activity have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 85888.28,
+              "ask": 85904.3,
+              "spread_pct": 0.01865039805561343,
+              "observed_at": "2026-09-21T14:38:51.524925Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          },
+          {
+            "symbol": "ETH/USD",
+            "kind": "crypto",
+            "sector": "crypto",
+            "last_date": "2026-09-20",
+            "technical_match": false,
+            "setup_types": [],
+            "filters": {
+              "data_quality": true,
+              "market_gate": true,
+              "trend": true,
+              "relative_strength": true,
+              "recent_trade_volume_evidence": true,
+              "quote_fresh": false,
+              "venue_quote_review_passed": false
+            },
+            "metrics": {
+              "close": 2643.9205,
+              "sma20": 2491.498475,
+              "sma50": 2273.4653500000004,
+              "sma200": 2076.261635608328,
+              "atr14": 101.04174336024997,
+              "relative_return_20": 3.846825599154524,
+              "return_20": 7.152589632553652,
+              "relative_volume": 0.22344112517296738,
+              "prior20_high": 2665.72
+            },
+            "plan": null,
+            "blockers": [
+              "No qualifying completed-day breakout or pullback reclaim is present.",
+              "The Alpaca quote is older than five minutes; refresh spread and depth before further review.",
+              "Live Robinhood crypto bid/ask quotes and applicable fees have not been verified.",
+              "Pending crypto orders and current entry-window activity have not been verified for overlap, entry frequency, and combined risk.",
+              "Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified.",
+              "Crypto-specific news, protocol events, and near-term maintenance risks still require review."
+            ],
+            "sizing_status": "not_evaluated",
+            "review": {
+              "why_interesting": "The completed-day close is above the 50-day and 200-day trend averages. The 20-day return exceeds BTC on the same UTC calendar dates.",
+              "why_not_actionable": "No qualifying completed-day breakout or pullback reclaim is present. The Alpaca quote is older than five minutes; refresh spread and depth before further review. Live Robinhood crypto bid/ask quotes and applicable fees have not been verified. Pending crypto orders and current entry-window activity have not been verified for overlap, entry frequency, and combined risk. Supported exit-order controls, fractional increments, and fee-aware position sizing remain unverified. Crypto-specific news, protocol events, and near-term maintenance risks still require review.",
+              "what_would_change": "A valid completed UTC daily setup with confirmed venue trade activity and a fresh quote. A feasible fractional quantity within the current shared 30% position and 1.5% risk limits, plus manual news and resistance review."
+            },
+            "quote": {
+              "bid": 2739.941,
+              "ask": 2740.8,
+              "spread_pct": 0.03134612637234192,
+              "observed_at": "2026-09-21T14:37:58.671147Z",
+              "provider": "Alpaca",
+              "venue": "Alpaca US"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "20260921T143403.658825Z-failed_check",
+      "checked_at": "2026-09-21T14:34:03.658825Z",
+      "check_type": "failed_check",
+      "decision": "monitor_failure",
+      "summary": "No current financial observations.",
+      "data_freshness": "Last successful financial review remains September 18 at 18:09:37 UTC.",
+      "signal_session": null,
+      "scan_generated_at": null,
+      "market_gate": {
+        "passed": null,
+        "benchmarks": {
+          "SPY": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          },
+          "QQQ": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          }
+        }
+      },
+      "data_blockers": [
+        "Interactive retry: Robinhood tools remain absent from the active session. The configured robinhood-trading server exists and is enabled with its existing read-only tool list."
+      ],
+      "observations": [
+        "Interactive retry: Robinhood tools remain absent from the active session. The configured robinhood-trading server exists and is enabled with its existing read-only tool list.",
+        "Current CLI configuration reports authentication status unknown; tool absence alone does not establish expired or revoked credentials.",
+        "A supported sign-in session has opened the Robinhood login page.",
+        "Today's progress review and daily action brief remain incomplete. September 23 final-review deadline and all original plans are preserved.",
+        "Prior sale recommendations are not newly reaffirmed."
+      ],
+      "lessons": [],
+      "sources": [],
+      "candidates": [],
+      "current_quotes": [],
+      "notification": {
+        "sent": true,
+        "reason": "No trading action brief delivered."
+      },
+      "crypto": null
+    },
+    {
+      "id": "20260921T135531.187041Z-failed_check",
+      "checked_at": "2026-09-21T13:55:31.187041Z",
+      "check_type": "failed_check",
+      "decision": "monitor_failure",
+      "summary": "",
+      "data_freshness": "",
+      "signal_session": null,
+      "scan_generated_at": null,
+      "market_gate": {
+        "passed": null,
+        "benchmarks": {
+          "SPY": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          },
+          "QQQ": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          }
+        }
+      },
+      "data_blockers": [
+        "A current plugin-directory search for Robinhood returned no matching integration."
+      ],
+      "observations": [
+        "A current plugin-directory search for Robinhood returned no matching integration.",
+        "Prior invalid_grant failures remain historical evidence from September 18. The current session cannot establish whether that specific authentication error persists.",
+        "Friday data must not be treated as current or as zero activity.",
+        "The saved transition plans have a September 21 progress-review date and September 23 final-review deadline. The progress review is due today and cannot be completed with the available evidence. Keep original plan IDs, trigger dates, acquisition history and deadlines unchanged.",
+        "No new daily action brief or afternoon sell reminder has been delivered for September 21. The connection-status message does not satisfy either trading brief.",
+        "Equity, candidate, issuer/event and crypto research were not refreshed. No fresh BUY, HOLD, TRIM, EXIT, WATCH or PASS is asserted.",
+        "The last verified public review remains September 18 at 13:09 Chicago; its original dates are retained."
+      ],
+      "lessons": [
+        "A missing tool and a rejected authentication response are distinct observations."
+      ],
+      "sources": [],
+      "candidates": [],
+      "current_quotes": [],
+      "notification": {
+        "sent": true,
+        "reason": "Assistant commentary reported unavailable Robinhood access and the due progress review. No daily trading brief, new trade call or afternoon reminder was delivered."
+      },
+      "crypto": null
+    },
+    {
+      "id": "20260918T204823.358734Z-failed_check",
+      "checked_at": "2026-09-18T20:48:23.358734Z",
+      "check_type": "failed_check",
+      "decision": "monitor_failure",
+      "summary": "",
+      "data_freshness": "This review timestamp records the failure review, not a market observation. No closing prices were obtained.",
+      "signal_session": null,
+      "scan_generated_at": null,
+      "market_gate": {
+        "passed": null,
+        "benchmarks": {
+          "SPY": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          },
+          "QQQ": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          }
+        }
+      },
+      "data_blockers": [
+        "Reconnect the existing integration."
+      ],
+      "observations": [
+        "Reconnect the existing integration.",
+        "Exposure and protected risk remain unknown rather than zero.",
+        "No fresh company, candidate, closing-bar, news or crypto assessment was completed. The missing essential facts produce REVIEW INCOMPLETE, not HOLD, PASS or no opportunity.",
+        "The earlier daily brief remains delivered.",
+        "Original plan IDs, trigger dates, September 21 progress review and September 23 final review dates remain preserved.",
+        "The last verified public review remains September 18 at 13:09 Chicago."
+      ],
+      "lessons": [],
+      "sources": [],
+      "candidates": [],
+      "current_quotes": [],
+      "notification": {
+        "sent": true,
+        "reason": "Persistent connection failure and required Robinhood reconnection stated in assistant commentary. No fresh trade alert, daily action brief or afternoon sale reminder delivered."
+      },
+      "crypto": null
+    },
+    {
+      "id": "20260918T195114.514686Z-failed_check",
+      "checked_at": "2026-09-18T19:51:14.514686Z",
+      "check_type": "failed_check",
+      "decision": "monitor_failure",
+      "summary": "",
+      "data_freshness": "This timestamp records the completed failure review, not a market observation. Those observations remain historical.",
+      "signal_session": null,
+      "scan_generated_at": null,
+      "market_gate": {
+        "passed": null,
+        "benchmarks": {
+          "SPY": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          },
+          "QQQ": {
+            "close": null,
+            "sma50": null,
+            "sma200": null,
+            "last_date": null
+          }
+        }
+      },
+      "data_blockers": [],
+      "observations": [
+        "Unknown values are not zero positions, zero risk or a no-opportunity result.",
+        "The daily action brief was delivered earlier today.",
+        "The website retains its last verified 13:09 Chicago review."
+      ],
+      "lessons": [],
+      "sources": [],
+      "candidates": [],
+      "current_quotes": [],
+      "notification": {
+        "sent": true,
+        "reason": "Connection failure and request to reconnect the existing Robinhood integration delivered in assistant commentary. No fresh trade alert or afternoon sale reminder delivered."
+      },
+      "crypto": null
+    },
     {
       "id": "20260918T180937.891486Z-intraday",
       "checked_at": "2026-09-18T18:09:37.891486Z",
