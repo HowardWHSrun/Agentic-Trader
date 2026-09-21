@@ -97,10 +97,15 @@ function positionsPanel(selected) {
     const query = portfolioState.search.trim().toLowerCase();
     const holdings = selected.holdings.filter((holding) => `${holding.symbol || ""} ${holding.account_label || ""}`.toLowerCase().includes(query));
     holdings.sort((a, b) => portfolioState.sort === "symbol" ? String(a.symbol).localeCompare(String(b.symbol)) : (decimal(b[portfolioState.sort === "gain" ? "unrealized_pl" : "market_value"]) ?? -Infinity) - (decimal(a[portfolioState.sort === "gain" ? "unrealized_pl" : "market_value"]) ?? -Infinity));
+    const complete = selected.account ? selected.account.positions_complete_for_scope === true : selected.totals.completeness?.tracked_scope === true;
+    const emptyTitle = selected.holdings.length ? "No matching positions" : complete ? "No tracked stock positions" : "Position coverage incomplete";
+    const emptyDetail = selected.holdings.length ? "Choose another account or change the search." : complete
+      ? "The broker snapshot confirms no stock positions in the selected tracked scope at this snapshot time."
+      : "No tracked positions are available in this snapshot. Coverage is incomplete, so zero holdings cannot be confirmed.";
     results.replaceChildren(element("p", { class: "result-count" }, `${holdings.length} ${holdings.length === 1 ? "position" : "positions"} shown`), holdings.length ? element("div", { class: "positions-table-wrap" },
       element("table", { class: "positions-table" }, element("caption", { class: "sr-only" }, "Tracked equity positions and their purchase costs, market values, unrealized gains and account weights"),
         element("thead", {}, element("tr", {}, ["Position", "Shares", "Avg. paid / share", "Market price", "Position value", "Unrealized P&L", "Weight"].map((label) => element("th", { scope: "col" }, label)))),
-        element("tbody", {}, holdings.map(holdingRows)))) : element("div", { class: "empty-state compact" }, element("h3", {}, "No matching positions"), element("p", {}, "Choose another account or change the search. Missing positions are not assumed to be sold.")));
+        element("tbody", {}, holdings.map(holdingRows)))) : element("div", { class: "empty-state compact" }, element("h3", {}, emptyTitle), element("p", {}, emptyDetail)));
   };
   const search = element("input", { id: "position-search", type: "search", placeholder: "Symbol or account", value: portfolioState.search, oninput: (event) => { portfolioState.search = event.target.value; draw(); } });
   const sort = element("select", { id: "position-sort", onchange: (event) => { portfolioState.sort = event.target.value; draw(); } }, [["value", "Largest position"], ["gain", "Highest unrealized P&L"], ["symbol", "Symbol A–Z"]].map(([value, label]) => element("option", { value }, label)));
