@@ -34,9 +34,9 @@
     "current": 32
   },
   "last_hard_check": {
-    "id": "20261021T134138318434Z",
-    "publication_timestamp": "2026-10-21T13:41:38.318434Z",
-    "assessment_snapshot": "2026-10-21T13:38:22Z",
+    "id": "20261021T140638875486Z",
+    "publication_timestamp": "2026-10-21T14:06:38.875486+00:00",
+    "assessment_snapshot": "2026-10-21T14:05:25.855187+00:00",
     "rubric_version": "buying-score-v1",
     "weights": {
       "entry_quality": 30,
@@ -46,19 +46,27 @@
       "liquidity_event_risk": 15
     },
     "cohort": "intraday",
-    "summary": "All 32 stocks assessed with timestamped regular-session trades. All 32 scores available; no immediate new entry fully qualified. Opening history remains limited.",
+    "summary": "All 32 stocks assessed with timestamped regular-session trades and completed opening price/volume history. All 32 scores available; no immediate new entry fully qualified. Each action plan is conditional, not an order.",
     "records": [
       {
         "symbol": "AAPL",
         "score": 60,
         "rubric_version": "buying-score-v1",
-        "reference_price": 339.36,
-        "reference_price_timestamp": "2026-10-21T13:38:19.421622531Z",
+        "reference_price": 340.925,
+        "reference_price_timestamp": "2026-10-21T14:01:45.141700207Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Relative trend and Oct 23 product launch remain constructive; opening held 338.83, but 343.06 recovery unconfirmed. Change from prior publication: Unchanged 60: better regular liquidity offsets less attractive entry price.",
+        "reason": "Relative trend stays constructive, but price is farther above support and below 343.06 resistance. Change from prior publication: Unchanged 60; stronger opening price does not improve entry risk/reward.",
+        "improvement_condition": "Wait for 337.40\u2013338.70 liquid retest/hold, rejecting a 337.40 failure; alternatively reassess 343.06 reclaim/retest. Do not chase 347.85.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 15,
@@ -67,66 +75,69 @@
           "fundamentals_valuation": 4,
           "liquidity_event_risk": 11
         },
-        "conditional_action": "Prospective entry: consider 337.40\u2013338.70 only after a liquid retest holds; invalidate that setup on failed 337.40 hold. Alternatively reassess after 343.06 reclaim; do not chase toward 347.85.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Wait for 337.40\u2013338.70 liquid retest/hold, rejecting a 337.40 failure; alternatively reassess 343.06 reclaim/retest. Do not chase 347.85.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/AAPL/",
           "https://www.apple.com/newsroom/2026/10/open-up-to-new-possibilities-with-iphone-duo/",
           "https://developer.apple.com/news/?id=kkphp5qo",
           "https://investor.apple.com/investor-relations/"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
       },
       {
-        "symbol": "ABBV",
+        "symbol": "LIN",
         "score": 60,
         "rubric_version": "buying-score-v1",
-        "reference_price": 288.62,
-        "reference_price_timestamp": "2026-10-21T13:38:14.559927648Z",
+        "reference_price": 500.62,
+        "reference_price_timestamp": "2026-10-21T14:01:43.64895796Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Positive trend and ELAHERE reimbursement milestone persist; tighter regular-session book improves evidence, but five-session +5.37% still trails XLV +5.99% and Oct 30 earnings remain ahead. Change from prior publication: 55 to 60: regular-session liquidity improves; not a new company catalyst.",
+        "reason": "Completed minutes held above 499.15 opening-range resistance and final 500.62 remains above it. This is improved intraday structure, not a confirmed 506.38 daily breakout. Strong daily trend offsets 32.50 x trailing P/E and Oct 29 earnings risk. Change from prior publication: 55\u219260: entry 15\u219220 for multiple completed bars holding above 499.15, not for a daily breakout.",
+        "improvement_condition": "CONDITIONAL WATCH, DO NOT CHASE. Prefer a completed 499.15 retest that holds, or the deeper 496.68\u2013498.43 support zone. Reassess any 506.38 breakout separately; sustained 496.68 failure weakens the support setup.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
-          "entry_quality": 15,
-          "trend_relative_strength": 18,
-          "catalyst": 10,
+          "entry_quality": 20,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
           "fundamentals_valuation": 5,
-          "liquidity_event_risk": 12
+          "liquidity_event_risk": 10
         },
-        "conditional_action": "Consider only a liquid retest holding 286.18 opening low or 285 daily support; do not chase 290.98\u2013291.40 resistance. A sustained break below 285 invalidates this support-based setup.",
-        "quote_delay": "Unknown",
+        "conditional_action": "CONDITIONAL WATCH, DO NOT CHASE. Prefer a completed 499.15 retest that holds, or the deeper 496.68\u2013498.43 support zone. Reassess any 506.38 breakout separately; sustained 496.68 failure weakens the support setup.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
-          "https://www.newswire.ca/news-releases/abbvie-reaches-agreement-with-the-pan-canadian-pharmaceutical-alliance-pcpa-for-elahere-r-in-platinum-resistant-ovarian-cancer-819019240.html"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
+          "https://www.linde.com/news-and-media/2026/linde-announces-third-quarter-2026-earnings-and-conference-call-schedule"
         ]
       },
       {
         "symbol": "LLY",
         "score": 60,
         "rubric_version": "buying-score-v1",
-        "reference_price": 1271.94,
-        "reference_price_timestamp": "2026-10-21T13:38:19.277368485Z",
+        "reference_price": 1272.17,
+        "reference_price_timestamp": "2026-10-21T14:01:42.519613112Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Strong five-session +10.04% versus XLV +5.99%, with a cheaper price than the 1278.40 premarket reference; still extended and about 42.15 x trailing earnings. Change from prior publication: 55 to 60: improved liquidity and lower reference price, not proven breakout.",
+        "reason": "Five-session +10.04% and the recovery above the 1261.69 opening low support the daily trend, but the rebound stalled at 1279.28 and the current quote is below 1283.66 prior close. About 42.15 x trailing earnings and Oct 29 earnings limit a chase. Change from prior publication: Unchanged 60: more observed opening activity, but neither a new catalyst nor a confirmed multi-day breakout.",
+        "improvement_condition": "Prefer a liquid base/retest holding 1260.17\u20131261.69 rather than chasing 1279.28\u20131283.66 overhead. Sustained loss of 1260.17 invalidates the daily-support setup. Reassess before Oct 29 earnings; a post-event hold is not assumed.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 15,
@@ -135,31 +146,31 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prefer a liquid 1260.17\u20131261.69 support retest rather than chasing the rebound. A sustained loss of 1260.17 invalidates that setup; 1311.75 remains overhead, not an entry target. Reassess before Oct 29 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Prefer a liquid base/retest holding 1260.17\u20131261.69 rather than chasing 1279.28\u20131283.66 overhead. Sustained loss of 1260.17 invalidates the daily-support setup. Reassess before Oct 29 earnings; a post-event hold is not assumed.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://investor.lilly.com/events/event-details/q3-2026-earnings-call"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
         ]
       },
       {
         "symbol": "RTX",
         "score": 60,
         "rubric_version": "buying-score-v1",
-        "reference_price": 194.735,
-        "reference_price_timestamp": "2026-10-21T13:38:21.64966206Z",
+        "reference_price": 192.5,
+        "reference_price_timestamp": "2026-10-21T14:01:49.958454372Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Raised Oct 20 outlook remains the strongest verified catalyst here; lower reference price versus 196 indicative ask and tighter book improve entry, but 197/198.90 remain overhead. Change from prior publication: 50 to 60: improved price and regular liquidity; not a new earnings upgrade today.",
+        "reason": "Oct 20 raised outlook and five-session relative strength remain supportive. Price has faded from 195.7815 to 192.50 and approaches the 190.38\u2013192.11 support zone without a completed hold; cheaper is not yet confirmed safer.197 and 198.90 remain overhead. Change from prior publication: 60 unchanged: cheaper price is offset by falling opening structure.",
+        "improvement_condition": "WAIT FOR SUPPORT CONFIRMATION. Inspect a liquid 190.38\u2013192.11 hold and completed higher low before considering entry, or separately require 197 recovery/retest. A sustained 188.08 loss weakens the support thesis.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
@@ -168,63 +179,66 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prefer a liquid 190.38\u2013192.11 hold/retest or separately confirmed 197 recovery/retest. Do not chase into 197 solely on opening prints. Loss 188.08 weakens the recovery thesis; short opening history cannot prove breakout.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT FOR SUPPORT CONFIRMATION. Inspect a liquid 190.38\u2013192.11 hold and completed higher low before considering entry, or separately require 197 recovery/retest. A sustained 188.08 loss weakens the support thesis.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://www.rtx.com/news/news-center/2026/10/20/rtx-reports-q3-2026-results"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
         ]
       },
       {
-        "symbol": "CRM",
+        "symbol": "ABBV",
         "score": 55,
         "rubric_version": "buying-score-v1",
-        "reference_price": 241.33,
-        "reference_price_timestamp": "2026-10-21T13:38:12.44478528Z",
+        "reference_price": 286.445,
+        "reference_price_timestamp": "2026-10-21T14:01:45.887763662Z",
         "reference_session": "regular",
-        "reference_price_type": "regular-session last trade",
+        "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Recovered toward 241.33 after 237.23 opening low, but 239\u2013241 retest stability remains unconfirmed and 244.14 caps nearby reward. Change from prior publication: 60\u219255: early support failure reduces entry/trend points despite improved liquidity.",
+        "reason": "The 286.181 opening low failed and completed bars reached 285.67; the latest rebound to 286.445 is not a confirmed recovery. Daily trend and the ELAHERE milestone persist, but immediate entry evidence weakened. Change from prior publication: 60 to 55: entry quality falls after the initial opening support failed; the cheaper price alone does not establish stabilization.",
+        "improvement_condition": "Wait for a sustained liquid reclaim/retest of 286.181, or a separate base holding 285.00 daily support. Do not chase 289.00 then 290.98\u2013291.40 overhead. Sustained loss of 285.00 invalidates the daily-support setup.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
-          "entry_quality": 12,
+          "entry_quality": 10,
           "trend_relative_strength": 18,
           "catalyst": 10,
-          "fundamentals_valuation": 7,
-          "liquidity_event_risk": 8
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 12
         },
-        "conditional_action": "Prospective entry: require 239\u2013241 retest to hold after recovery; invalidation remains failure of 235.60 daily support. A 244.14 reclaim would strengthen evidence; no chase toward 251.94.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Wait for a sustained liquid reclaim/retest of 286.181, or a separate base holding 285.00 daily support. Do not chase 289.00 then 290.98\u2013291.40 overhead. Sustained loss of 285.00 invalidates the daily-support setup.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
-          "https://www.salesforce.com/news/press-releases/2026/10/20/salesforce-signs-definitive-agreement-to-acquire-braze/"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
+          "https://www.newswire.ca/news-releases/abbvie-reaches-agreement-with-the-pan-canadian-pharmaceutical-alliance-pcpa-for-elahere-r-in-platinum-resistant-ovarian-cancer-819019240.html"
         ]
       },
       {
         "symbol": "CVX",
         "score": 55,
         "rubric_version": "buying-score-v1",
-        "reference_price": 225.1001,
-        "reference_price_timestamp": "2026-10-21T13:38:19.891240637Z",
+        "reference_price": 225.89,
+        "reference_price_timestamp": "2026-10-21T14:01:19.800172443Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Daily energy trend remains strong but price has fallen below the first five-minute low; tighter regular book reduces the premarket liquidity penalty. Change from prior publication: 50 to 55: regular-session liquidity improves; opening weakness prevents further upgrade.",
+        "reason": "Tested the proposed support zone at 224.19 and recovered above 225.54 in completed minutes. Strong daily/relative trend remains, but the 225.89 trade and 226.03/226.10 book are now close to 227.28 resistance; better support evidence does not justify chasing. Change from prior publication: 55 unchanged: support test improves evidence, but current price is nearer resistance.",
+        "improvement_condition": "WAIT FOR RETEST. Prefer another liquid 223.12\u2013224.37 hold or a completed 225.54 support retest with enough room below 227.28. A 221.56 failure invalidates the deeper support setup; reassess before Oct 30 earnings.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 15,
@@ -233,95 +247,33 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prefer a confirmed 223.12\u2013224.37 retest/hold, not a falling-price purchase. Do not chase 227.28; loss of 221.56 invalidates this support-based setup. Reassess before Oct 30 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT FOR RETEST. Prefer another liquid 223.12\u2013224.37 hold or a completed 225.54 support retest with enough room below 227.28. A 221.56 failure invalidates the deeper support setup; reassess before Oct 30 earnings.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://www.chevron.com/investors/events-presentations/3q-2026-earnings"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
-        ]
-      },
-      {
-        "symbol": "LIN",
-        "score": 55,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 500.83,
-        "reference_price_timestamp": "2026-10-21T13:38:02.161712613Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Genuine regular-session participation and a tighter book replace absent premarket trading; daily trend remains positive, though 32.50 x PE and Oct 29 earnings constrain upside. Change from prior publication: 50 to 55: actual regular trading resolves the premarket participation limitation.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 15,
-          "trend_relative_strength": 20,
-          "catalyst": 5,
-          "fundamentals_valuation": 5,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "Prefer confirmed 496.68\u2013498.43 support/retest; do not chase 506.38. Loss 496.68 weakens the setup. Current print above first-five-minute high is not a proven breakout without later completed bars.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://www.linde.com/news-and-media/2026/linde-announces-third-quarter-2026-earnings-and-conference-call-schedule"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
-        ]
-      },
-      {
-        "symbol": "UNH",
-        "score": 55,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 418.45,
-        "reference_price_timestamp": "2026-10-21T13:38:19.25740016Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Raised adjusted EPS outlook and five-session +10.99% strength versus XLV +5.99%, but still near 422.40 resistance after an opening dip to 417.85. Change from prior publication: Unchanged 55: fresher trade does not remove extended-entry and failed-opening-push risk.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 10,
-          "trend_relative_strength": 20,
-          "catalyst": 15,
-          "fundamentals_valuation": 5,
-          "liquidity_event_risk": 5
-        },
-        "conditional_action": "No chase toward 421.47 opening high or 422.40 daily resistance. Prefer a separate liquid pullback holding 408.28; loss of that level invalidates the previously identified support setup. Current opening rebound alone is not sufficient confirmation.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://www.unitedhealthgroup.com/newsroom/2026/2026-10-13-uhg-reports-third-quarter-2026-results.html"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
         ]
       },
       {
         "symbol": "V",
         "score": 55,
         "rubric_version": "buying-score-v1",
-        "reference_price": 405.95,
-        "reference_price_timestamp": "2026-10-21T13:38:21.547064155Z",
+        "reference_price": 405.69,
+        "reference_price_timestamp": "2026-10-21T14:01:43.593716396Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Price is below the previous indicative ask, improving room to 408.59, with genuine regular trades; valuation and Oct 27 earnings still limit attractiveness. Change from prior publication: 45 to 55: better reference price and regular liquidity, not a new catalyst.",
+        "reason": "The opening rebound reached 407.87 but failed to sustain 406.57 prior close; the latest quote is 405.69. Daily trend remains constructive, but about 34.58 x trailing earnings and Oct 27 earnings limit current-price attractiveness. Change from prior publication: Unchanged 55: cheaper price partly offsets the failed prior-close recovery; no new guidance catalyst is verified.",
+        "improvement_condition": "Prefer a liquid base/retest toward 404.10 opening support or 403.39 daily support, with a sustained 406.57 recovery improving evidence. Do not chase 407.87\u2013408.59 without a separately verified breakout/retest. Sustained loss of 403.39 invalidates daily support; reassess before Oct 27 earnings.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
@@ -330,96 +282,33 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Consider only a confirmed hold/retest of 403.39 with adequate liquidity. Do not chase into 408.59 without a separately verified breakout/retest. Loss of 403.39 weakens entry; plan around Oct 27 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Prefer a liquid base/retest toward 404.10 opening support or 403.39 daily support, with a sustained 406.57 recovery improving evidence. Do not chase 407.87\u2013408.59 without a separately verified breakout/retest. Sustained loss of 403.39 invalidates daily support; reassess before Oct 27 earnings.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://usa.visa.com/about-visa/newsroom/press-releases.releaseId.22841.html"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
-        ]
-      },
-      {
-        "symbol": "WMT",
-        "score": 55,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 117.85,
-        "reference_price_timestamp": "2026-10-21T13:38:19.550265475Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Recovered 117.47 prior-day low in completed opening bars and latest trade touches 117.85 prior close, without a sustained reclaim yet. Narrow book and strong daily trend contrast with about 43 x trailing earnings. Change from prior publication: 45 to 55: initial 117.47 recovery and better liquidity; touching 117.85 does not establish a sustained reclaim.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 15,
-          "trend_relative_strength": 20,
-          "catalyst": 10,
-          "fundamentals_valuation": 0,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "Require 117.47 to hold on a liquid retest and 117.85 to be reclaimed before considering an entry. Do not chase toward 120.50 overhead. Sustained loss of 117.47 rejects the immediate reclaim setup; 116.63 is the observed opening low, not an adopted stop.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://corporate.walmart.com/news/2026/10/meet-your-120-life-hack"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
-        ]
-      },
-      {
-        "symbol": "AMZN",
-        "score": 50,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 260.9316,
-        "reference_price_timestamp": "2026-10-21T13:38:20.804219962Z",
-        "reference_session": "regular",
-        "reference_price_type": "regular-session last trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening broke 260.42 support to 259.85 before an incomplete rebound; daily relative strength survives but entry not confirmed. Change from prior publication: 55\u219250: opening support failure outweighs regular-liquidity improvement.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 10,
-          "trend_relative_strength": 18,
-          "catalyst": 5,
-          "fundamentals_valuation": 7,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "Prospective entry: wait for sustained 260.42\u2013262 recovery and a retest holding; reject if 259.85 opening low fails. Reassess 265.34 breakout only with reliable volume; no chase beyond that level without new risk/reward. Exit/review before Oct 29 earnings unless event exposure is chosen.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://www.aboutamazon.com/amazon-news-today"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
       },
       {
         "symbol": "COST",
         "score": 50,
         "rubric_version": "buying-score-v1",
-        "reference_price": 996.15,
-        "reference_price_timestamp": "2026-10-21T13:38:17.034083166Z",
+        "reference_price": 991.85,
+        "reference_price_timestamp": "2026-10-21T14:01:40.835644946Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening bars recovered 991 after dipping to 988.47; five-session +4.19% is roughly in line with XLP +4.23%. September comparable-sales evidence persists but about 47.96 x trailing earnings is expensive. Change from prior publication: 40 to 50: observed 991 recovery and narrower regular-session book improve entry and liquidity evidence.",
+        "reason": "The fade from 996.80 retested 991, briefly reaching 990.96 before a 991.36 completed-minute close and 991.85 latest trade. That is an initial recovery, not a sustained hold; about 47.96 x trailing earnings remains expensive. Change from prior publication: Unchanged 50: closer support improves price location, but the reclaim remains under test after the opening rebound faded.",
+        "improvement_condition": "Require a sustained liquid hold/retest of 991.00 before considering entry. Do not chase 996.80 then 1003.00 overhead. Sustained loss of 991.00 rejects the reclaim setup; 988.47 is opening-range downside evidence, not an adopted stop.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 15,
@@ -428,31 +317,67 @@
           "fundamentals_valuation": 2,
           "liquidity_event_risk": 8
         },
-        "conditional_action": "Prefer a liquid 991 retest that holds, rather than chasing 996.15 toward 1003 overhead. A sustained loss of 991 rejects the reclaim setup; 988.47 is opening-range downside evidence.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Require a sustained liquid hold/retest of 991.00 before considering entry. Do not chase 996.80 then 1003.00 overhead. Sustained loss of 991.00 rejects the reclaim setup; 988.47 is opening-range downside evidence, not an adopted stop.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-September-Sales-Results/default.aspx"
-        ],
+        ]
+      },
+      {
+        "symbol": "CRM",
+        "score": 50,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 240.15,
+        "reference_price_timestamp": "2026-10-21T14:01:44.784697293Z",
+        "reference_session": "regular",
+        "reference_price_type": "regular-session last trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Recovery faded from 244.18 to 240.15; acquisition thesis unchanged, retest not yet stable. Change from prior publication: 55 to 50: entry quality reduced 5 after opening recovery faded.",
+        "improvement_condition": "Require 239\u2013241 to stabilize and hold, not buy a falling retest; failure 235.60 invalidates the daily support setup. A 244.14 reclaim improves evidence; no chase 251.94.",
+        "quote_delay": "unknown",
         "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 7,
+          "trend_relative_strength": 18,
+          "catalyst": 10,
+          "fundamentals_valuation": 7,
+          "liquidity_event_risk": 8
+        },
+        "conditional_action": "Require 239\u2013241 to stabilize and hold, not buy a falling retest; failure 235.60 invalidates the daily support setup. A 244.14 reclaim improves evidence; no chase 251.94.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://robinhood.com/us/en/stocks/CRM/",
+          "https://www.salesforce.com/news/press-releases/2026/10/20/salesforce-signs-definitive-agreement-to-acquire-braze/"
         ]
       },
       {
         "symbol": "HD",
         "score": 50,
         "rubric_version": "buying-score-v1",
-        "reference_price": 314.675,
-        "reference_price_timestamp": "2026-10-21T13:38:18.050037195Z",
+        "reference_price": 314.155,
+        "reference_price_timestamp": "2026-10-21T14:01:46.255635012Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Fresh regular-session trade restores scorability: above 293.63/311.55 daily averages and five-session +7.21%, but initial 316.46 opening high failed and no new primary near-term catalyst is verified. Change from prior publication: Unavailable to 50: fresh current trade and narrow two-sided book restore missing critical evidence.",
+        "reason": "The 313.50 opening low remains intact, but the rebound failed below 316.46 and the latest quote is again below 315.11 prior close. Daily averages are 293.63/311.55; no fresh primary near-term catalyst is verified. Change from prior publication: Unchanged 50: cheaper location is offset by weak opening follow-through and no new verified catalyst.",
+        "improvement_condition": "Prefer a liquid retest holding 313.50, with a sustained 315.11 recovery improving evidence. Do not chase 316.46\u2013317.71. A deeper daily-support setup requires 310.64 to hold; sustained failure invalidates it.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 15,
@@ -461,64 +386,31 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prefer a liquid retest holding 313.50 opening support, with 310.64 the deeper daily support. Do not chase 316.46\u2013317.71 overhead. Loss of 310.64 invalidates the daily support setup; earnings Nov 17.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Prefer a liquid retest holding 313.50, with a sustained 315.11 recovery improving evidence. Do not chase 316.46\u2013317.71. A deeper daily-support setup requires 310.64 to hold; sustained failure invalidates it.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://ir.homedepot.com/events-and-presentations?mod=article_inline"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
-        ]
-      },
-      {
-        "symbol": "KO",
-        "score": 50,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 93.255,
-        "reference_price_timestamp": "2026-10-21T13:38:12.095167294Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Above daily averages with a narrow regular-session spread; five-session +3.75% trails XLP +4.23%, and Oct 27 earnings limit the several-day window. Change from prior publication: 45 to 50: narrow regular-session spread and actual opening activity replace provisional evidence.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 15,
-          "trend_relative_strength": 15,
-          "catalyst": 5,
-          "fundamentals_valuation": 5,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "Require a liquid hold of 92.93 opening support, with 92.64 deeper support. Do not chase into 93.96 resistance; a sustained loss of 92.64 invalidates the support setup. Avoid unplanned Oct 27 earnings exposure.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://investors.coca-colacompany.com/_assets/_02744905259cb8240758f5502f105697/cocacolacompany/news/2026-09-29_The_Coca_Cola_Company_Announces_Timing_of_Third_1173.pdf"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
         ]
       },
       {
         "symbol": "MSFT",
         "score": 50,
         "rubric_version": "buying-score-v1",
-        "reference_price": 529.87,
-        "reference_price_timestamp": "2026-10-21T13:38:20.466946673Z",
+        "reference_price": 529.34,
+        "reference_price_timestamp": "2026-10-21T14:01:45.544391522Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "525.02 support response remains constructive, but 529.87 price is farther from support and near opening 529.97 high; 534.21 recovery remains unconfirmed. Change from prior publication: Unchanged 50 versus published 08:00 score: regular liquidity offsets less favorable entry distance after rebound.",
+        "reason": "Opening rebound stalled beneath 531.48 and 534.21; no new quantified catalyst. Change from prior publication: Unchanged 50; rebound lacks stronger daily trend confirmation.",
+        "improvement_condition": "Prefer 524.43\u2013525.84 liquid hold/retest, rejecting 524.43 failure; otherwise require 534.21 reclaim/retest. Do not chase an unconfirmed recovery; review before Oct 28 results.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 12,
@@ -527,64 +419,32 @@
           "fundamentals_valuation": 6,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prospective entry: consider a renewed 524.43\u2013525.84 test only if it holds with liquidity; failed 524.43 invalidates that setup. Require 534.21 recovery before a breakout entry; no chase above it without retest. Review before Oct 28 results.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Prefer 524.43\u2013525.84 liquid hold/retest, rejecting 524.43 failure; otherwise require 534.21 reclaim/retest. Do not chase an unconfirmed recovery; review before Oct 28 results.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/MSFT/",
           "https://www.microsoft.com/en-us/investor/default"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
-        ]
-      },
-      {
-        "symbol": "NEE",
-        "score": 50,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 79.65,
-        "reference_price_timestamp": "2026-10-21T13:38:19.326976416Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Adjusted EPS rose 9.7% and guidance was maintained. Latest 79.65 trade has recovered above the first-five-minute low 79.40 after an intervening 79.23 snapshot; still below the 80.91 50-day average. Call conclusions remain unverified. Change from prior publication: 45 to 50 versus published premarket score: tighter regular-session spread and recovered opening price improve evidence, but no confirmed breakout or call conclusion.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 10,
-          "trend_relative_strength": 10,
-          "catalyst": 15,
-          "fundamentals_valuation": 5,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "Do not buy the headline or fading opening move. Require a liquid 78.35\u201378.86 support hold or sustained 80.265 reclaim/retest after call evidence is assessed. Loss of 77.95 invalidates the support setup.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://www.investor.nexteraenergy.com/~/media/Files/N/NEE-IR/reports-and-fillings/quarterly-earnings/2026/Q3%202026/2026-1021%20NEEQ32026News%20Release%20vFinal.pdf"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
         ]
       },
       {
         "symbol": "NVDA",
         "score": 50,
         "rubric_version": "buying-score-v1",
-        "reference_price": 219.9299,
-        "reference_price_timestamp": "2026-10-21T13:38:19.636315092Z",
+        "reference_price": 220.145,
+        "reference_price_timestamp": "2026-10-21T14:01:45.01441113Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Liquid opening rebound still below 222.92/227.04 trend levels; Amadeus exploratory Mo U has no quantified revenue effect. Change from prior publication: 45\u219250: regular liquidity improves, not a news-driven catalyst upgrade.",
+        "reason": "Liquid bounce holds above 219.11, but 222.92/227.04 daily averages remain overhead; partnerships are not quantified sales. Change from prior publication: Unchanged 50; slight intraday recovery does not repair weaker daily relative trend.",
+        "improvement_condition": "Require 219.11 support retest/hold or 222.92 reclaim/retest; reject support entry if 219.11 fails. Do not chase 226\u2013227.04.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 14,
@@ -593,33 +453,104 @@
           "fundamentals_valuation": 7,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prospective entry: wait for liquid 219.11 support retest or 222.92 reclaim/hold; failure of 219.11 invalidates support setup. Do not chase toward 226\u2013227.04 while broader trend remains weak.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Require 219.11 support retest/hold or 222.92 reclaim/retest; reject support entry if 219.11 fails. Do not chase 226\u2013227.04.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/NVDA/",
           "https://nvidianews.nvidia.com/news/european-mobility-leaders-build-safe-vehicles-and-robotaxi-fleets-on-nvidia-hyperion",
           "https://investor.nvidia.com/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf",
           "https://amadeus.com/en/newsroom/press-releases/amadeus-explores-next-gen-flight-search-with-nvidia"
-        ],
+        ]
+      },
+      {
+        "symbol": "UNH",
+        "score": 50,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 417.48,
+        "reference_price_timestamp": "2026-10-21T14:01:45.607148224Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Completed bars made a lower low of 417.22 and the latest quote remains below 419.26 prior close. Oct 13 raised EPS guidance and five-session +10.99% remain supportive, but extended daily gains do not outweigh the failed opening push. Change from prior publication: 55 to 50: entry-quality deduction for new opening lows and failure to sustain the prior close.",
+        "improvement_condition": "Wait for a liquid base rather than buying a fresh low or chasing 421.47\u2013422.40. A separate deeper pullback setup requires 408.28 daily support to hold; sustained loss invalidates that setup. A durable recovery of 419.26 would improve immediate evidence.",
+        "quote_delay": "unknown",
         "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 20,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        },
+        "conditional_action": "Wait for a liquid base rather than buying a fresh low or chasing 421.47\u2013422.40. A separate deeper pullback setup requires 408.28 daily support to hold; sustained loss invalidates that setup. A durable recovery of 419.26 would improve immediate evidence.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://www.unitedhealthgroup.com/newsroom/2026/2026-10-13-uhg-reports-third-quarter-2026-results.html"
+        ]
+      },
+      {
+        "symbol": "WMT",
+        "score": 50,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 117.6,
+        "reference_price_timestamp": "2026-10-21T14:01:45.872013863Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "The brief recovery above 117.85 prior close did not persist, and the 117.47 prior-day low was tested repeatedly with a 117.41 intraminute low. About 43 x trailing earnings and no material guidance effect from the membership bundle limit appeal. Change from prior publication: 55 to 50: failed prior-close recovery and repeated tests below initial support reduce entry quality.",
+        "improvement_condition": "Require a sustained liquid hold/retest of 117.47 and recovery of 117.85 before reconsidering. Do not chase the brief rebound or 120.50 overhead. Sustained loss of 117.47 rejects the immediate reclaim setup; 116.63 remains opening-range downside evidence, not an adopted stop.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 10,
+          "trend_relative_strength": 20,
+          "catalyst": 10,
+          "fundamentals_valuation": 0,
+          "liquidity_event_risk": 10
+        },
+        "conditional_action": "Require a sustained liquid hold/retest of 117.47 and recovery of 117.85 before reconsidering. Do not chase the brief rebound or 120.50 overhead. Sustained loss of 117.47 rejects the immediate reclaim setup; 116.63 remains opening-range downside evidence, not an adopted stop.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://corporate.walmart.com/news/2026/10/meet-your-120-life-hack"
         ]
       },
       {
         "symbol": "XOM",
         "score": 50,
         "rubric_version": "buying-score-v1",
-        "reference_price": 177.08,
-        "reference_price_timestamp": "2026-10-21T13:38:16.486519516Z",
+        "reference_price": 177.22,
+        "reference_price_timestamp": "2026-10-21T14:01:49.995159851Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Regular-session liquidity improved, but loss of 177.23 and the opening low weakens immediate entry quality. Score unchanged at 50: improved liquidity is offset by opening support deterioration.",
+        "reason": "Bounced from 176.15 but the last completed minute closed 176.88 and final 177.22 trade has not established 177.23 recovery/retest. Positive daily trend is offset by weak opening structure and Oct 30 earnings risk. Change from prior publication: 50 unchanged: rebound has not established the required recovery.",
+        "improvement_condition": "WAIT. Require 177.23 recovery plus a completed hold/retest; alternatively inspect 175.15 support if tested. A sustained 174.915 loss weakens that setup. Do not chase 180.26; reassess before Oct 30 earnings.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
@@ -628,61 +559,65 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Require 177.23 recovery or a confirmed hold near 175.15; do not chase toward 180.26. A sustained loss of 174.915 weakens the support-based setup; review before Oct 30 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require 177.23 recovery plus a completed hold/retest; alternatively inspect 175.15 support if tested. A sustained 174.915 loss weakens that setup. Do not chase 180.26; reassess before Oct 30 earnings.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://investor.exxonmobil.com/news-events/ir-calendar/detail/20261030-3q-2026-earnings-call"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
         ]
       },
       {
-        "symbol": "DUK",
+        "symbol": "AMZN",
         "score": 45,
         "rubric_version": "buying-score-v1",
-        "reference_price": 121.35,
-        "reference_price_timestamp": "2026-10-21T13:38:07.082758618Z",
+        "reference_price": 260.305,
+        "reference_price_timestamp": "2026-10-21T14:01:45.758318476Z",
         "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
+        "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Fresh trade restores scorability; above 116.26/118.94 daily averages, but 121.35 remains near opening-range support 121.31 and below the attempted 121.64 breakout. No new issuer catalyst or detailed valuation is established in this batch. Change from prior publication: Unavailable to 45: fresh regular-session price/book restore coverage; no fundamental points awarded without verified batch valuation.",
+        "reason": "259.85 opening-support setup failed, reaching 259.29; current bounce remains below 260.42 prior-day low. Change from prior publication: 50 to 45: entry quality reduced 5 after old opening support failed.",
+        "improvement_condition": "Reject the old 259.85-hold setup. Require 260.42\u2013262 recovery/retest above a newly stable base before a new plan; no chase 265.34 and no unplanned Oct 29 earnings exposure.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
-          "entry_quality": 15,
-          "trend_relative_strength": 15,
+          "entry_quality": 5,
+          "trend_relative_strength": 18,
           "catalyst": 5,
-          "fundamentals_valuation": 0,
+          "fundamentals_valuation": 7,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Do not chase the failed opening break. Require sustained reclaim and retest of 121.64 with participation, or a separate liquid hold of 119.70 daily support. A sustained loss of 119.70 invalidates that support setup.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Reject the old 259.85-hold setup. Require 260.42\u2013262 recovery/retest above a newly stable base before a new plan; no chase 265.34 and no unplanned Oct 29 earnings exposure.",
         "sizing": "Not provided on this public market-research page.",
-        "sources": [],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
+        "sources": [
+          "https://robinhood.com/us/en/stocks/AMZN/",
+          "https://www.aboutamazon.com/amazon-news-today"
         ]
       },
       {
         "symbol": "JPM",
         "score": 45,
         "rubric_version": "buying-score-v1",
-        "reference_price": 334.635,
-        "reference_price_timestamp": "2026-10-21T13:38:13.898317694Z",
+        "reference_price": 334.69,
+        "reference_price_timestamp": "2026-10-21T14:01:46.241697583Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Near the 334.49 twenty-day average and below the opening five-minute low; book is now current but recovery is unconfirmed. Change from prior publication: Unchanged 45: improved regular liquidity offset by weaker opening entry structure.",
+        "reason": "Holding near the 334.49 twenty-day average after a 333.94 intraday low, but repeated dips through that average and a 334.69 final trade do not establish a durable reclaim. Below 347.15 fifty-day average; Oct 13 earnings and about 14 x trailing P/E provide only partial support. Change from prior publication: 45 unchanged: temporary recovery lacks a durable retest; tighter liquidity already credited.",
+        "improvement_condition": "WAIT. Require 334.49 to hold on a completed retest, with 332.55 intact; next improvement is recovery of 336.89 opening high, then 339.86. No chase on a single print.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
@@ -691,62 +626,101 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Require a hold above 332.55 and recovery of 334.49, then reassess 339.86 reclaim. Do not chase before a completed retest; failure of 332.55 weakens the rebound thesis.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require 334.49 to hold on a completed retest, with 332.55 intact; next improvement is recovery of 336.89 opening high, then 339.86. No chase on a single print.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
-          "https://www.sec.gov/Archives/edgar/data/19617/000162828026065582/a3q26erfexhibit991narrative.htm"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
+          "https://www.sec.gov/Archives/edgar/data/19617/000162828026065582/jpm-20261013.htm"
         ]
       },
       {
-        "symbol": "PLD",
+        "symbol": "KO",
         "score": 45,
         "rubric_version": "buying-score-v1",
-        "reference_price": 128.6,
-        "reference_price_timestamp": "2026-10-21T13:38:19.144352914Z",
+        "reference_price": 92.925,
+        "reference_price_timestamp": "2026-10-21T14:01:45.233448544Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Current price restores scoring and improved FFO guidance remains supportive, but weak five-session/relative trend persists below 129.82/135.16 averages. Broker upgrade recap lacks primary verification. Change from prior publication: Unavailable to 45: fresh regular price recovered; versus earlier 40, liquidity improves. No backfill of unavailable record.",
+        "reason": "The 92.93 opening low was breached to 92.89 and the latest trade is still slightly below 92.93. Daily trend remains positive but five-session +3.75% trails XLP +4.23%; Oct 27 earnings narrows the several-day window. Change from prior publication: 50 to 45: failed initial opening support and weak follow-through reduce entry quality despite a tight spread.",
+        "improvement_condition": "Require a sustained recovery/retest of 92.93 before considering the immediate setup; otherwise wait for new stabilization above deeper 92.64 support. Sustained loss of 92.64 invalidates the daily-support setup. Avoid chasing 93.46\u201393.49 and avoid unplanned Oct 27 earnings exposure.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
-          "trend_relative_strength": 5,
-          "catalyst": 15,
+          "trend_relative_strength": 15,
+          "catalyst": 5,
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Consider only a confirmed 127.47 hold/retest or 129.82\u2013130.46 recovery with sustained volume. Do not chase the upgrade headline. Loss 124.14 weakens the bounce thesis; rates and transaction risk remain.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Require a sustained recovery/retest of 92.93 before considering the immediate setup; otherwise wait for new stabilization above deeper 92.64 support. Sustained loss of 92.64 invalidates the daily-support setup. Avoid chasing 93.46\u201393.49 and avoid unplanned Oct 27 earnings exposure.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
-          "https://ir.prologis.com/news-events/press-releases/detail/1055/prologis-reports-third-quarter-2026-results"
-        ],
+          "https://investors.coca-colacompany.com/_assets/_02744905259cb8240758f5502f105697/cocacolacompany/news/2026-09-29_The_Coca_Cola_Company_Announces_Timing_of_Third_1173.pdf"
+        ]
+      },
+      {
+        "symbol": "SPCX",
+        "score": 45,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 164.565,
+        "reference_price_timestamp": "2026-10-21T14:01:50.331747781Z",
+        "reference_session": "regular",
+        "reference_price_type": "regular-session last trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Completed bars recovered 160.45\u2013161.15 and exceeded 162.77 opening high, but price is extended near 164.69 morning high. Change from prior publication: 35 to 45: entry and trend evidence each improve 5 after sustained recovery; no new primary catalyst or matched historical relative-volume confirmation.",
+        "improvement_condition": "No chase near 164.69. Require a liquid consolidation/retest holding 162.77 or a separate 160.45\u2013161.15 pullback; failure of the selected support rejects that new setup. Recheck reward/risk and event calendar before entry.",
+        "quote_delay": "unknown",
         "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits.",
+          "Verified ClassA identity; merger exploration is not a signed transaction. Next scheduled event calendar not fully verified; price gap and volatility remain material."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 6,
+          "trend_relative_strength": 15,
+          "catalyst": 15,
+          "fundamentals_valuation": 2,
+          "liquidity_event_risk": 7
+        },
+        "conditional_action": "No chase near 164.69. Require a liquid consolidation/retest holding 162.77 or a separate 160.45\u2013161.15 pullback; failure of the selected support rejects that new setup. Recheck reward/risk and event calendar before entry.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://robinhood.com/us/en/stocks/SPCX/",
+          "https://www.sec.gov/Archives/edgar/data/1181412/000162828026066482/spaceexplorationtechnologi.htm"
         ]
       },
       {
         "symbol": "AVGO",
         "score": 40,
         "rubric_version": "buying-score-v1",
-        "reference_price": 336.85,
-        "reference_price_timestamp": "2026-10-21T13:38:18.351777337Z",
+        "reference_price": 335.4,
+        "reference_price_timestamp": "2026-10-21T14:01:42.418167235Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Regular liquidity improved but 335.93\u2013338.94 opening range remains below 341.10 and 20/50-day averages. Change from prior publication: 35\u219240: improved regular liquidity, not trend repair.",
+        "reason": "Opening lows extended to 334.56; below 341.10 and daily trend resistance despite good liquidity. Change from prior publication: Unchanged 40; weak trend remains, no verified new catalyst.",
+        "improvement_condition": "Require a higher low above 328.58 plus 341.10 reclaim/retest with participation; 328.58 failure rejects the base. Do not chase 352.48; verify next earnings date.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 10,
@@ -755,31 +729,63 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Prospective entry: require a higher low above 328.58 and 341.10 reclaim with participation; failure of 328.58 invalidates base. Reassess rather than chase toward 352.48; verify next earnings date first.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Require a higher low above 328.58 plus 341.10 reclaim/retest with participation; 328.58 failure rejects the base. Do not chase 352.48; verify next earnings date.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/AVGO/",
           "https://investors.broadcom.com/news-releases/news-release-details/broadcom-advance-ntt-docomos-private-cloud-vmware-cloud"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
+      },
+      {
+        "symbol": "DUK",
+        "score": 40,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 121.05,
+        "reference_price_timestamp": "2026-10-21T14:01:50.445970818Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "The failed 121.64\u2013121.70 break has faded to 121.05 near the 30-minute low 121.01. Daily trend remains constructive. Verified 17.8939 trailing P/E supports 5 valuation points, correcting the prior claim that valuation was unavailable, but deteriorating entry structure costs 10 points. Change from prior publication: 45\u219240: entry 15\u21925; valuation 0\u21925 using verified existing data. Prior published score remains unchanged in history.",
+        "improvement_condition": "WAIT. Require 121.64\u2013121.70 reclaim and completed retest, or a separate confirmed 119.70 support hold. The current 121.05 decline is not that confirmation; sustained 119.70 failure invalidates the deeper support setup.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 15,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 10
+        },
+        "conditional_action": "WAIT. Require 121.64\u2013121.70 reclaim and completed retest, or a separate confirmed 119.70 support hold. The current 121.05 decline is not that confirmation; sustained 119.70 failure invalidates the deeper support setup.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": []
       },
       {
         "symbol": "GE",
         "score": 40,
         "rubric_version": "buying-score-v1",
-        "reference_price": 303.27,
-        "reference_price_timestamp": "2026-10-21T13:38:17.642798801Z",
+        "reference_price": 305.337,
+        "reference_price_timestamp": "2026-10-21T14:01:49.956055958Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Oct 20 raised guidance and orders growth are real, but free-cash-flow decline and damaged daily trend remain disconfirming; regular liquidity improves. Change from prior publication: 35 to 40: regular liquidity improves; catalyst and trend assessment unchanged.",
+        "reason": "The 308.6499 opening-window high was followed by repeated closes below 307.36 and a 305.337 final trade. Yesterday's higher guidance/orders catalyst remains valid, but the failed reclaim and 311.52/327.93 daily averages prevent a breakout claim. Change from prior publication: 40 unchanged: brief 307.36 reclaim failed; no automatic breakout upgrade.",
+        "improvement_condition": "WAIT. Require 307.36 recovery with a completed higher-low retest, then reassess 311.52. A brief trade above 307.36 is not a breakout; 300.26 opening support and 294.22 historical failure remain downside references.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 5,
@@ -788,30 +794,101 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Require 307.36 recovery and a completed higher-low retest before considering entry. Do not chase the opening bounce; 294.22 failure weakens the recovery thesis.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require 307.36 recovery with a completed higher-low retest, then reassess 311.52. A brief trade above 307.36 is not a breakout; 300.26 opening support and 294.22 historical failure remain downside references.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://www.geaerospace.com/news/press-releases/ge-aerospace-announces-third-quarter-2026-results"
-        ],
+        ]
+      },
+      {
+        "symbol": "NEE",
+        "score": 40,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 78.38,
+        "reference_price_timestamp": "2026-10-21T14:01:49.532858291Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "The opening reaction has reversed:79.85 high,13:59 low 78.43, then 78.38 trade near 78.35 support. Official earnings slides/release support 9.7% adjusted-EPS growth and maintained guidance, but neither a support hold nor call/Q&A conclusion is verified. Change from prior publication: 50\u219240: entry 10\u21920 after the opening rally reversed and support approached without stabilization. Catalyst remains 15; no inferred call outcome.",
+        "improvement_condition": "WAIT, NO FALLING-PRICE ENTRY. Require 78.35 support to hold and 78.86 to be recovered on completed bars; alternatively reassess sustained 80.265 recovery/retest. Loss 77.95 invalidates the support thesis. Review call evidence before catalyst-driven entry.",
+        "quote_delay": "unknown",
         "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 0,
+          "trend_relative_strength": 10,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 10
+        },
+        "conditional_action": "WAIT, NO FALLING-PRICE ENTRY. Require 78.35 support to hold and 78.86 to be recovered on completed bars; alternatively reassess sustained 80.265 recovery/retest. Loss 77.95 invalidates the support thesis. Review call evidence before catalyst-driven entry.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://www.investor.nexteraenergy.com/news-and-events/events-and-presentations/2026/10-21-26",
+          "https://www.investor.nexteraenergy.com/~/media/Files/N/NEE-IR/reports-and-fillings/quarterly-earnings/2026/Q3%202026/Q3%202026%20Earnings%20Slides_vF.pdf",
+          "https://www.investor.nexteraenergy.com/~/media/Files/N/NEE-IR/reports-and-fillings/quarterly-earnings/2026/Q3%202026/2026-1021%20NEEQ32026News%20Release%20vFinal.pdf"
+        ]
+      },
+      {
+        "symbol": "PLD",
+        "score": 40,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 128.265,
+        "reference_price_timestamp": "2026-10-21T14:01:37.855471029Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "The final 128.265 trade has faded toward 128.00 opening support while still below 129.82/135.16 daily averages. Improved FFO guidance remains supportive, but a weak five-session trend and lack of completed recovery reduce entry quality. Change from prior publication: 45\u219240: entry 10\u21925 as price fades toward opening support without recovery.",
+        "improvement_condition": "WAIT. Require 128.00 to stabilize and a completed higher low, or a confirmed 127.47 support hold; stronger improvement is 129.82\u2013130.46 recovery. Loss 124.14 weakens the broader bounce thesis.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 5,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 10
+        },
+        "conditional_action": "WAIT. Require 128.00 to stabilize and a completed higher low, or a confirmed 127.47 support hold; stronger improvement is 129.82\u2013130.46 recovery. Loss 124.14 weakens the broader bounce thesis.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://ir.prologis.com/news-events/press-releases/detail/1055/prologis-reports-third-quarter-2026-results"
         ]
       },
       {
         "symbol": "PG",
         "score": 35,
         "rubric_version": "buying-score-v1",
-        "reference_price": 158.18,
-        "reference_price_timestamp": "2026-10-21T13:38:20.412102943Z",
+        "reference_price": 158.12,
+        "reference_price_timestamp": "2026-10-21T14:01:44.847700241Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Positive longer trend is outweighed by tomorrow Oct 22 earnings; opening trade is near the 158.06 prior-day low after a 157.98 opening low. Change from prior publication: Unchanged 35: better liquidity does not resolve imminent overnight event risk.",
+        "reason": "Tomorrow Oct 22 earnings dominates the several-day decision. Trading tested 157.83 and recovered to 158.12, but a small recovery above 158.06 prior-day low does not contain overnight event risk. Change from prior publication: Unchanged 35: improved liquidity or a small support recovery does not resolve tomorrow\u2019s gap risk.",
+        "improvement_condition": "No new several-day entry before Oct 22 earnings under a non-event-gamble plan. Reassess after results using a fresh liquid base and actual gap evidence; pre-event support is not a reliable overnight loss limit.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "Daily trend uses 78 completed daily bars through Oct20; daily averages are not live intraday indicators.",
+          "Thirty completed regular-session minute bars through 13:59:59Z were examined; synthetic, zero-volume and developing bars were excluded.",
+          "Observed minute-bar volume is provider coverage, not independently verified consolidated volume; no same-time historical relative-volume baseline is established.",
+          "Quote and bid/ask timestamps can differ; book depth and vendor/exchange delay are unknown; snapshots are not guaranteed fills.",
+          "Company catalyst and trailing-valuation evidence are the previously verified baseline; no newly verified earnings-guidance change was supplied for this reassessment.",
+          "Scores are comparative judgments, not probabilities of profit or a backtested edge; hypothetical invalidation levels are not user-adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 5,
@@ -820,64 +897,31 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 5
         },
-        "conditional_action": "No new several-day entry before the earnings release under a non-event-gamble plan. Reassess a post-results base and fresh gap/liquidity evidence; pre-earnings support is not a reliable gap-risk limit.",
-        "quote_delay": "Unknown",
+        "conditional_action": "No new several-day entry before Oct 22 earnings under a non-event-gamble plan. Reassess after results using a fresh liquid base and actual gap evidence; pre-event support is not a reliable overnight loss limit.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://www.pginvestor.com/overview/default.aspx"
-        ],
-        "evidence_limitations": [
-          "Only five completed opening minutes; no claim of a confirmed sustained breakout or full-session relative volume.",
-          "Returned bar volume is observed provider coverage, not an independently verified consolidated total.",
-          "13:35 minute bar excluded as developing at acquisition.",
-          "Scores are comparative judgments, not probability of profit or a proven edge; proposed invalidation levels are not user-adopted risk limits.",
-          "Daily trend evidence is through Oct20; current benchmark-relative intraday strength not calculated."
-        ]
-      },
-      {
-        "symbol": "SPCX",
-        "score": 35,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 159.545,
-        "reference_price_timestamp": "2026-10-21T13:38:20.403662331Z",
-        "reference_session": "regular",
-        "reference_price_type": "regular-session last trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Fresh 159.545 last trade is back below 160.45\u2013161.15 recovery zone after opening whipsaw; no sustained recovery or qualified entry. Change from prior publication: Unchanged 35 versus published 08:00 score: regular liquidity improves but renewed recovery failure offsets it.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 1,
-          "trend_relative_strength": 10,
-          "catalyst": 15,
-          "fundamentals_valuation": 2,
-          "liquidity_event_risk": 7
-        },
-        "conditional_action": "Prospective entry only: no immediate entry. Require sustained 160.45\u2013161.15 recovery and a successful retest, not a single spike. Failure of 158.78 opening low weakens the new base; 157.80 is older reference, not an adopted stop. Do not chase 162.77 opening high.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://www.sec.gov/Archives/edgar/data/1181412/000162828026066482/spaceexplorationtechnologi.htm"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
       },
       {
         "symbol": "CAT",
         "score": 30,
         "rubric_version": "buying-score-v1",
-        "reference_price": 736.005,
-        "reference_price_timestamp": "2026-10-21T13:38:11.409371471Z",
+        "reference_price": 734.795,
+        "reference_price_timestamp": "2026-10-21T14:01:44.286357754Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening bounce remains below 742.98/748.98 and far below daily averages; genuine trading improves evidence but spread has widened to about 0.26%. Change from prior publication: 25 to 30: regular participation replaces thin premarket evidence; trend still weak.",
+        "reason": "Thirty-minute range 733.02\u2013742.00 and final 734.795 show the opening rebound fading. Still far below 796.43/808.18 averages; a narrower book does not repair the daily downtrend or 31.22 x trailing valuation before Oct 29 earnings. Change from prior publication: 30 unchanged: narrower spread cannot offset continued failed recovery.",
+        "improvement_condition": "WAIT. Require durable 742.98 then 748.98 recovery with participation. Current rebound alone is insufficient; 733.02 is the observed opening-window low, while 708.75 is a deeper historical failure reference, not an adopted stop.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 5,
@@ -886,30 +930,31 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "No new purchase solely on the rebound. Require durable 742.98 then 748.98 recovery and a tighter book; 708.75 is a deeper historical failure reference, not a proposed immediate stop. Reassess before Oct 29 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require durable 742.98 then 748.98 recovery with participation. Current rebound alone is insufficient; 733.02 is the observed opening-window low, while 708.75 is a deeper historical failure reference, not an adopted stop.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://www.caterpillar.com/en/news/corporate-press-releases/h/caterpillar-to-announce-3Q-2026-financial-results-on-oct-29.html"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
         ]
       },
       {
         "symbol": "FCX",
         "score": 30,
         "rubric_version": "buying-score-v1",
-        "reference_price": 67.8,
-        "reference_price_timestamp": "2026-10-21T13:38:12.14794496Z",
+        "reference_price": 68.3,
+        "reference_price_timestamp": "2026-10-21T14:01:47.374700929Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Regular liquidity is better but price is down about 1.55%, near opening lows, and remains below 71.32/72.01 averages; cost and earnings risks persist. Change from prior publication: Unchanged 30: worse entry quality offsets better regular liquidity.",
+        "reason": "Recovered from 67.22 intraday low to 68.30, but the final completed minute closed 68.055 and 70.05\u201370.25 recovery remains absent. Below 71.32/72.01 daily averages; higher unit costs and Oct 27 earnings still outweigh a small bounce. Change from prior publication: 30 unchanged: a bounce alone does not satisfy 70.05\u201370.25 recovery.",
+        "improvement_condition": "WAIT. Require 70.05\u201370.25 recovery/retest with participation. A renewed sustained loss of 67.23, briefly pierced to 67.22 already, weakens the rebound; do not silently carry a new trade through Oct 27 earnings.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 0,
@@ -918,62 +963,31 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 10
         },
-        "conditional_action": "Do not buy the decline without stabilization. Require 70.05\u201370.25 recovery/retest and participation; 67.23 failure further weakens setup. Avoid silently holding through Oct 27 earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require 70.05\u201370.25 recovery/retest with participation. A renewed sustained loss of 67.23, briefly pierced to 67.22 already, weakens the rebound; do not silently carry a new trade through Oct 27 earnings.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
           "https://investors.fcx.com/investors/news-releases/news-release-details/2026/Freeport-Provides-Third-Quarter-2026-Operational-Update/default.aspx"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
-        ]
-      },
-      {
-        "symbol": "BAC",
-        "score": 25,
-        "rubric_version": "buying-score-v1",
-        "reference_price": 50.6,
-        "reference_price_timestamp": "2026-10-21T13:38:19.675980832Z",
-        "reference_session": "regular",
-        "reference_price_type": "last regular-session trade",
-        "cohort": "intraday",
-        "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Tighter regular-session book improves execution, but loss of the first five-minute low offsets that benefit; cheap valuation does not repair the downtrend. Change from prior publication: Unchanged 25: opening weakness offsets improved liquidity.",
-        "score_status": "available",
-        "component_scores": {
-          "entry_quality": 0,
-          "trend_relative_strength": 0,
-          "catalyst": 5,
-          "fundamentals_valuation": 10,
-          "liquidity_event_risk": 10
-        },
-        "conditional_action": "No new entry on price alone. Require recovery of 51.295 then 52.64 with sustained participation; 50.01 and 49.255 are historical downside references, not user-adopted stops.",
-        "quote_delay": "Unknown",
-        "sizing": "Not provided on this public market-research page.",
-        "sources": [
-          "https://investor.bankofamerica.com/regulatory-and-other-filings/select-sec-filings/content/0000070858-26-000481/bac-20261014.htm"
-        ],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
         ]
       },
       {
         "symbol": "DE",
         "score": 25,
         "rubric_version": "buying-score-v1",
-        "reference_price": 634.03,
-        "reference_price_timestamp": "2026-10-21T13:38:13.591064686Z",
+        "reference_price": 630.47,
+        "reference_price_timestamp": "2026-10-21T14:01:44.788648999Z",
         "reference_session": "regular",
         "reference_price_type": "last regular-session trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Current regular trade and two-sided book restore scoring, but about 0.47% spread, modest opening participation, price below 20/50-day averages 663.54/657.11 and 34.85 x trailing PE limit the setup. Change from prior publication: Unavailable to 25: critical current price evidence recovered, not a historical score backfill.",
+        "reason": "Regular trading is verified, but many returned minutes have small observed volume and the book still spans about 0.19%. Price remains below 663.54/657.11 averages and 640.92 recovery trigger; 34.85 x trailing earnings does not compensate for the damaged entry structure. Change from prior publication: 25 unchanged: better spread than 08:38, but weak participation/structure keeps liquidity credit limited.",
+        "improvement_condition": "WAIT. Require a materially tighter, sustained book and 640.92 reclaim/retest. Watch 628.54 intraday low and 625.97 historical support; neither proximity nor a single illiquid print is an entry trigger.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 5,
@@ -982,28 +996,29 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 5
         },
-        "conditional_action": "Require narrower spread, sustained regular participation and a confirmed 640.92 reclaim/retest. Monitor 625.97 support; its loss weakens a rebound. No justified several-day entry yet.",
-        "quote_delay": "Unknown",
+        "conditional_action": "WAIT. Require a materially tighter, sustained book and 640.92 reclaim/retest. Watch 628.54 intraday low and 625.97 historical support; neither proximity nor a single illiquid print is an entry trigger.",
         "sizing": "Not provided on this public market-research page.",
-        "sources": [],
-        "evidence_limitations": [
-          "Quote delay unknown; snapshot not guaranteed fill.",
-          "No order-book depth or same-time historical RVOL baseline.",
-          "78 prior completed daily bars throughOct20; only firstfive completed minutes assessed. Later prints are not validated completed-bar breakouts.",
-          "Comparisons versus prior scores cross from provisional-ask to intraday-last-trade cohort; price and liquidity changes are not new catalyst evidence."
-        ]
+        "sources": []
       },
       {
         "symbol": "GOOGL",
         "score": 25,
         "rubric_version": "buying-score-v1",
-        "reference_price": 333.2,
-        "reference_price_timestamp": "2026-10-21T13:38:19.675689154Z",
+        "reference_price": 333.02,
+        "reference_price_timestamp": "2026-10-21T14:01:46.539022364Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening 331.45 low deepens breakdown below 338.36 and both trend averages; inexpensive P/E is not a trigger. Change from prior publication: 30\u219225: deeper opening breakdown outweighs liquidity improvement.",
+        "reason": "Small bounce from 331.45 does not repair 338.36 support loss or 344\u2013345 resistance. Change from prior publication: Unchanged 25; stabilization alone is insufficient daily trend repair.",
+        "improvement_condition": "No falling-price purchase: require stable base and 338.36 recovery, then reassess 344\u2013345. Verify Oct 28 event date directly before any several-day entry.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 2,
@@ -1012,31 +1027,32 @@
           "fundamentals_valuation": 8,
           "liquidity_event_risk": 8
         },
-        "conditional_action": "Prospective entry: do not catch the decline. Require a stable base and 338.36 recovery before considering entry, then reassess 344\u2013345 resistance. No defensible new entry/invalidation pair until base forms; verify Oct 28 earnings directly.",
-        "quote_delay": "Unknown",
+        "conditional_action": "No falling-price purchase: require stable base and 338.36 recovery, then reassess 344\u2013345. Verify Oct 28 event date directly before any several-day entry.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/GOOGL/",
           "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
       },
       {
         "symbol": "TSLA",
         "score": 25,
         "rubric_version": "buying-score-v1",
-        "reference_price": 381.4073,
-        "reference_price_timestamp": "2026-10-21T13:38:20.532097538Z",
+        "reference_price": 387.401,
+        "reference_price_timestamp": "2026-10-21T14:01:50.519711299Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening rebound remains above daily averages, but earnings tonight and extreme valuation dominate several-day entry risk. Change from prior publication: Unchanged 25: better opening trend does not remove event-gap risk.",
+        "reason": "Strong opening rebound cannot offset tonight\u2019s verified earnings gap risk and demanding valuation. Change from prior publication: Unchanged 25; intraday strength does not remove earnings risk.",
+        "improvement_condition": "No new several-day entry before tonight\u2019s results under the non-event-gamble plan; reassess guidance, post-event liquidity and a fresh base.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 4,
@@ -1045,31 +1061,66 @@
           "fundamentals_valuation": 1,
           "liquidity_event_risk": 2
         },
-        "conditional_action": "Prospective entry: no new several-day purchase before tonight\u2019s results. Require post-earnings guidance, liquid base and fresh risk/reward; no pre-event entry/chase/invalidation levels proposed.",
-        "quote_delay": "Unknown",
+        "conditional_action": "No new several-day entry before tonight\u2019s results under the non-event-gamble plan; reassess guidance, post-event liquidity and a fresh base.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/TSLA/",
           "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments"
-        ],
+        ]
+      },
+      {
+        "symbol": "BAC",
+        "score": 20,
+        "rubric_version": "buying-score-v1",
+        "reference_price": 50.7999,
+        "reference_price_timestamp": "2026-10-21T14:01:46.545065505Z",
+        "reference_session": "regular",
+        "reference_price_type": "last regular-session trade",
+        "cohort": "intraday",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Recovered from 50.52 intraday low but still below 51.295 and 53.73/58.53 daily averages. About 12 x trailing earnings is inexpensive, not sufficient for maximum valuation points: Oct 14 results include a regulatory settlement and lower reported profit. No fresh positive catalyst verified. Change from prior publication: 25\u219220: valuation capped at 5/10 rather than 10/10 after primary earnings/settlement context; not a new event today or a backfill.",
+        "improvement_condition": "WAIT. Require a sustained 51.295 reclaim and completed retest, then reassess 52.64. A 50.01 failure, then 49.255, weakens any rebound thesis; do not buy solely on low P/E.",
+        "quote_delay": "unknown",
         "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
+          "30 completed opening minutes only; no full-session confirmation or historical same-time relative-volume baseline.",
+          "Returned volume is observed provider coverage, not independently verified consolidated volume.",
+          "Last trade and book timestamps differ; price is not an executable offer and quote delay/depth are unknown.",
+          "Scores are comparative judgment, not profit probability or a proven edge; invalidation levels are not adopted loss limits."
+        ],
+        "score_status": "available",
+        "component_scores": {
+          "entry_quality": 0,
+          "trend_relative_strength": 0,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 10
+        },
+        "conditional_action": "WAIT. Require a sustained 51.295 reclaim and completed retest, then reassess 52.64. A 50.01 failure, then 49.255, weakens any rebound thesis; do not buy solely on low P/E.",
+        "sizing": "Not provided on this public market-research page.",
+        "sources": [
+          "https://newsroom.bankofamerica.com/content/newsroom/press-releases/2026/10/bank-of-america-reports-third-quarter-2026-financial-results.html",
+          "https://investor.bankofamerica.com/regulatory-and-other-filings/select-sec-filings/content/0000070858-26-000481/attachments/The%20Press%20Release_3Q26_ADA.pdf"
         ]
       },
       {
         "symbol": "META",
         "score": 20,
         "rubric_version": "buying-score-v1",
-        "reference_price": 702.725,
-        "reference_price_timestamp": "2026-10-21T13:38:19.256068536Z",
+        "reference_price": 709.1,
+        "reference_price_timestamp": "2026-10-21T14:01:43.685959015Z",
         "reference_session": "regular",
         "reference_price_type": "regular-session last trade",
         "cohort": "intraday",
         "reference_source": "Robinhood get_equity_quotes",
-        "reason": "Opening rebound above 694.25 does not repair 731.87 trend resistance or remove earnings tonight. Change from prior publication: Unchanged 20: rebound does not resolve event risk.",
+        "reason": "Opening rebound to 712 failed to repair daily trend; issuer confirms results tonight. Change from prior publication: Unchanged 20; rebound does not compensate for imminent event risk.",
+        "improvement_condition": "Wait for results and a liquid post-event base; no chase of the opening bounce or pre-event entry/invalidation pair.",
+        "quote_delay": "unknown",
+        "evidence_limitations": [
+          "78 completed daily bars throughOct20; current partial-day observations are not completed daily bars.",
+          "First30 completed regular minute bars examined; no matched historical-minute relative-volume baseline.",
+          "Quote/vendor delay and book depth unknown; last trade is not guaranteed executable offer.",
+          "Score is comparative judgment, not probability, validated edge or instruction; hypothetical invalidations are not adopted risk limits."
+        ],
         "score_status": "available",
         "component_scores": {
           "entry_quality": 4,
@@ -1078,22 +1129,15 @@
           "fundamentals_valuation": 5,
           "liquidity_event_risk": 2
         },
-        "conditional_action": "Prospective entry: wait for results and a liquid post-event base. Do not chase the opening bounce; no defensible several-day entry/invalidation pair before reassessing earnings.",
-        "quote_delay": "Unknown",
+        "conditional_action": "Wait for results and a liquid post-event base; no chase of the opening bounce or pre-event entry/invalidation pair.",
         "sizing": "Not provided on this public market-research page.",
         "sources": [
+          "https://robinhood.com/us/en/stocks/META/",
           "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-to-Announce-Third-Quarter-2026-Results/default.aspx"
-        ],
-        "evidence_limitations": [
-          "Daily trend uses78 completed daily bars throughOct20, not live indicators.",
-          "Only first5 completed regular minute bars examined; no same-time historical relative-volume baseline or confirmed breakout.",
-          "Quotes are timestamped observations, not guaranteed fills; vendor delay not independently established.",
-          "Components are comparative judgment, not a backtested edge.",
-          "Final08:38 quote re-evaluated after first5 completed opening bars; later intraday bar history not retrieved, so subsequent breakout confirmation unavailable."
         ]
       }
     ],
-    "history_note": "Original regular-session publication in the intraday cohort. Earlier provisional-price publications remain unchanged; recovered coverage does not backfill prior unavailable scores."
+    "history_note": "Original 09:00 scheduled review publication. DUK valuation evidence is corrected in this assessment; prior published scores and references remain immutable. No historical scores are backfilled."
   },
   "score_history": [
     {
@@ -1110,6 +1154,11 @@
       "id": "20261021T134138318434Z",
       "publication_timestamp": "2026-10-21T13:41:38.318434Z",
       "path": "data/watch-history/20261021T134138318434Z.json"
+    },
+    {
+      "id": "20261021T140638875486Z",
+      "publication_timestamp": "2026-10-21T14:06:38.875486+00:00",
+      "path": "data/watch-history/20261021T140638875486Z.json"
     }
   ]
 }
