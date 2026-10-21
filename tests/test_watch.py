@@ -226,6 +226,18 @@ class WatchTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(data)
 
+    def numeric_fixture(self):
+        """Numeric validation must not depend on the latest published cohort."""
+        data = copy.deepcopy(self.data)
+        record = data["last_hard_check"]["records"][0]
+        record.update(score=50, score_status="available", reference_price=100.0,
+                      reference_price_timestamp=data["last_hard_check"]["assessment_snapshot"],
+                      component_scores={"entry_quality": 15, "trend_relative_strength": 10,
+                                        "catalyst": 10, "fundamentals_valuation": 5,
+                                        "liquidity_event_risk": 10})
+        validate(data)
+        return data
+
     def test_reject_invalid_weights_components_and_sizing(self):
         mutations = [
             lambda d: d["last_hard_check"]["weights"].update(entry_quality=31),
@@ -233,12 +245,13 @@ class WatchTests(unittest.TestCase):
             lambda d: d["last_hard_check"]["records"][0].update(sizing="Buy 100 shares"),
         ]
         for mutate in mutations:
-            data = copy.deepcopy(self.data)
+            data = self.numeric_fixture()
             mutate(data)
             with self.assertRaises(ValueError):
                 validate(data)
 
     def test_reject_nonfinite_and_boolean_reference_prices(self):
+        self.data = self.numeric_fixture()
         for price in (float("nan"), float("inf"), -float("inf"), True):
             self.data["last_hard_check"]["records"][0]["reference_price"] = price
             with self.assertRaises(ValueError):
@@ -271,6 +284,7 @@ class WatchTests(unittest.TestCase):
                 validate(data)
 
     def test_reject_impossible_timestamp_order(self):
+        self.data = self.numeric_fixture()
         self.data["last_hard_check"]["records"][0]["reference_price_timestamp"] = (timestamp(self.data["last_hard_check"]["assessment_snapshot"]) + timedelta(seconds=1)).isoformat()
         with self.assertRaises(ValueError):
             validate(self.data)
