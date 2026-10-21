@@ -1,22 +1,1033 @@
 {
-  "schema_version": 1,
-  "configuration_updated_at": "2026-09-21T14:45:05.560243Z",
+  "schema_version": 2,
+  "configuration_updated_at": "2026-10-21T12:54:00Z",
   "timezone": "America/Chicago",
   "schedule": {
-    "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    "hours": [8, 12, 16],
-    "timing": "approximate",
-    "controller": "Existing ChatGPT Investment Opportunity Watch",
-    "external_local_scheduler": "Not verified or changed by this website update"
+    "soft_checks": "Every 10 minutes, around the clock, seven days a week. Verify actual exchange and symbol sessions.",
+    "hard_checks": "07:00, 08:00, 09:00, 13:30 and 14:30 America/Chicago on full trading days. Verified half-day afternoon targets: 10:30 and 11:30. Skip full holidays.",
+    "controller": "Existing scheduled ChatGPT reviews; this static website does not schedule or execute checks."
   },
-  "scope": ["Long-only swing research: days to weeks", "Longer-term investment research", "Liquid U.S.-listed stocks and unleveraged ETFs"],
-  "portfolio_check": "Retrieve Robinhood accounts and holdings afresh through Finances at every check; read the current watchlist when available. Verify coverage and source timestamps before comparing overlap, concentration and closed positions. A balance is not confirmed investable cash.",
+  "scope": [
+    "Fixed 32-stock universe; every name attempted at each check",
+    "Several-day, own-funded, long-only market research; no requirement to trade"
+  ],
+  "portfolio_check": "Portfolio-specific reviews remain private and are not published in this market-only feed.",
   "research_method": "Build a sourced case, then challenge it with contrary evidence and independently check material facts and calculations. Use timestamped market data and primary company, SEC or fund documents. Compare candidates with cash and a diversified alternative.",
   "reasoning_mode": "A maximum-thinking or Ultra setting cannot be selected or verified through the scheduled-task controls. Two-pass validation is a research instruction, not a model-setting claim.",
-  "alert_policy": "Publish only materially supported new candidates or material thesis/risk changes. Suppress repeats and expired setups. Three checks do not require three alerts. Report persistent material access issues separately; an incomplete check is not a no-opportunity result.",
+  "alert_policy": "Material new evidence only between full reports. No repeated unchanged notifications.",
   "execution": "Research only. All trading decisions and execution remain manual. No orders, simulated orders, cash transfers or autonomous execution.",
   "risk_limits": "No options, margin, leverage, shorts, leveraged/inverse funds, microcaps or illiquid securities. No personalized dollar allocations or share quantities without confirmed liquidity needs, horizon and tolerable loss.",
-  "privacy": "This feed contains public research and non-sensitive verification status only. No account identifiers, balances, share counts, trade history, deposits, credentials or private financial plans. The existing portfolio publication is a separate dated record.",
-  "last_check": null,
-  "alerts": []
+  "privacy": "Market-only publication. Personal holdings, account information and allocations are excluded. Historical pages are preserved separately.",
+  "last_check": {
+    "checked_at": "2026-10-21T12:07:45Z",
+    "status": "incomplete",
+    "summary": "All 32 names attempted; 26 provisional buying scores and 6 unavailable. No immediate new entry qualified.",
+    "coverage": "Premarket reference prices, not executable guarantees. Six symbols lacked sufficiently current price evidence; book depth and full-session relative volume are incomplete."
+  },
+  "alerts": [],
+  "last_soft_check": {
+    "checked_at": "2026-10-21T13:15:51.284Z",
+    "status": "partial",
+    "summary": "08:10 Houston soft check: all 32 attempted. No new numeric scores published; the hard-review assessment remains separately dated.",
+    "coverage": "Quote snapshot 13:12:42 UTC: 11 fresh last trades, 15 fresh book-only references; HD, WMT, ABBV, DE, RTX, DUK stale on both. Premarket quotes are not guaranteed executable prices. Full depth and matched-time relative volume unavailable.",
+    "attempted": 32,
+    "current": 26
+  },
+  "last_hard_check": {
+    "id": "20261021T130213492632Z",
+    "publication_timestamp": "2026-10-21T13:02:13.492632Z",
+    "assessment_snapshot": "2026-10-21T13:00:08.687Z",
+    "rubric_version": "buying-score-v1",
+    "weights": {
+      "entry_quality": 30,
+      "trend_relative_strength": 25,
+      "catalyst": 20,
+      "fundamentals_valuation": 10,
+      "liquidity_event_risk": 15
+    },
+    "cohort": "provisional-price",
+    "summary": "All 32 names attempted; 28 provisional buying scores and 4 unavailable. No immediate new entry qualified.",
+    "records": [
+      {
+        "symbol": "AAPL",
+        "score": 60,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 338.8,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:02.734420802Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Strong relative trend and Oct 23 launch; expensive valuation.",
+        "conditional_action": "Consider only liquid 337.40\u2013338.70 hold and 343.06 reclaim; avoid chasing 347.85.",
+        "sources": [
+          "https://www.apple.com/newsroom/2026/10/open-up-to-new-possibilities-with-iphone-duo/",
+          "https://developer.apple.com/news/?id=kkphp5qo",
+          "https://investor.apple.com/investor-relations/"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 18,
+          "trend_relative_strength": 18,
+          "catalyst": 12,
+          "fundamentals_valuation": 4,
+          "liquidity_event_risk": 8
+        }
+      },
+      {
+        "symbol": "CRM",
+        "score": 60,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 241.46,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:02.712517539Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Braze deal supports strategy, not raised FY 27 guidance; thin trading.",
+        "conditional_action": "Require liquid 239\u2013241 retest holding 235.60, or 244.14 reclaim; no chase 251.94.",
+        "sources": [
+          "https://www.salesforce.com/news/press-releases/2026/10/20/salesforce-signs-definitive-agreement-to-acquire-braze/"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 18,
+          "trend_relative_strength": 20,
+          "catalyst": 10,
+          "fundamentals_valuation": 7,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "ABBV",
+        "score": 55,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 288.5,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:46.326979575Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Positive trend; reimbursement agreement is not final provincial coverage. Change from prior publication: Current price/book recovered; newly scorable, not a historical score.",
+        "conditional_action": "Need fresh liquid 285 support hold;290.98\u2013291.40 resistance, Oct 30 earnings.",
+        "sources": [
+          "https://www.newswire.ca/news-releases/abbvie-reaches-agreement-with-the-pan-canadian-pharmaceutical-alliance-pcpa-for-elahere-r-in-platinum-resistant-ovarian-cancer-819019240.html"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 18,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 7
+        }
+      },
+      {
+        "symbol": "AMZN",
+        "score": 55,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 263.06,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:02.206180458Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Positive trend; limited room before 265.34, earnings Oct 29.",
+        "conditional_action": "Require 260.42\u2013262 support hold or volume-backed 265.34 reclaim.",
+        "sources": [
+          "https://www.aboutamazon.com/amazon-news-today"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
+          "fundamentals_valuation": 7,
+          "liquidity_event_risk": 8
+        }
+      },
+      {
+        "symbol": "LLY",
+        "score": 55,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 1278.4,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:03.683486281Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Strong healthcare momentum but extended and expensive.",
+        "conditional_action": "Prefer liquid 1260.17 retest; do not chase 1311.75; reassess before Oct 29 earnings.",
+        "sources": [
+          "https://investor.lilly.com/events/event-details/q3-2026-earnings-call"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 20,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "UNH",
+        "score": 55,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 420.0,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:46.365959598Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Raised EPS outlook; strong but extended healthcare trend. Change from prior publication: Lower entry quality after higher ask/less upside.",
+        "conditional_action": "Prefer pullback holding 408.28; avoid chasing into 422.40 resistance.",
+        "sources": [
+          "https://www.unitedhealthgroup.com/newsroom/2026/2026-10-13-uhg-reports-third-quarter-2026-results.html"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 10,
+          "trend_relative_strength": 20,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "CVX",
+        "score": 50,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 225.69,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:05.375272856Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Outperforming energy sector; thin premarket participation.",
+        "conditional_action": "Look for 223.12\u2013224.37 hold;221.56 failure weakens setup;227.28 overhead.",
+        "sources": [
+          "https://www.chevron.com/investors/events-presentations/3q-2026-earnings"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "LIN",
+        "score": 50,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 501.65,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:07.771980842Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Above key averages, but no genuine 07:00\u201307:50 trades.",
+        "conditional_action": "Require actual participation and 496.68\u2013498.43 hold;506.38 resistance; Oct 29 results.",
+        "sources": [
+          "https://www.linde.com/news-and-media/2026/linde-announces-third-quarter-2026-earnings-and-conference-call-schedule"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "MSFT",
+        "score": 50,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 531.42,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:49.571966052Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Above averages, but weak five-session momentum and Oct 28 earnings.",
+        "conditional_action": "Require 524.43\u2013525.84 hold and 534.21 recovery, not a thin-book chase.",
+        "sources": [
+          "https://www.microsoft.com/en-us/investor/default"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 18,
+          "catalyst": 4,
+          "fundamentals_valuation": 6,
+          "liquidity_event_risk": 7
+        }
+      },
+      {
+        "symbol": "RTX",
+        "score": 50,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 196.0,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:58:55.538215623Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Raised earnings outlook versus wide book and incomplete trend repair.",
+        "conditional_action": "Need tighter spread and 197 reclaim;190.38\u2013192.11 support,188.08 failure.",
+        "sources": [
+          "https://www.rtx.com/news/news-center/2026/10/20/rtx-reports-q3-2026-results"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 20,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "XOM",
+        "score": 50,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 177.93,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:05.131699888Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Relative strength, but thin premarket participation. Reassess liquid regular-session evidence before any new entry.",
+        "conditional_action": "Regular session only: require 177.23/175.15 hold;180.26 overhead;174.915 failure.",
+        "sources": [
+          "https://investor.exxonmobil.com/news-events/ir-calendar/detail/20261030-3q-2026-earnings-call"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "JPM",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 337.73,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:05.27851894Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Reasonable valuation, still below 50-day trend.",
+        "conditional_action": "Require fresh narrow spread,332.55 support and 339.86 reclaim.",
+        "sources": [
+          "https://www.sec.gov/Archives/edgar/data/19617/000162828026065582/a3q26erfexhibit991narrative.htm"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 10,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "KO",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 93.1,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:58:31.263561462Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Positive trend but trails staples modestly; earnings Oct 27. Change from prior publication: Current price/book recovered; newly scorable, not a historical score.",
+        "conditional_action": "Require 92.64 hold and tighter spread;93.96 overhead; avoid unplanned earnings exposure.",
+        "sources": [
+          "https://investors.coca-colacompany.com/_assets/_02744905259cb8240758f5502f105697/cocacolacompany/news/2026-09-29_The_Coca_Cola_Company_Announces_Timing_of_Third_1173.pdf"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 15,
+          "trend_relative_strength": 15,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "NEE",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 79.99,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:58:28.894425266Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Adjusted EPS grew 9.7%, guidance unchanged;08:00 call is starting, conclusions unavailable, thin/wide book.",
+        "conditional_action": "Wait for call evidence and tighter spread;80.265 reclaim or 78.35\u201378.86 hold;77.95 failure.",
+        "sources": [
+          "https://www.investor.nexteraenergy.com/~/media/Files/N/NEE-IR/reports-and-fillings/quarterly-earnings/2026/Q3%202026/2026-1021%20NEEQ32026News%20Release%20vFinal.pdf"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 10,
+          "trend_relative_strength": 10,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "NVDA",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 220.44,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:03.381012548Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Catalysts verified, but still below 20/50-day averages.",
+        "conditional_action": "Need 222.92 then 226\u2013227.04 recovery, or liquid 219.11 support hold.",
+        "sources": [
+          "https://nvidianews.nvidia.com/news/european-mobility-leaders-build-safe-vehicles-and-robotaxi-fleets-on-nvidia-hyperion",
+          "https://investor.nvidia.com/files/content_files/TRANSCRIPT_-NVIDIA-Corp-NVDA-US-Q2-2027-Earnings-Call-26-August-2026-5_00-PM-ET.pdf"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 12,
+          "trend_relative_strength": 7,
+          "catalyst": 12,
+          "fundamentals_valuation": 7,
+          "liquidity_event_risk": 7
+        }
+      },
+      {
+        "symbol": "V",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 407.71,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:05.381361089Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Strong trend, but higher ask leaves little room before 408.59; Oct 27 earnings. Change from prior publication: Higher ask compresses upside to 408.59 resistance relative to 403.39 support..",
+        "conditional_action": "Require 403.39 support and stronger participation; avoid resistance chase.",
+        "sources": [
+          "https://usa.visa.com/about-visa/newsroom/press-releases.releaseId.22841.html"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 20,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "WMT",
+        "score": 45,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 117.2,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:23.693887535Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Positive longer trend, but below prior 117.47 low.",
+        "conditional_action": "Require 117.47 then 117.85 recovery;116.66 is a thin-session risk reference.",
+        "sources": [
+          "https://corporate.walmart.com/news/2026/10/meet-your-120-life-hack"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 10,
+          "trend_relative_strength": 20,
+          "catalyst": 10,
+          "fundamentals_valuation": 0,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "COST",
+        "score": 40,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 989.56,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:39.869442067Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Strong trend but premium valuation and below 991 prior low. Change from prior publication: Current price/book recovered; newly scorable, not a historical score.",
+        "conditional_action": "Require liquid 991 recovery rather than chasing;1003 overhead.",
+        "sources": [
+          "https://investor.costco.com/news/news-details/2026/Costco-Wholesale-Corporation-Reports-September-Sales-Results/default.aspx"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 10,
+          "trend_relative_strength": 20,
+          "catalyst": 5,
+          "fundamentals_valuation": 2,
+          "liquidity_event_risk": 3
+        }
+      },
+      {
+        "symbol": "AVGO",
+        "score": 35,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 338.0,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:00.128628216Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "DOCOMO agreement is real; earnings benefit unquantified and trend weak.",
+        "conditional_action": "Require 328.58 higher low and 341.10 then 352.48 reclaim.",
+        "sources": [
+          "https://investors.broadcom.com/news-releases/news-release-details/broadcom-advance-ntt-docomos-private-cloud-vmware-cloud"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 8,
+          "trend_relative_strength": 5,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 7
+        }
+      },
+      {
+        "symbol": "GE",
+        "score": 35,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 301.5,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:07.51114557Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Raised outlook offset by falling cash flow and broken trend.",
+        "conditional_action": "Require 307.36 reclaim with higher low;294.22 failure disconfirms rebound.",
+        "sources": [
+          "https://www.geaerospace.com/news/press-releases/ge-aerospace-announces-third-quarter-2026-results"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 5,
+          "catalyst": 15,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "PG",
+        "score": 35,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 158.79,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:54.403876641Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Positive trend, but tomorrow\u2019s earnings dominate several-day risk.",
+        "conditional_action": "Prefer post-results base; do not turn a short trade into an unplanned earnings bet.",
+        "sources": [
+          "https://www.pginvestor.com/overview/default.aspx"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 20,
+          "catalyst": 0,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "SPCX",
+        "score": 35,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 159.39,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:07.256598925Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Post-results momentum faded; failed recovery and heavy capital spending. Change from prior publication: Failed recovery lowers entry quality and momentum.",
+        "conditional_action": "For a prospective entry, require sustained 160.45\u2013161.15 recovery or a new base above 157.80. Do not chase post-results volatility.",
+        "sources": [
+          "https://www.sec.gov/Archives/edgar/data/1181412/000162828026066482/spaceexplorationtechnologi.htm"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 4,
+          "trend_relative_strength": 10,
+          "catalyst": 15,
+          "fundamentals_valuation": 2,
+          "liquidity_event_risk": 4
+        }
+      },
+      {
+        "symbol": "FCX",
+        "score": 30,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 68.7,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:34.138036061Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Weak trend; deferred gold sales and higher cost outlook.",
+        "conditional_action": "Require 70.05\u201370.25 reclaim;67.23 failure; reassess before Oct 27 earnings.",
+        "sources": [
+          "https://investors.fcx.com/investors/news-releases/news-release-details/2026/Freeport-Provides-Third-Quarter-2026-Operational-Update/default.aspx"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 5,
+          "catalyst": 10,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "GOOGL",
+        "score": 30,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 337.12,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:00.34412101Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Valuation support, but still below prior low and averages.",
+        "conditional_action": "Require 338.36 then 344\u2013345 recovery with volume; no falling-price entry alone.",
+        "sources": [
+          "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 6,
+          "trend_relative_strength": 6,
+          "catalyst": 3,
+          "fundamentals_valuation": 8,
+          "liquidity_event_risk": 7
+        }
+      },
+      {
+        "symbol": "BAC",
+        "score": 25,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 51.16,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:04.964419374Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Cheap valuation does not repair weak trend.",
+        "conditional_action": "Require 51.295 then 52.64 recovery;50.01/49.255 remain downside references.",
+        "sources": [
+          "https://investor.bankofamerica.com/regulatory-and-other-filings/select-sec-filings/content/0000070858-26-000481/bac-20261014.htm"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 0,
+          "catalyst": 5,
+          "fundamentals_valuation": 10,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "CAT",
+        "score": 25,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 739.81,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:07.264272586Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Weak trend and expensive valuation; Oct 29 earnings.",
+        "conditional_action": "Require 742.98 then 748.98 reclaim;708.75 failure; do not chase a thin bounce.",
+        "sources": [
+          "https://www.caterpillar.com/en/news/corporate-press-releases/h/caterpillar-to-announce-3Q-2026-financial-results-on-oct-29.html"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 5,
+          "catalyst": 5,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 5
+        }
+      },
+      {
+        "symbol": "TSLA",
+        "score": 25,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 379.48,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T13:00:07.265276076Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Earnings tonight outweigh positive longer trend; extreme valuation.",
+        "conditional_action": "For a new several-day entry, prefer a verified post-earnings base. Results tonight create gap risk; do not silently change the trade into an earnings bet.",
+        "sources": [
+          "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 12,
+          "catalyst": 5,
+          "fundamentals_valuation": 1,
+          "liquidity_event_risk": 2
+        }
+      },
+      {
+        "symbol": "META",
+        "score": 20,
+        "score_status": "available_provisional",
+        "rubric_version": "buying-score-v1",
+        "reference_price": 691.38,
+        "reference_price_type": "indicative ask",
+        "reference_price_timestamp": "2026-10-21T12:59:50.79404708Z",
+        "reference_session": "premarket",
+        "cohort": "provisional-price",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Weak relative trend and earnings tonight.",
+        "conditional_action": "Prefer post-results evidence;694.25 reclaim alone does not repair the trend.",
+        "sources": [
+          "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-to-Announce-Third-Quarter-2026-Results/default.aspx"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "component_scores": {
+          "entry_quality": 5,
+          "trend_relative_strength": 5,
+          "catalyst": 3,
+          "fundamentals_valuation": 5,
+          "liquidity_event_risk": 2
+        }
+      },
+      {
+        "symbol": "DE",
+        "score": null,
+        "score_status": "unavailable",
+        "rubric_version": "buying-score-v1",
+        "reference_price": null,
+        "reference_price_type": null,
+        "reference_price_timestamp": null,
+        "reference_session": null,
+        "cohort": "unavailable",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Current trade and two-sided book are stale; sufficient prior history is available. Below 20/50-day averages; no confirmed rebound.",
+        "conditional_action": "Require current quote and participation;625.97 support,640.92 reclaim.",
+        "sources": [],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "missing_evidence": "Current trade and two-sided book are stale. Prior price history is available, but a fresh price and spread are required."
+      },
+      {
+        "symbol": "DUK",
+        "score": null,
+        "score_status": "unavailable",
+        "rubric_version": "buying-score-v1",
+        "reference_price": null,
+        "reference_price_type": null,
+        "reference_price_timestamp": null,
+        "reference_session": null,
+        "cohort": "unavailable",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Current trade and two-sided book are stale; sufficient prior history is available. Above averages, but thin participation and possible wide spread.",
+        "conditional_action": "Require fresh tighter book,119.70 hold and 121.64 breakout/retest.",
+        "sources": [],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "missing_evidence": "Current trade and two-sided book are stale. Prior price history is available, but a fresh price and spread are required."
+      },
+      {
+        "symbol": "HD",
+        "score": null,
+        "score_status": "unavailable",
+        "rubric_version": "buying-score-v1",
+        "reference_price": null,
+        "reference_price_type": null,
+        "reference_price_timestamp": null,
+        "reference_session": null,
+        "cohort": "unavailable",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Current trade and two-sided book are stale; sufficient prior history is available. Recovery trend, but sparse trading and wide spread.",
+        "conditional_action": "Require fresh narrower book and liquid 310.64 support;317.71 overhead.",
+        "sources": [
+          "https://ir.homedepot.com/events-and-presentations?mod=article_inline"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "missing_evidence": "Current trade and two-sided book are stale. Prior price history is available, but a fresh price and spread are required."
+      },
+      {
+        "symbol": "PLD",
+        "score": null,
+        "score_status": "unavailable",
+        "rubric_version": "buying-score-v1",
+        "reference_price": null,
+        "reference_price_type": null,
+        "reference_price_timestamp": null,
+        "reference_session": null,
+        "cohort": "unavailable",
+        "reference_source": "Robinhood get_equity_quotes",
+        "reason": "Current trade and two-sided book are stale; sufficient prior history is available. Improved FFO does not repair weak relative trend. Change from prior publication: Unavailable due to stale current evidence.",
+        "conditional_action": "Require 127.47 hold or 129.82\u2013130.46 reclaim;124.14 failure.",
+        "sources": [
+          "https://ir.prologis.com/news-events/press-releases/detail/1055/prologis-reports-third-quarter-2026-results"
+        ],
+        "quote_delay": "Unknown",
+        "sizing": "Not provided on this public market-research page.",
+        "evidence_limitations": [
+          "Indicative book, depth unavailable, not guaranteed fill.",
+          "120-second freshness cutoff is an operational convention, not vendor SLA.",
+          "No same-time historical RVOL baseline; interpolated bars excluded."
+        ],
+        "missing_evidence": "Current trade and two-sided book are stale. Prior price history is available, but a fresh price and spread are required."
+      }
+    ],
+    "history_note": "Original published assessment. Prior 07:10 publication retained; no historical scores reconstructed."
+  },
+  "score_history": [
+    {
+      "id": "20261021T121009098500Z",
+      "publication_timestamp": "2026-10-21T12:10:09.098500Z",
+      "path": "data/watch-history/20261021T121009098500Z.json"
+    },
+    {
+      "id": "20261021T130213492632Z",
+      "publication_timestamp": "2026-10-21T13:02:13.492632Z",
+      "path": "data/watch-history/20261021T130213492632Z.json"
+    }
+  ]
 }

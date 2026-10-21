@@ -1,37 +1,38 @@
-# Research-watch publication contract
+# Public 32-stock scorecard publication contract
 
-Effective September 21, 2026. These settings supersede older descriptions of five local checks, compulsory daily action briefs and short-term-only research for the current ChatGPT watch. Historical research and its recorded rules are not rewritten.
+Effective October 21, 2026. This replaces the old September three-check configuration for the current watch. It does not alter or rewrite historical research, legacy exports, or dated portfolio snapshots. This site is a static publication destination, not a broker connection, scheduler or execution system.
 
-## Schedule and ownership
+## Hard reviews and soft checks
 
-Reuse the existing Investment Opportunity Watch: approximately 08:00, 12:00 and 16:00 Monday–Friday, America/Chicago. No new scheduled watch, weekend schedule or autonomous execution is authorized. The separate local/Codex monitor described in older documentation is outside the website; its scheduler has not been inspected or changed by this update. Editing this repository does not reschedule that host.
+Use the existing schedules, not a new automation. Hard reviews target 07:00, 08:00, 09:00, 13:30 and 14:30 America/Chicago on full trading days. Verify official exchange holidays and early closes; skip full market holidays. Published remaining 2026 half-day afternoon targets are 10:30 and 11:30, November 27 and December 24. Soft checks run every ten minutes around the clock, including weekends and holidays; actual session and symbol tradability still require verification.
 
-`docs/watch.html` displays `docs/data/watch.json`. This is a static publication destination, not a broker connection or scheduler. The current website update is configuration only, so `last_check` starts as null. Do not seed it with a fictional successful market check, copy an old alert as a new one, or mark a partial check as no opportunities.
+Every hard review publishes the actual all-32 score assessment and conditional action plans alongside the private text report. Every soft check publishes its own actual attempted/completed status and timestamp. A soft check MUST NOT change the hard-review publication time, assessment time, reference quotes, scores, or score history. Do not imply continuous protection or guaranteed delivery.
 
-## Updating after an actual scheduled check
+## Public-only schema version 2
 
-1. Read the latest default-branch contents, this contract and the current JSON. Preserve intervening edits and the existing alert history. Preserve all legacy research and dated portfolio files.
-2. Run the current research instructions, including fresh Finances accounts/holdings, watchlist and coverage checks. Use primary sources and timestamped market data; challenge the thesis and check calculations. Prior messages and scanner outputs are not independent evidence.
-3. Replace `last_check` only with the actual check time, status and public-safe summary/coverage. Use `completed_alert`, `completed_no_alert` or `incomplete`. A holdings check alone is not a completed market review. A quiet completed check can update the site without notifying the user. A persistent material access issue is not a no-opportunity result.
-4. Append a materially supported public-safe alert only once, using a stable unique ID. Keep earlier dated alerts; correct a material earlier error explicitly instead of silently changing history. Do not publish stale entry conditions as current. Public alerts must omit the user's portfolio-specific sentences, holdings, balances, quantities, deposits and private plans. Leave the separately authorized portfolio pipeline and source snapshots unchanged under this contract.
-5. Validate with `python3 -m unittest discover -s tests -p 'test_watch.py' -v` and existing tests when available. Commit only intended paths, never force-push. Read the latest blob SHA before a content update. On conflict, re-read and merge; do not overwrite newer checks.
-6. Verify the exact commit's GitHub Pages build/deploy result. A committed change is not confirmation of deployment. If publication fails, keep verified research results and report a persistent material publication problem without inventing a successful website update.
+`docs/watch.html` reads `docs/data/watch.json`. The landing page links to the scorecard. The original alert array and legacy archives are preserved.
 
-No personal account IDs, tokens, authentication material, transaction histories, bank records, private source logs, contribution plans or individual allocation instructions belong in this feed. A request to maintain this public research page is not permission to export raw Finances results. Model/Ultra settings cannot be selected or verified by the task controls; the two-pass method is a research instruction only.
+- `last_hard_check`: an actually published assessment, or null. Fields: `id`, `publication_timestamp`, `assessment_snapshot`, `rubric_version`, `weights`, `cohort`, `summary`, `records`, `history_note`. Optional explicit correction metadata: `correction_of` and `correction_reason`.
+- `last_soft_check`: null, or exactly `checked_at` (actual completion/check timestamp with timezone), `status` (`completed`, `partial`, `failed`), `summary`, `coverage`, `attempted` and `current`. All prose must be market-only. `current` is the count with usable current evidence, not a claim that every symbol is trading. Distinguish fresh trades, book-only evidence and stale/missing data in coverage. A failed attempt is not a successful check or a no-opportunity finding.
+- `score_history`: immutable public originals in `docs/data/watch-history/<id>.json`. Every hard review has 32 records, including unavailable names. Never backfill a score with later information. Append corrections with their own publication time and reason; never overwrite an original.
+- The legacy `last_check` field is retained for compatibility only; the UI uses the two separate fields above.
 
-## JSON schema (version 1)
+Record allowlist: `symbol`, `score`, `score_status`, `rubric_version`, `component_scores`, `reference_price`, `reference_price_type`, `reference_price_timestamp`, `reference_session`, `cohort`, `reference_source`, `reason`, `improvement_condition`, `conditional_action`, `horizon`, `sources`, `event`, `evidence_limitations`, `quote_delay`, `sizing`, `missing_evidence`.
 
-Keep the existing configuration fields. `configuration_updated_at` changes only when settings change, not on every review. All event timestamps require ISO 8601 with a timezone offset or Z. Public market quote timestamps need the actual source time, not the fetch time.
+Use the fixed universe: AAPL AVGO CRM MSFT NVDA GOOGL META AMZN HD COST KO PG WMT ABBV LLY UNH BAC JPM V CVX XOM CAT DE GE RTX DUK NEE FCX LIN PLD TSLA SPCX. Numeric scores are 0–100 in steps of five, descending with alphabetical ties. Unavailable scores are null, listed last, with specific gaps. Preserve actual reference-price timestamps and source sessions. An indicative ask is not a live trade or guaranteed executable price. Unknown quote delay stays unknown. Separate provisional-price, intraday and official-close cohorts.
 
-`last_check` is null until a real review is published, or an object with:
+`buying-score-v1` weights: entry/risk-reward 30; trend/relative strength 25; catalyst 20; fundamentals/valuation 10; liquidity/event risk 15. Scores measure comparative several-day entry attractiveness, not probability of profit, a proven edge, order instruction or existing-position sell suitability. A new rubric starts a new version/cohort.
 
-- `checked_at`: actual ISO timestamp.
-- `status`: `completed_alert`, `completed_no_alert` or `incomplete`.
-- `summary`: short public-safe description; do not claim exhaustive market coverage.
-- `coverage`: limitations of quotes, sources and verification; no private account values.
+## Privacy boundary
 
-`alerts` is an array, initially empty. Each entry includes `id`, `label` (`TRADING CANDIDATE` or `LONGER-TERM INVESTMENT CANDIDATE`), `ticker`, `name`, `published_at`, `summary`, `entry`, `horizon`, `invalidation`, `risks`, `alternative`, `conclusion`, `quote` and `sources`. Use a risk-update phrase in `name` for material changes, without asserting public ownership. `exit` is optional and must be evidence-supported, not invented.
+Build a reviewed allowlist export. NEVER copy an entire private report or brokerage response. No holdings, balances, quantities, cost bases, deposits, personalized allocations, account identifiers, credentials, private audit paths, transaction histories, private plans or account-specific trading restrictions may appear in this feed. Text also needs review: removing private JSON keys does not sanitize narrative sentences. Public `sizing` must say only that sizing is not provided on this public market-research page. Existing separately authorized legacy pages are outside this update's scope and must not be modified by this publisher.
 
-`quote` contains numeric `price`, `currency`, source timestamp `as_of`, `session` and known `delay` (explicitly `unknown` if not supplied). `sources` contains at least one verified public source as `{ "title": "...", "url": "https://..." }`. Evidence for catalysts/fundamentals must come from primary documents, not just a quote page. Conditional upside/downside is not a prediction. Stops can gap.
+## Safe update procedure
 
-The website refresh button only fetches the latest published JSON. It does not initiate market research or refresh Finances.
+1. Read latest main and JSON; preserve intervening updates, alerts, research and history. Do not publish findings before the review is actually completed/published. Read-only market research is separate from website publication.
+2. Prepare a sanitized public-only input outside the repository. For a hard review, include all 32 and their actual original publication/reference times. For soft checks, use only the six status fields above.
+3. Run `python3 scripts/update_watch.py hard /path/to/public-review.json` or `python3 scripts/update_watch.py soft /path/to/public-soft-status.json`. This helper only writes local files; it does not query markets, trade, schedule or push. It rejects unknown fields, missing symbols, naive timestamps, invalid scores and rewriting an original history ID. Human review remains required for narrative privacy. Soft updates leave hard scores untouched.
+4. Run `python3 -m unittest discover -s tests -v`. Review the exact diff for public safety. Commit only intended paths and never force-push. On branch conflict, reread and merge newer changes rather than overwrite.
+5. Verify the exact commit's GitHub Pages build/deploy outcome, then fetch the live JSON/page and verify the publication ID or soft timestamp. A commit is not deployment confirmation. If deployment fails, preserve the research and report the publication problem honestly.
+
+Refresh only reloads published JSON. The page does not execute checks or read a brokerage. Chat reporting continues separately under its existing notification rules.
