@@ -10,7 +10,7 @@ The dashboard has a [My portfolio view](https://howardwhsrun.github.io/Agentic-T
 
 The [32-stock scorecard](https://howardwhsrun.github.io/Agentic-Trader/watch.html) shows every fixed-universe ticker, ranked buying-at-reference-price scores, conditional action plans, evidence gaps and primary-source links. This is saved market research, not live quotes or an order system.
 
-Hard reviews publish full assessments alongside text reports. Ten-minute soft checks update a separate timestamp and coverage status without refreshing old scores or prices. Full-day hard-review targets are 07:00, 08:00, 09:00, 13:30 and 14:30 America/Chicago, subject to verified holidays and early closes. Existing schedules are maintained externally; this website does not create or change them. See [WATCH_PUBLISHING.md](WATCH_PUBLISHING.md) for the current contract and safe update helper.
+Hard reviews publish full assessments alongside text reports. Ten-minute soft checks update a separate timestamp and coverage status without refreshing old scores or prices. Full-day hard-review targets are 07:00, 08:00, 08:30, 09:00, 13:30 and 14:30 America/Chicago, subject to verified holidays and early closes. Existing schedules are maintained externally; this website does not create or change them. See [WATCH_PUBLISHING.md](WATCH_PUBLISHING.md) for the current contract and safe update helper.
 
 No private portfolio information or personalized purchase sizing is included in this scorecard feed. All trades remain manual, with no options, leverage, borrowing or short selling. A score is not a probability of profit or an instruction to buy.
 

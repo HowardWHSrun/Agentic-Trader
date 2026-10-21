@@ -4,7 +4,7 @@ Effective October 21, 2026. This replaces the old September three-check configur
 
 ## Hard reviews and soft checks
 
-Use the existing schedules, not a new automation. Hard reviews target 07:00, 08:00, 09:00, 13:30 and 14:30 America/Chicago on full trading days. Verify official exchange holidays and early closes; skip full market holidays. Published remaining 2026 half-day afternoon targets are 10:30 and 11:30, November 27 and December 24. Soft checks run every ten minutes around the clock, including weekends and holidays; actual session and symbol tradability still require verification.
+Use the existing schedules, not a new automation. Hard reviews target 07:00, 08:00, 08:30, 09:00, 13:30 and 14:30 America/Chicago on full trading days. Verify official exchange holidays and early closes; skip full market holidays. Published remaining 2026 half-day afternoon targets are 10:30 and 11:30, November 27 and December 24. Soft checks run every ten minutes around the clock, including weekends and holidays; actual session and symbol tradability still require verification.
 
 Every hard review publishes the actual all-32 score assessment and conditional action plans alongside the private text report. Every soft check publishes its own actual attempted/completed status and timestamp. A soft check MUST NOT change the hard-review publication time, assessment time, reference quotes, scores, or score history. Do not imply continuous protection or guaranteed delivery.
 

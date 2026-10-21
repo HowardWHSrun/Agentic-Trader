@@ -245,9 +245,11 @@ class WatchTests(unittest.TestCase):
                 validate(self.data)
 
     def test_reject_inconsistent_score_status(self):
-        for index, status in ((0, "unavailable"), (-1, "available")):
+        for score, status in ((50, "unavailable"), (None, "available")):
             data = copy.deepcopy(self.data)
-            data["last_hard_check"]["records"][index]["score_status"] = status
+            record = data["last_hard_check"]["records"][0]
+            record["score"] = score
+            record["score_status"] = status
             with self.assertRaises(ValueError):
                 validate(data)
 
