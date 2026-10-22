@@ -36,3 +36,11 @@ Build a reviewed allowlist export. NEVER copy an entire private report or broker
 5. Verify the exact commit's GitHub Pages build/deploy outcome, then fetch the live JSON/page and verify the publication ID or soft timestamp. A commit is not deployment confirmation. If deployment fails, preserve the research and report the publication problem honestly.
 
 Refresh only reloads published JSON. The page does not execute checks or read a brokerage. Chat reporting continues separately under its existing notification rules.
+
+## Separate descriptive outcome archive (version 1)
+
+`docs/outcomes.html` reads `docs/data/outcomes/index.json` and immutable audit files. This is separate from schema-v2 score assessments. An outcome audit must not mutate `watch.json`, its hard/soft timestamps, or any original score-history record. It is not a new buying score or a claim of executable returns.
+
+Use `python3 scripts/publish_outcome.py /path/to/reviewed-public-audit.json` with sanitized input outside the repository. The helper enforces an allowlist, all-32 coverage, correct reference-return arithmetic, explicit rubric, dated cohorts, and append-only IDs. Narrative privacy still requires human review. Corrections get a new ID and their own real timestamps. The catalog appends rather than replacing past audits. Preserve original publication/reference times, analysis completion/first-publication time and actual website-export creation time separately. Git commit and verified Pages deployment provide actual release evidence, never backdate deployment to the export.
+
+Include all publication windows, not selected winners; show sample sizes, fixed buckets, rank correlations, reference-to-publication lag and sensitivity. Keep intraday, provisional and official-close cohorts distinct. Unsupported benchmark excess returns and immature/unverified horizons remain unavailable. Label overlap, incomplete data and corporate-action gaps. The public archive contains research conclusions, evidence and limitations, never internal reasoning or private account information. Review exact scoped diffs, run all tests, lease against fresh main, and verify the exact Pages deployment plus live audit ID before claiming publication.
