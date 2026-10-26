@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Versioned research principles, evidence gates, failure modes and validation plans for several-day, unlevered stock research.">
+  <meta name="strategy-book-version" content="1.1.0">
+  <title>Strategy book v1.1.0 · Agentic Trader</title>
+  <link rel="icon" href="../favicon.svg">
+  <link rel="stylesheet" href="strategy-book-v1.1.0.css">
+</head>
+<body class="strategy-page">
+<a class="skip" href="#book">Skip to strategy book</a>
+<header><a class="brand" href="../index.html">Agentic Trader</a><nav aria-label="Primary navigation"><a href="../watch.html">32-stock scorecard</a><a href="../outcomes.html">Daily outcomes</a><a href="../strategy.html" aria-current="page">Strategy book</a><a href="../index.html#journal">Research archive</a></nav></header>
+<main id="book" tabindex="-1">
+  <p class="book-note"><strong>Preserved v1.1.0 edition.</strong> This edition remains unchanged after publication. <a href="../strategy.html">Read the current strategy book</a>.</p>
+  <p class="eyebrow">Several-day stock research / Preserved edition</p>
+  <h1>Evidence first.<br><span>A strategy we can inspect.</span></h1>
+  <p class="intro">A record of the rules, unanswered questions and failure modes behind the research. The aim is a more disciplined decision process. These safeguards are not a proven investment edge or continuous protection.</p>
+  <div class="book-meta"><strong>Strategy book v1.1.0</strong><span>Edition prepared <time datetime="2026-10-26T13:52:22Z">October 26, 2026 · 13:52 UTC</time></span><a href="strategy-book-v1.1.0.html">Preserved v1.1.0 edition</a><a href="strategy-book-v1.0.0.html">Earlier v1.0.0 edition</a></div>
+  <div class="notice"><strong>Research only. You place every order.</strong> The website publishes saved evidence. It does not connect to an account, submit orders or guarantee alerts. This edition defines buying-score-v2; updating the method does not refresh saved quotes, scores or check timestamps.</div>
+  <nav class="book-toc" aria-label="Book contents"><div><strong>In this edition</strong><ol><li><a href="#scope">Scope and operating principles</a></li><li><a href="#decisions">Attractiveness, eligibility and sizing</a></li><li><a href="#gates">Hard evidence gates</a></li><li><a href="#failures">Failure-mode register</a></li><li><a href="#risk">Capital, risk and suspension</a></li><li><a href="#rubric">Fixed universe and score rubric</a></li><li><a href="#status">Adopted rules and open hypotheses</a></li><li><a href="#evaluation">Prospective learning and evaluation</a></li><li><a href="#updates">Future update protocol</a></li><li><a href="#versions">Changelog and evidence</a></li></ol></div></nav>
+
+  <section class="book-section" id="scope">
+    <p class="eyebrow">01 / Mandate</p><h2>Several days. Unlevered stocks. Room to wait.</h2>
+    <p>Research several-day, long-only stock opportunities using own-funded settled cash only. No borrowing, margin, leverage, options, short selling, leveraged or inverse products, microcaps or illiquid securities. Holding cash and making no new trade are valid outcomes. The user makes every trading decision and places all orders.</p>
+    <p>Adapt the useful process lessons of failure analysis: ask how a promising idea can fail, demand evidence for each dependency, record what is unknown, and stop issuing actionable suggestions when the evidence is unreliable. A process lesson from a different market is a hypothesis about better research discipline, not evidence of stock-market profitability.</p>
+    <p>This book governs the current research process. Older strategy examples and dated calls remain historical records. Their example percentages, time rules and allocations are not newly adopted personal risk limits.</p>
+  </section>
+
+  <section class="book-section" id="decisions">
+    <p class="eyebrow">02 / Three separate decisions</p><h2>A number is one part of the decision.</h2>
+    <div class="book-grid">
+      <article><span class="book-label">Attractiveness</span><h3>What does the evidence support?</h3><p>Every numeric buying-score-v2 result is a <strong>provisional evidence-based entry score</strong> at a dated reference. It counts supported passes across twenty fixed checks. It is not a probability of profit, confidence estimate or buy instruction.</p></article>
+      <article><span class="book-label">Eligibility</span><h3>Can an entry suggestion be supported?</h3><p>Core identity, a usable labeled reference and adequate history are required for a number. Other unknown checks remain visible and receive no credit. A numeric score cannot override missing or failed evidence needed for an actionable entry plan.</p></article>
+      <article><span class="book-label">Sizing</span><h3>Can a private plan be supported?</h3><p><strong>Sizing is not provided on this public market-research page.</strong> A research ranking never establishes how much someone can afford to risk.</p></article>
+    </div>
+    <p>Private sizing requires separately authorized verification of own-funded settled capital and complete private holdings and open-order coverage, including pending commitments, plus user-confirmed per-trade and total-open-risk dollar budgets. Confirm liquidity needs and horizon. Unknown inputs block sizing; do not infer a numerical budget or reuse an old example. These requirements are separate from the public score. The user makes every trading decision and places every order.</p>
+    <p>A failed setup check describes a new-entry screen at that reference. It is not advice to sell an existing position. A documented provisional score does not establish that a new entry is suitable or eligible.</p>
+  </section>
+
+  <section class="book-section" id="gates">
+    <p class="eyebrow">03 / Required research policy</p><h2>Separate core gates from unresolved checks.</h2>
+    <p>The first three requirements below are core gates for a meaningful score. Missing instrument identity, a usable labeled reference or adequate history means unavailable, not a guessed number. Once core gates pass, unresolved checklist evidence can coexist with a numeric <strong>provisional evidence-based entry score</strong>; it earns zero credit and remains explicitly unknown. An entry suggestion requires an adequately supported plan beyond the score.</p>
+    <ol>
+      <li><strong>Core: verify the instrument.</strong> Resolve the issuer, security type, listing and symbol from reliable reference evidence. Confirm actual exchange and symbol session, timezone, trading calendar and any halt or restriction relevant to the reference. An identifier match alone is insufficient.</li>
+      <li><strong>Core: verify the reference and clock.</strong> A current score needs a fresh, labeled reference suitable for its claimed session. Retain source, observation time, actual quote or trade time, session and known delay. A response timestamp does not make an old price current. Unknown delay remains unknown. Bid/ask or book-only evidence belongs to a separate provisional-book cohort; it is not a trade or guaranteed executable price.</li>
+      <li><strong>Core: reconcile adequate history.</strong> Obtain enough completed-session history for the stated calculations, including ATR14 and SMA50. Check splits, dividends and other corporate actions; keep adjusted and unadjusted series consistent. Use matching periods for stock and benchmark comparisons. Do not calculate apparent returns from incompatible references.</li>
+      <li><strong>Check events and the thesis.</strong> Verify earnings timing and material company, filing, regulatory, financing and macro events against primary evidence. Distinguish the date of a headline from the date of the event. Seek contrary evidence and independently check material facts and calculations. An incomplete calendar is unknown, not evidence that no event exists.</li>
+      <li><strong>Check implementation conditions.</strong> Obtain usable bid/ask and spread evidence, relevant-session liquidity and volume context, and any execution limitations. A displayed last price is not a guaranteed fill. Reassess if price has moved beyond the documented entry case. The v2 distance and liquidity thresholds are transparent screening heuristics, not personal loss limits or a validated execution rule.</li>
+      <li><strong>Write a conditional plan.</strong> State the horizon, evidence-based entry condition, thesis invalidation, realistic target or review condition, and review deadline. Compare reward with planned downside after realistic costs and with cash and a diversified alternative. A calculated reward multiple alone does not establish an achievable target. Missing entry-critical evidence blocks an actionable suggestion even when a score is shown.</li>
+    </ol>
+    <p class="book-note"><strong>Unavailable differs from a computed zero.</strong> Failed core gates or twenty unknown checks mean a null score with specific evidence gaps. Zero is possible only when core gates pass, at least one check is resolved, and none passes. Never substitute an old score or pretend unknown means a verified failure. Recheck the evidence when a condition changes.</p>
+    <p>A verified, dated official close with adequate history can support a <strong>historical-observation</strong> score assessed now. Show the original reference date and session separately from the actual assessment time, use a separate cohort, and make no current-entry implication. It is a new observation under its own rubric and assessment time; it does not backfill or change an original score or imply that every input was known at the old reference time.</p>
+  </section>
+
+  <section class="book-section" id="failures">
+    <p class="eyebrow">04 / Failure-mode register</p><h2>What could invalidate the decision?</h2>
+    <p>Each row pairs a failure with evidence needed and the required response. These are review requirements. Automated detection and recovery tests for this full register remain planned.</p>
+    <div class="failure-list">
+      <article><h3>Stale or missing price</h3><p><strong>Check:</strong> source, trade/quote time, delay and age relative to the claimed session.</p><p><strong>Response:</strong> withhold a current score and entry suggestion if the reference is unusable. A verified historical close may support only a separately labeled historical observation. Preserve prior records with their original dates.</p></article>
+      <article><h3>Wrong symbol or session</h3><p><strong>Check:</strong> issuer, instrument, listing, timezone, exchange calendar and symbol-specific session eligibility.</p><p><strong>Response:</strong> quarantine the unresolved instrument. Never silently substitute another ticker or treat an after-hours reference as an official close.</p></article>
+      <article><h3>Corporate actions</h3><p><strong>Check:</strong> dated issuer/exchange notices and adjustment conventions across the entire price series.</p><p><strong>Response:</strong> suspend affected trend and return comparisons; withhold the score if adequate consistent history is unavailable. Append a correction if an earlier analysis was affected.</p></article>
+      <article><h3>Earnings and overnight gaps</h3><p><strong>Check:</strong> verified earnings date and time, other material events and whether the planned holding window crosses them.</p><p><strong>Response:</strong> document the event exposure and withhold an entry suggestion if it cannot be assessed. Model adverse gaps separately; a stop is not a guaranteed loss cap.</p></article>
+      <article><h3>Spreads and liquidity</h3><p><strong>Check:</strong> current bid/ask, spread, relevant-session activity and realistic transaction costs.</p><p><strong>Response:</strong> reject an illiquid setup or withhold eligibility when evidence is missing. Do not assume a fill at the last price or an indicative quote.</p></article>
+      <article><h3>Incomplete account or order coverage</h3><p><strong>Check:</strong> separately authorized verification of settled capital and all relevant accounts, holdings and pending orders.</p><p><strong>Response:</strong> block private sizing and personalized entry advice until coverage is complete. Market research must not imply an account review occurred.</p></article>
+      <article><h3>Correlated exposure</h3><p><strong>Check:</strong> common sector, factor, issuer and event drivers, including overlapping open commitments, in a separately authorized private review.</p><p><strong>Response:</strong> assess the combined downside against confirmed total-open-risk limits. Unknown exposure blocks sizing; different tickers are not proof of diversification.</p></article>
+      <article><h3>Feed outage or conflicting sources</h3><p><strong>Check:</strong> source availability, consistent timestamps, coverage and material disagreements.</p><p><strong>Response:</strong> suspend affected recommendations, report partial or failed coverage accurately, and require fresh verified evidence before resuming. An outage is not a finding of no opportunity.</p></article>
+      <article><h3>Misleading or recycled headlines</h3><p><strong>Check:</strong> original filing or issuer statement, event date, context, corroboration and contrary evidence.</p><p><strong>Response:</strong> do not award catalyst credit from an unverified headline. Keep the check unknown and block any entry suggestion that depends on the unresolved claim.</p></article>
+      <article><h3>Detection or delivery failure</h3><p><strong>Check:</strong> actual review completion, publication and coverage evidence separately from intended schedules.</p><p><strong>Response:</strong> record delays and missed checks. Never invent a run, refresh old evidence timestamps or imply protection between observations.</p></article>
+    </div>
+  </section>
+
+  <section class="book-section" id="risk">
+    <p class="eyebrow">05 / Capital and failure response</p><h2>Allocation is not planned stop risk.</h2>
+    <p>Allocation is the amount committed to a position. Planned stop risk estimates the loss between an assumed entry and an invalidation or stop reference, with modeled costs. They are different quantities. Neither is a guaranteed maximum realized loss: gaps, slippage, halts, liquidity and order behavior can produce a larger loss.</p>
+    <p>A stop order becomes a market order when triggered; its eventual execution price can differ from the stop price. A limit order constrains price but may remain unfilled. The last trade need not be the price available for execution. These order mechanics are described by <a href="https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders">Investor.gov’s Types of Orders</a>.</p>
+    <h3>Research circuit breakers</h3>
+    <p>Suspend new recommendations when critical market evidence is stale, contradictory or missing; when instrument identity or event risk is unresolved; or when required private capital, order coverage or confirmed risk limits are unavailable. Record the reason, affected scope and evidence needed to resume. Resume only after a fresh review resolves the failure.</p>
+    <p>A circuit breaker can suspend recommendations. It cannot ensure an exit, cap realized losses, monitor continuously or guarantee timely delivery. The numeric v2 thresholds screen research evidence; they do not set personal loss budgets. No new personal risk limits, loss-streak rule or capital-buffer multiple are adopted by this edition. Risk limits require explicit user confirmation and a recorded versioned change.</p>
+  </section>
+
+  <section class="book-section" id="rubric">
+    <p class="eyebrow">06 / Explicit scoring method</p><h2>Twenty checks. A fixed denominator.</h2>
+    <p>The fixed universe remains unchanged; every review must account for all 32, including unavailable records:</p>
+    <p class="universe">AAPL AVGO CRM MSFT NVDA GOOGL META AMZN HD COST KO PG WMT ABBV LLY UNH BAC JPM V CVX XOM CAT DE GE RTX DUK NEE FCX LIN PLD TSLA SPCX</p>
+    <p><strong>SPCX identity is not verified by this book.</strong> Keep it in the universe and withhold a score or entry suggestion until reliable instrument and session evidence resolves it. Do not infer verification from an earlier coverage summary.</p>
+    <p><code>buying-score-v2</code> makes the evidence checklist explicit. The five component maxima remain 30/25/20/10/15, with six, five, four, two and three checks respectively. Each check is worth five points. V2 is a new rubric and cohort, not a comparable continuation of buying-score-v1.</p>
+    <dl class="weight-list"><div><dt>Entry / risk-reward<br>6 checks</dt><dd>30</dd></div><div><dt>Trend / relative strength<br>5 checks</dt><dd>25</dd></div><div><dt>Catalyst<br>4 checks</dt><dd>20</dd></div><div><dt>Fundamentals / valuation<br>2 checks</dt><dd>10</dd></div><div><dt>Liquidity / event risk<br>3 checks</dt><dd>15</dd></div></dl>
+    <div class="book-grid check-states">
+      <article><span class="book-label">Pass</span><h3>Supported: +5</h3><p>The dated evidence supports the stated criterion. Retain its reason, source and observation time.</p></article>
+      <article><span class="book-label">Fail</span><h3>Contrary evidence: +0</h3><p>Sufficient evidence establishes that the criterion is not met. This is a resolved check, not an unknown or a sell recommendation.</p></article>
+      <article><span class="book-label pending">Unknown</span><h3>Unresolved: +0</h3><p>Evidence is missing, stale, conflicting or insufficient. Zero credit is not a negative finding. Never silently relabel an unknown as fail.</p></article>
+    </div>
+    <h3>The score and evidence coverage answer different questions</h3>
+    <p>With P passes, F failures and U unknowns, P + F + U = 20. Keep every check in the denominator:</p>
+    <ul class="formula-list">
+      <li><strong>Provisional evidence-based entry score:</strong> 5 × P out of 100. Never divide by the number of known checks.</li>
+      <li><strong>Evidence completeness:</strong> 5 × (P + F) percent. A resolved failure counts as known evidence; completeness is not confidence, correctness or eligibility.</li>
+      <li><strong>Unresolved points:</strong> 5 × U. The conditional completion range is score through score + unresolved points, assuming every already resolved check stays unchanged.</li>
+    </ul>
+    <p>The completion range describes how this checklist could complete under that assumption. It is not a confidence interval, forecast range, probability of profit or bound on investment loss. Resolving an unknown to fail can increase completeness without changing the score. Resolving it to pass can increase both. New evidence can also reverse an earlier resolved check, so a later score can lie outside the earlier conditional range.</p>
+    <p class="book-note"><strong>Every numeric v2 score remains provisional.</strong> Show the full label “provisional evidence-based entry score,” completeness, pass/fail/unknown counts, unresolved points, conditional completion range, reference/session and rubric together. Twenty unknowns produce no numeric score. No score threshold by itself makes an entry eligible. Numeric zero with resolved failures differs from unavailable.</p>
+    <h3>The twenty five-point checks</h3>
+    <p>These thresholds are transparent screening heuristics selected for a reproducible research method. They are not a validated investment edge or user loss limits. A missing prerequisite makes the affected check unknown. Retain a reason, public source and observed time for each check; source and time may be null only when genuinely absent, with the gap explained.</p>
+    <p>Use completed bars for setup and indicator evidence. ATR14 denotes the 14-session average true range; SMA20 and SMA50 denote 20- and 50-session simple moving averages. Document the calculation and adjustment convention. R is the positive per-share difference between the documented entry reference and structural invalidation; it is not a personal dollar risk budget. Use matching session dates and consistent return conventions for benchmark comparisons.</p>
+    <div class="checklist-group"><h4>Entry / risk-reward · 30 points</h4><ol class="rubric-checks">
+      <li><strong>E1</strong> A completed-bar setup establishes a documented support, retest or breakout level.</li>
+      <li><strong>E2</strong> The entry reference is within 0.5 × ATR14 of that setup level.</li>
+      <li><strong>E3</strong> A defensible structural invalidation is below the entry reference.</li>
+      <li><strong>E4</strong> The first defensible target is at least 2R above the entry reference.</li>
+      <li><strong>E5</strong> No intervening verified resistance obstructs the path to 2R. An inadequate resistance review is unknown.</li>
+      <li><strong>E6</strong> The entry reference is no more than 1 × ATR14 above SMA20.</li>
+    </ol></div>
+    <div class="checklist-group"><h4>Trend / relative strength · 25 points</h4><ol class="rubric-checks">
+      <li><strong>T1</strong> The last completed close is above SMA20.</li>
+      <li><strong>T2</strong> SMA20 is above SMA50.</li>
+      <li><strong>T3</strong> SMA20 is above its value five sessions earlier.</li>
+      <li><strong>T4</strong> The stock’s 20-session return exceeds SPY’s return over matching dates.</li>
+      <li><strong>T5</strong> The stock’s 20-session return exceeds an explicitly assigned sector benchmark over the same dates. Record the benchmark rather than selecting it after seeing the comparison.</li>
+    </ol></div>
+    <div class="checklist-group"><h4>Catalyst · 20 points</h4><ol class="rubric-checks">
+      <li><strong>C1</strong> A material <strong>favorable</strong> catalyst supporting a prospective long entry is verified from primary evidence.</li>
+      <li><strong>C2</strong> That qualifying favorable catalyst’s event or impact falls in the next five trading sessions, or occurred in the prior five with evidence supporting a continuing effect.</li>
+      <li><strong>C3</strong> A documented positive economic mechanism connects that favorable catalyst to earnings, cash flow or demand; a headline alone is insufficient.</li>
+      <li><strong>C4</strong> Primary disconfirming evidence has been checked and does not invalidate that favorable long-entry thesis. An incomplete check is unknown.</li>
+    </ol></div>
+    <p>Verified negative dilution or financing news alone does not qualify as a favorable catalyst and earns no positive catalyst credit. Check the favorable thesis and its timing separately; unknown is distinct from fail.</p>
+    <div class="checklist-group"><h4>Fundamentals / valuation · 10 points</h4><ol class="rubric-checks">
+      <li><strong>F1</strong> The latest trailing-twelve-month operating cash flow is positive.</li>
+      <li><strong>F2</strong> A positive trailing price/earnings ratio is no higher than the company’s own three-year median. Verified negative earnings or a ratio above that median fails. Unsupported or undefined comparisons are unknown.</li>
+    </ol></div>
+    <div class="checklist-group"><h4>Liquidity / event risk · 15 points</h4><ol class="rubric-checks">
+      <li><strong>L1</strong> A fresh two-sided, non-crossed bid/ask spread is no more than 0.20% at the reference. Retain the quote time and spread convention.</li>
+      <li><strong>L2</strong> Average daily dollar volume over twenty sessions is at least USD 20 million.</li>
+      <li><strong>L3</strong> Adequate verified calendar evidence shows no scheduled earnings or major binary event in the next five trading sessions. Include relevant macro events, including FOMC decisions. A verified event fails; an insufficient calendar is unknown.</li>
+    </ol></div>
+    <p>Scores run from 0 to 100 in five-point increments. Preserve rubric and cohort boundaries when ranking; do not combine v1 and v2 as though their numbers were interchangeable. Within a compatible cohort, show numeric scores descending with alphabetical ties and unavailable records last, while keeping completeness and unknowns visible.</p>
+    <p>Keep current trade references, provisional-book references, official-close cohorts and historical observations distinct. Preserve reference type, source, actual reference time, session, assessment time and publication time. A score is not a proven edge, executable return or assessment of whether to sell an existing position.</p>
+  </section>
+
+  <section class="book-section" id="status">
+    <p class="eyebrow">07 / Status without overclaiming</p><h2>Policy, implementation and proof are different.</h2>
+    <div class="book-grid">
+      <article><span class="book-label">Adopted method</span><h3>Explicit evidence states</h3><p>This edition specifies the twenty-check v2 method, fixed denominator, separate completeness, core gates, manual execution and privacy boundary. Adopting the method does not prove a return advantage.</p></article>
+      <article><span class="book-label">Implemented and checked</span><h3>Deterministic publication support</h3><p>The v2 scorer, validator and display support the twenty-check method. The release passed 118 Python and 29 JavaScript repository tests, including arithmetic, cohort handling, v1 history preservation and provisional/coverage rendering. These tests verify implementation behavior, not market truth or investment performance. Deployment verification is recorded with the release.</p></article>
+      <article><span class="book-label pending">Planned validation</span><h3>Broader failure tests</h3><p>Full-workflow stale-feed, wrong-instrument, corporate-action, news-conflict, outage and incomplete-coverage exercises remain planned. Arithmetic or schema tests alone do not establish those controls or a profitable strategy.</p></article>
+    </div>
+    <p>The existing publication design has a public-field validator, local update helper, separate hard/soft timestamps, immutable score records and rubric/cohort fields. Those safeguards validate structure and preservation; they do not establish market truth or enforce every research gate.</p>
+    <h3>Hypotheses to evaluate</h3>
+    <ul><li>The explicit checklist may make unsupported claims easier to identify while rejecting some opportunities. Measure both effects.</li><li>The selected distance, reward, valuation, liquidity and event thresholds may help compare entries. Their predictive value remains unvalidated.</li><li>V2 score ordering and evidence completeness may relate differently to later outcomes. Evaluate them separately rather than treating completeness as confidence or mixing v1 and v2.</li></ul>
+    <p>Planned exercises should inject each failure, verify score availability and eligibility separately, verify pass/fail/unknown arithmetic, preserve prior records and timestamps, and test recovery with fresh evidence. Record actual results and limitations before changing any status to tested. No strategy-performance test or new return result is presented here.</p>
+  </section>
+
+  <section class="book-section" id="evaluation">
+    <p class="eyebrow">08 / Learn without rewriting the past</p><h2>Keep a prospective, immutable record.</h2>
+    <p>Record the signal or rejection when assessed: all-32 coverage, core-gate states, every check ID and pass/fail/unknown state, reason, source and observation time, original score or unavailable status, completeness, unresolved points, conditional completion range, eligibility and its evidence gaps, rubric/book versions, reference/assessment/publication times, cohort, assigned benchmarks, conditional plan and review horizon. Public exports contain only reviewed market-research fields; absent sources or times remain null with an explanation.</p>
+    <p>Freeze the original before outcomes are known. Append corrections with a new ID, time, reason and link to the original; never overwrite, backfill from later evidence or delete an unfavorable result. Record later outcome observations separately. A historical-observation score assessed now retains its actual new assessment time and original dated reference; it must not masquerade as a score published before the outcome.</p>
+    <p>Before evaluating a new cohort, specify its horizon, benchmark, cost assumptions, entry/exit observation rules and treatment of missing data. Evaluate all signals, rejections, failures and missed observations across the fixed universe and all publication windows, including unavailable cases. Report sample sizes, coverage, overlaps, reference-to-publication lag and uncertainty. Avoid choosing winners, convenient dates, benchmarks or thresholds after seeing returns.</p>
+    <p>Use realistic bid/ask spreads, fees, slippage, execution delay, gaps, potential nonfills and corporate-action adjustments. Compare with a prespecified suitable benchmark over matching periods and with holding cash; leave unsupported comparisons unavailable. Keep v1, v2, current, provisional-book, official-close and historical-observation cohorts distinguishable. Overlapping several-day observations are not independent trials.</p>
+    <p>Evaluate the v2 score and completeness separately, including how unknowns later resolve. A complete checklist can score poorly. A high provisional score can remain ineligible. The conditional completion range assumes resolved checks do not change; it is not a statistical uncertainty measure.</p>
+    <p class="book-note">Reference-price changes are descriptive research outcomes, not assumed fills or realized trading returns. This edition presents no fabricated backtest, new performance result or demonstrated edge. Existing dated audits and frozen v1 records retain their own definitions and limitations.</p>
+  </section>
+
+  <section class="book-section" id="updates">
+    <p class="eyebrow">09 / Future update protocol</p><h2>Every change leaves a trail.</h2>
+    <ol>
+      <li><strong>Read the current state.</strong> Read the latest main branch, publishing instructions, current watch data and this book. Preserve intervening work. Updating documentation is separate from a market check or automation change.</li>
+      <li><strong>Propose a specific revision.</strong> Record a new version, truthful change date, reason, supporting public evidence, affected rules and expected effect. Label each item adopted policy, hypothesis, implemented mechanism or completed test.</li>
+      <li><strong>Validate what changed.</strong> Record the test method, actual result and limitations, or explicitly “planned / not run.” Repository and page checks establish publication quality, not trading performance. A new risk limit needs explicit user confirmation; never silently import a numerical example.</li>
+      <li><strong>Preserve the prior edition.</strong> Add a new immutable edition under the version archive, retain older editions and their assets, append this changelog, and update the current-reading page. Corrections get a new edition; do not edit a frozen edition in place.</li>
+      <li><strong>Protect cohort integrity.</strong> Rubric changes start a new rubric version and cohort. Keep prior scores, references, timestamps and outcome definitions. Preserve check IDs, fixed maximum points and the meaning of each state within a rubric version. Changes to gates, thresholds or evaluation rules must be dated and distinguishable in subsequent observations; do not silently activate a drafted method.</li>
+      <li><strong>Review and publish within authorization.</strong> Use a public allowlist: approved strategy text, public symbols, evidence links, version/date, status and test summaries. Exclude personal account facts, holdings, balances, quantities, cost bases, personal limits, identifiers, internal notes/paths and private conversations. Review prose as well as fields.</li>
+      <li><strong>Verify the release.</strong> Review the exact intended diff, run repository checks and link/mobile checks, preserve fresh main with a normal fast-forward or expected-SHA lease, and verify the exact commit’s Pages deployment plus the live book version. Record a blocker honestly if any step fails.</li>
+    </ol>
+    <p>Future updates occur when new evidence and an authorized task justify them. This page creates no schedule, promise of continued monitoring or permission to access an account, trade, change automation or publish fresh scores.</p>
+  </section>
+
+  <section class="book-section" id="versions">
+    <p class="eyebrow">10 / Changelog and sources</p><h2>Version history</h2>
+    <ol class="version-list"><li><strong>v1.1.0 · <time datetime="2026-10-26">October 26, 2026</time></strong> — Defined buying-score-v2 with twenty five-point pass/fail/unknown checks, fixed scoring denominator, separate evidence completeness, unresolved points and a conditional completion range. Separated core availability gates from unresolved checklist evidence and entry eligibility. Added explicit provisional-book and historical-observation treatment. Reason: make point awards and evidence gaps reproducible without inflating scores when data are missing. The fixed universe and component maxima remain unchanged; v2 is a separate rubric/cohort and is not directly comparable with v1. Evidence: the documented method in this edition, existing publication safeguards and primary-source process guidance. The numeric thresholds are screening heuristics, not validated edge or personal risk budgets. <strong>Implementation checks: 118 Python and 29 JavaScript repository tests passed. Deployment is verified separately against the release commit. Strategy-performance test: not run.</strong> Prior v1.0.0 files and score history are preserved. <a href="strategy-book-v1.1.0.html">Preserved edition</a>.</li><li><strong>v1.0.0 · <time datetime="2026-10-25">October 25, 2026</time></strong> — Initial strategy book. Added explicit evidence gates, a failure-mode register, separate attractiveness/eligibility/sizing decisions, research suspension rules and a prospective update/evaluation protocol. Reason: make failure assumptions and implementation gaps inspectable. Evidence: the two primary sources below and the repository’s existing publication contract. The universe and buying-score-v1 weights are unchanged. <strong>Strategy-performance test result: not run; prospective validation planned.</strong> Website publication checks are recorded with the release evidence. <a href="strategy-book-v1.0.0.html">Preserved edition</a>.</li></ol>
+    <h3>Evidence and scope of adaptation</h3>
+    <ul>
+      <li><a href="https://www.finra.org/rules-guidance/notices/15-09">FINRA Regulatory Notice 15-09</a> — Guidance for firms using algorithmic strategies. Its discussion of development controls, validation, retrievable versions and disabling systems informs this research-process design by analogy. It does not validate this strategy or establish regulatory endorsement.</li>
+      <li><a href="https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders">Investor.gov: Types of Orders</a> — Source for market, limit and stop mechanics and the distinction between a last trade and an execution price.</li>
+      <li><a href="https://github.com/HowardWHSrun/Agentic-Trader/blob/17fd978c2d11587f14f86d0f13277479d53251fd/WATCH_PUBLISHING.md">Publication contract used for v1.0.0</a> — Public allowlist, fixed universe, rubric, timestamp separation, immutable history and deployment verification. <a href="https://github.com/HowardWHSrun/Agentic-Trader/commits/main/docs/strategy.html">Book release history</a>.</li>
+    </ul>
+    <p class="book-small">V2 method preparation: October 26, 2026. Original primary-source review: October 25, 2026. The preparation timestamp belongs to this book; it is not a market assessment, quote refresh or deployment timestamp.</p>
+    <p><a href="#book">Back to the beginning ↑</a> · <a href="../watch.html">Read the saved scorecard →</a></p>
+  </section>
+</main>
+<footer>Evidence, conditional plans and manual execution. Research safeguards are not proof of profitability or a guarantee against loss.</footer>
+</body>
+</html>
