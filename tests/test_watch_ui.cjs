@@ -13,7 +13,15 @@ class Node {
   get lastChild(){return this.children.at(-1);}
   scrollIntoView(){}
 }
-function setup(){const nodes=new Map();const document={getElementById:id=>{if(!nodes.has(id))nodes.set(id,new Node());return nodes.get(id);},createElement:t=>new Node(t),createTextNode:t=>({textContent:t})};const source=fs.readFileSync('docs/watch.js','utf8').replace(/load\(\);\s*$/,'');const context=vm.createContext({document,BuyingScoreV2,Intl,Date,URL,Map,console,fetch:async()=>{throw Error('offline')}});vm.runInContext(source,context);return {nodes,run:s=>vm.runInContext(s,context),context};}
+function setup(fetchImpl=async()=>{throw Error('offline')}){
+ const nodes=new Map();
+ const document={getElementById:id=>{if(!nodes.has(id))nodes.set(id,new Node());return nodes.get(id);},createElement:t=>new Node(t),createTextNode:t=>({textContent:t})};
+ const location={hash:''};const history={pushState(_state,_title,hash){location.hash=hash;}};
+ const window={listeners:{},addEventListener(name,fn){this.listeners[name]=fn;}};
+ const source=fs.readFileSync('docs/watch.js','utf8').replace(/load\(\);\s*$/,'');
+ const context=vm.createContext({document,location,history,window,BuyingScoreV2,Intl,Date,URL,Map,Set,console,fetch:fetchImpl});
+ vm.runInContext(source,context);return {nodes,location,window,run:s=>vm.runInContext(s,context),context};
+}
 const data=JSON.parse(fs.readFileSync('docs/data/watch.json','utf8'));
 test('latest assessment never replaces soft status or counts unavailable as zero',()=>{const x=setup();x.context.data=data;x.run('render(data)');assert.match(x.nodes.get('coverage').textContent,/scored/);assert.equal(x.nodes.get('scores').children.length,32);assert.match(x.nodes.get('soft-detail').textContent,new RegExp(data.last_soft_check.status));assert.equal(x.nodes.get('view-label').textContent,'Latest published assessment');});
 test('historical review keeps original timestamps, banner, ranking and return control',()=>{const x=setup();x.context.data=data;x.run('render(data)');const old=JSON.parse(fs.readFileSync('docs/'+data.score_history[0].path,'utf8'));x.context.old=old;x.run('selectReview(old)');assert.match(x.nodes.get('view-context').textContent,/Historical snapshot/);assert.equal(x.nodes.get('return-latest').hidden,false);assert.equal(x.run('rows[0].score'),Math.max(...old.records.filter(r=>r.score!==null).map(r=>r.score)));x.nodes.get('return-latest').listeners.click();assert.equal(x.nodes.get('return-latest').hidden,true);assert.equal(x.run('selectedId'),data.last_hard_check.id);});
@@ -54,4 +62,34 @@ test('v2 mismatch cannot display supplied score, and malicious evidence remains 
 test('historical v2 official-close observation never implies current entry',()=>{
  const x=setup();x.context.record={...v2record(),cohort:'v2-historical-official-close'};x.run('rows=[record];cards()');
  assert.match(text(x.nodes.get('scores')),/Historical observation.*Not a current entry score/);
+});
+
+
+test('history selections produce deep links and respond to back and forward',()=>{
+ const x=setup();x.context.data=data;x.run('render(data)');
+ const old=JSON.parse(fs.readFileSync('docs/'+data.score_history[0].path,'utf8'));x.context.old=old;
+ x.run('reviews.set(old.id,old);selectReview(old)');assert.equal(x.location.hash,'#review='+old.id);
+ x.location.hash='#research';x.window.listeners.popstate();assert.equal(x.run('selectedId'),data.last_hard_check.id);
+ x.location.hash='#review='+old.id;x.window.listeners.popstate();assert.equal(x.run('selectedId'),old.id);
+});
+test('failed refresh does not strand an in-flight history entry',async()=>{
+ let finishHistory;
+ const pending=new Promise(resolve=>{finishHistory=resolve;});
+ const x=setup(async path=>path==='data/watch.json'?{ok:false,status:500}:pending);
+ const item=data.score_history[0],old=JSON.parse(fs.readFileSync('docs/'+item.path,'utf8'));
+ x.context.snapshot={...data,score_history:[item]};x.run('render(snapshot)');
+ const button=x.nodes.get('history').children[0].children[0];assert.equal(button.disabled,true);
+ await x.run('load()');finishHistory({ok:true,json:async()=>old});
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(button.disabled,false);
+});
+test('empty assessment is distinct from an empty search',()=>{
+ const x=setup();x.context.snapshot={...data,last_hard_check:null,score_history:[]};x.run('render(snapshot)');
+ assert.match(text(x.nodes.get('scores')),/No assessment has been published yet/);
+ assert.doesNotMatch(text(x.nodes.get('scores')),/No stocks match/);
+});
+test('missing or unavailable deep links are clearly labeled',async()=>{
+ const x=setup();x.location.hash='#review=missing';x.context.data=data;x.run('render(data)');
+ assert.match(x.nodes.get('load-status').textContent,/not found/);
+ const item=data.score_history[0];x.location.hash='#review='+item.id;x.window.listeners.hashchange();
+ await new Promise(resolve=>setImmediate(resolve));assert.match(x.nodes.get('load-status').textContent,/could not be loaded/);
 });

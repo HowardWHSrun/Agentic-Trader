@@ -1,15 +1,189 @@
 'use strict';
-const elem=(tag,text,cls)=>{const e=document.createElement(tag);if(text!=null)e.textContent=text;if(cls)e.className=cls;return e;};
-const date=v=>new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',dateStyle:'medium',timeStyle:'long'}).format(new Date(v));
-const pct=v=>v===null?'Unavailable':(v>=0?'+':'')+v.toFixed(3)+'%';
-const num=v=>v===null?'Undefined':v.toFixed(3);
-const ordered=rows=>[...rows].sort((a,b)=>b.score-a.score||a.symbol.localeCompare(b.symbol));
-function paragraph(parent,text,cls){parent.append(elem('p',text,cls));}
-function table(caption,heads,rows){const wrap=elem('div',null,'audit-table'),t=elem('table');t.append(elem('caption',caption));const h=elem('tr');heads.forEach(x=>{const th=elem('th',x);th.scope='col';h.append(th);});const head=elem('thead');head.append(h);t.append(head);const body=elem('tbody');rows.forEach(row=>{const tr=elem('tr');row.forEach(x=>tr.append(elem('td',x)));body.append(tr);});t.append(body);wrap.append(t);return wrap;}
-function bucketTable(p,key,title){const a=p[key];return table(title,['Original score bucket','Stocks','Mean price return','Positive'],Object.entries(a.buckets).map(([k,v])=>[k,v.n,pct(v.mean_return_pct),v.n?v.positive+' / '+v.n:'Not applicable']));}
-function renderAudit(d){const root=document.getElementById('audit');root.replaceChildren();root.dataset.auditId=d.id;const intro=elem('section',null,'audit-block');intro.append(elem('h2',d.market_date+' · daily outcome review'));paragraph(intro,d.summary,'audit-summary');paragraph(intro,'Analysis completed '+date(d.analysis_completed_at)+'. First reported '+date(d.analysis_first_published_at)+'. Website export created '+date(d.website_export_created_at)+'.','audit-meta');paragraph(intro,'Audit ID: '+d.id+'. This is not a new score assessment.');paragraph(intro,d.method);paragraph(intro,d.endpoint_source);const primary=d.publications.find(p=>p.id===d.primary_publication_id);intro.append(elem('h3','Primary diagnostic: '+date(primary.published_at)));paragraph(intro,'32 stocks · Spearman rank correlation '+num(primary.original_reference_analysis.spearman)+'. A value near zero indicates little monotonic association in this sample.');intro.append(bucketTable(primary,'original_reference_analysis','Frozen original quote → final regular minute'));paragraph(intro,'Original quote-to-publication lag: '+Math.min(...primary.rows.map(r=>r.reference_to_publication_lag_seconds)).toFixed(0)+'–'+Math.max(...primary.rows.map(r=>r.reference_to_publication_lag_seconds)).toFixed(0)+' seconds. '+d.delay);paragraph(intro,'Separate post-publication sensitivity: first complete minute after publication open → final regular minute close. Spearman '+num(primary.post_publication_sensitivity.spearman)+'. This is not an assumed fill and does not replace original references.');intro.append(bucketTable(primary,'post_publication_sensitivity','Post-publication sensitivity (not trades)'));root.append(intro);
-const cohorts=elem('section',null,'audit-block');cohorts.append(elem('h2','All seven publication windows'));paragraph(cohorts,'Same 32 stocks on the same date with overlapping windows. Do not treat these as 224 independent trials or select only the best window.');cohorts.append(table('Intraday cohorts remain separate',['Original publication (Houston)','n','Original-reference Spearman','Post-publication Spearman'],d.publications.map(p=>[date(p.published_at),p.rows.length,num(p.original_reference_analysis.spearman),num(p.post_publication_sensitivity.spearman)])));for(const p of d.publications){const details=elem('details');details.append(elem('summary',date(p.published_at)+' · all 32 original scores and outcomes'));paragraph(details,'Cohort: '+p.cohort+'. Original publication UTC: '+p.published_at+'. Rubric '+d.rubric_version+' (30/25/20/10/15). Historical scores, not current recommendations.');details.append(bucketTable(p,'original_reference_analysis','Original-reference bucket summary'));const grid=elem('div',null,'audit-card-grid');for(const r of ordered(p.rows)){const card=elem('article',null,'audit-stock');card.append(elem('h3',r.score+' / 100 · '+r.symbol));paragraph(card,pct(r.return_pct)+' · frozen-reference price return',r.return_pct>=0?'positive':'negative');paragraph(card,'Original reference $'+r.reference_price+' · '+r.reference_price_type+' · '+r.reference_source);paragraph(card,'Quote '+r.reference_price_timestamp+' ('+date(r.reference_price_timestamp)+') · publication lag '+r.reference_to_publication_lag_seconds.toFixed(3)+'s. Provider delay unknown.');paragraph(card,'Final minute begins '+r.end_bar_begins_at+'; bar close $'+r.end_bar_close+'. Not official close.');paragraph(card,'Sensitivity start '+r.post_publication_start_bar+' open $'+r.post_publication_start_open+' → '+pct(r.post_publication_return_pct)+'. Not an executable fill.');paragraph(card,'Alternate regular last-trade endpoint $'+r.quote_endpoint_price+' at '+r.quote_endpoint_timestamp+' → '+pct(r.quote_endpoint_return_pct)+'. Not official close.');grid.append(card);}details.append(grid);cohorts.append(details);}root.append(cohorts);
-const limits=elem('section',null,'audit-block');limits.append(elem('h2','What remains unverified'));paragraph(limits,d.benchmark_status);paragraph(limits,'Official-close 1-session matured pairs: '+d.official_close_audit.matured_one_session_n+'; 5-session pairs: '+d.official_close_audit.matured_five_session_n+'. Means and excess returns unavailable; rank correlation undefined.');const ul=elem('ul');d.limitations.forEach(x=>ul.append(elem('li',x)));limits.append(ul);paragraph(limits,'Endpoint QA: '+d.endpoint_qa.genuine_final_bars+' genuine final bars; '+d.endpoint_qa.excluded_interpolated_bars+' interpolated earlier bars excluded. '+d.endpoint_qa.note);for(const q of d.endpoint_qa.minute_quote_mismatches)paragraph(limits,q.symbol+': minute close $'+q.minute_close+' versus regular last trade $'+q.quote_last_trade+' at '+q.quote_timestamp+'. Both retained, not silently reconciled.');root.append(limits);
-const c=d.closing_review,close=elem('section',null,'audit-block');close.append(elem('h2','Closing report: retrospective review'));paragraph(close,c.summary,'audit-summary');paragraph(close,'Original assessment '+date(c.original_assessment_timestamp)+'; original publication '+date(c.original_publication_timestamp)+'. Later annotation '+date(c.annotation_first_published_at)+'. Original records remain unchanged.','audit-meta');const a=elem('a','Read the immutable original closing report');a.href='data/watch-history/'+c.original_publication_id+'.json';close.append(a);for(const x of c.corrections){close.append(elem('h3',x.topic));paragraph(close,x.statement);for(const s of x.sources){const link=elem('a','Primary source');link.href=s;link.rel='noopener noreferrer';close.append(link,document.createTextNode(' '));}}const gaps=elem('details');gaps.append(elem('summary','All 32 closing unavailable outcomes'));gaps.append(table('Original closing coverage, not refreshed scores',['Ticker','Buying score','Reference'],c.records.map(r=>[r.symbol,'Unavailable',r.status])));close.append(gaps);root.append(close);}
-let version=0;async function loadAudit(item){const v=++version;document.getElementById('status').textContent='Loading saved audit…';try{if(!/^data\/outcomes\/[a-z0-9-]+\.json$/.test(item.path))throw Error('Path');const r=await fetch(item.path,{cache:'no-store'});if(!r.ok)throw Error('Unavailable');const d=await r.json();if(d.schema_version!==1||d.id!==item.id)throw Error('Identity');if(v!==version)return;renderAudit(d);document.getElementById('status').textContent='Saved audit loaded. No prices, scores or monitoring timestamps refreshed.';}catch{document.getElementById('status').textContent='Audit could not be loaded. Any visible audit is an older saved view.';}}
-async function init(){try{const r=await fetch('data/outcomes/index.json',{cache:'no-store'});if(!r.ok)throw Error();const d=await r.json(),select=document.getElementById('audit-date'),items=[...d.audits].reverse();for(const item of items){const o=elem('option',item.market_date+' · '+item.id);o.value=item.id;select.append(o);}select.addEventListener('change',()=>loadAudit(items.find(x=>x.id===select.value)));if(items.length)await loadAudit(items[0]);else document.getElementById('status').textContent='No outcome audits published.';}catch{document.getElementById('status').textContent='Audit catalog unavailable.';}}init();
+const elem = (tag, text, cls) => {
+  const el = document.createElement(tag);
+  if (text != null) el.textContent = String(text);
+  if (cls) el.className = cls;
+  return el;
+};
+const finite = v => typeof v === 'number' && Number.isFinite(v);
+const pct = v => finite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(3)}%` : 'Unavailable';
+const pp = v => finite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(3)} pp` : 'Unavailable';
+const num = v => finite(v) ? v.toFixed(3) : 'Undefined';
+const price = v => finite(v) ? `$${v}` : 'Unavailable';
+const label = v => v == null || v === '' ? 'Unavailable' : String(v);
+const date = v => {
+  if (!v || Number.isNaN(Date.parse(v))) return 'Unavailable';
+  return new Intl.DateTimeFormat('en-US', {timeZone:'America/Chicago', dateStyle:'medium', timeStyle:'long'}).format(new Date(v));
+};
+const timestamp = v => v ? `${v} (${date(v)})` : 'Unavailable';
+const ordered = rows => [...rows].sort((a,b) => {
+  if (finite(a.score) !== finite(b.score)) return finite(a.score) ? -1 : 1;
+  return (finite(a.score) ? b.score - a.score : 0) || a.symbol.localeCompare(b.symbol);
+});
+function paragraph(parent, text, cls) { parent.append(elem('p', text, cls)); }
+function table(caption, heads, rows) {
+  const wrap = elem('div', null, 'audit-table'), t = elem('table');
+  t.append(elem('caption', caption));
+  const h = elem('tr');
+  heads.forEach(x => { const th = elem('th', x); th.scope = 'col'; h.append(th); });
+  const head = elem('thead'); head.append(h); t.append(head);
+  const body = elem('tbody');
+  rows.forEach(row => { const tr = elem('tr'); row.forEach(x => tr.append(elem('td', x))); body.append(tr); });
+  t.append(body); wrap.append(t); return wrap;
+}
+function bucketTable(p, key, title) {
+  const a = p[key];
+  return table(title, ['Original score bucket', 'Matched pairs', 'Mean return', 'Positive'],
+    Object.entries(a.buckets).map(([k,v]) => [k, v.n, pct(v.mean_return_pct),
+      v.n && finite(v.positive) ? `${v.positive} / ${v.n}` : 'Unavailable']));
+}
+function metric(parent, value, description) {
+  const item = elem('div', null, 'audit-metric'); item.append(elem('strong', value), elem('span', description)); parent.append(item);
+}
+function displayEvidence(v) { return Array.isArray(v) ? (v.length ? v.join('; ') : 'None recorded') : label(v); }
+function benchmarkTable(b, title) {
+  return table(title, ['Score bucket', 'SPY matched pairs', 'Mean excess vs SPY', 'Sector matched pairs', 'Mean excess vs sector'],
+    [['All scores', b.spy.matched_n, pp(b.spy.mean_excess_pp), b.sector.matched_n, pp(b.sector.mean_excess_pp)],
+     ...Object.entries(b.buckets).map(([key,v]) => [key,v.spy.matched_n,pp(v.spy.mean_excess_pp),v.sector.matched_n,pp(v.sector.mean_excess_pp)])]);
+}
+function extraDiagnostics(parent, p) {
+  if (p.post_publication_benchmarks) {
+    parent.append(benchmarkTable(p.post_publication_benchmarks, 'Post-publication benchmark comparison'));
+    paragraph(parent, 'Excess changes are percentage-point differences against matched SPY and sector-proxy windows, not alpha, fills or portfolio returns. Original-reference benchmark comparisons remain unavailable when exact timestamp matching is missing.');
+  }
+  const a=p.aligned_sensitivity;
+  if (a) {
+    const duration=(Date.parse(a.end_timestamp)-Date.parse(a.start_timestamp))/60000;
+    parent.append(elem('h3',`Aligned ${Number.isFinite(duration)?duration:'unknown'}-minute sensitivity`));
+    paragraph(parent, `${timestamp(a.start_timestamp)} to ${timestamp(a.end_timestamp)}. ${a.analysis.n} matched score/return pairs; mean ${pct(a.analysis.mean_return_pct)}; Spearman ${num(a.analysis.spearman)}. This common window is a separate sensitivity, not a replacement for original-reference results.`);
+    parent.append(bucketTable({aligned:a.analysis},'aligned','Aligned-window score buckets'));
+    parent.append(benchmarkTable(a.benchmarks,'Aligned-window benchmarks'));
+  }
+}
+function renderAudit(d) {
+  const root = document.getElementById('audit'); root.replaceChildren(); root.dataset.auditId = d.id;
+  const intro = elem('section', null, 'audit-block');
+  intro.append(elem('h2', `${d.market_date} · outcome review`));
+  paragraph(intro, d.summary, 'audit-summary');
+  paragraph(intro, `Analysis completed ${timestamp(d.analysis_completed_at)}. First reported ${timestamp(d.analysis_first_published_at)}. Website export created ${timestamp(d.website_export_created_at)}.`, 'audit-meta');
+  paragraph(intro, `Audit ID: ${d.id}. This is not a new score assessment.`);
+  paragraph(intro, d.method); paragraph(intro, d.endpoint_source);
+  const primary = d.publications.find(p => p.id === d.primary_publication_id);
+  if (primary) {
+    const a = primary.original_reference_analysis, s = primary.post_publication_sensitivity;
+    intro.append(elem('h3', `Primary diagnostic · ${date(primary.published_at)}`));
+    paragraph(intro, `Assessment: ${timestamp(primary.assessment_timestamp)}. Publication: ${timestamp(primary.published_at)}. Cohort: ${label(primary.cohort)} · Rubric: ${label(primary.rubric_version || d.rubric_version)}. Scores from different rubrics or reference cohorts are not assumed comparable.`);
+    const metrics = elem('div', null, 'audit-metrics');
+    metric(metrics, `${a.n} / ${primary.rows.length}`, 'Matched score and return pairs');
+    metric(metrics, num(a.spearman), 'Spearman rank correlation');
+    metric(metrics, pct(a.mean_return_pct), 'Mean reference return');
+    intro.append(metrics);
+    paragraph(intro, 'Correlation describes this sample; it does not establish a trading edge. Undefined statistics are shown as such.');
+    intro.append(bucketTable(primary, 'original_reference_analysis', 'Original-reference return by score bucket'));
+    const lags = primary.rows.map(r => r.reference_to_publication_lag_seconds).filter(finite);
+    paragraph(intro, `Original reference-to-publication lag: ${lags.length ? `${Math.min(...lags).toFixed(0)}–${Math.max(...lags).toFixed(0)} seconds (${lags.length} observations)` : 'Unavailable'}. ${label(d.delay)}`);
+    paragraph(intro, `Post-publication sensitivity: ${s.n} matched pairs; Spearman ${num(s.spearman)}. This does not replace the original references or imply an executable fill.`);
+    intro.append(bucketTable(primary, 'post_publication_sensitivity', 'Post-publication sensitivity by score bucket'));
+    extraDiagnostics(intro,primary);
+  }
+  root.append(intro);
+  const cohorts = elem('section', null, 'audit-block'); cohorts.append(elem('h2', 'Publication cohorts'));
+  paragraph(cohorts, `${d.publications.length} saved publication windows. Windows for the same stocks may overlap and are not independent trials. Intraday, provisional and official-close cohorts remain distinct.`);
+  cohorts.append(table('Saved publications', ['Scheduled target (Chicago)', 'Actual publication (Chicago)', 'Cohort', 'Rubric', 'Matched pairs', 'Reference Spearman', 'Sensitivity pairs', 'Sensitivity Spearman'], d.publications.map(p => [date(p.scheduled_target_houston), date(p.published_at), label(p.cohort), label(p.rubric_version || d.rubric_version), p.original_reference_analysis.n, num(p.original_reference_analysis.spearman), p.post_publication_sensitivity.n, num(p.post_publication_sensitivity.spearman)])));
+  for (const p of d.publications) {
+    const details = elem('details'); details.append(elem('summary', `${date(p.published_at)} · ${p.rows.length} original observations`));
+    paragraph(details, `Assessment: ${timestamp(p.assessment_timestamp)}. Publication: ${timestamp(p.published_at)}. Cohort: ${label(p.cohort)}. Rubric: ${label(p.rubric_version || d.rubric_version)}. Historical observations are not current recommendations.`);
+    details.append(bucketTable(p, 'original_reference_analysis', 'Original-reference bucket summary'));
+    extraDiagnostics(details,p);
+    const grid = elem('div', null, 'audit-card-grid');
+    for (const r of ordered(p.rows)) {
+      const card = elem('article', null, 'audit-stock');
+      card.append(elem('h3', `${r.symbol} · ${finite(r.score) ? `${r.score} / 100` : 'Score unavailable'}`));
+      if (finite(r.score) && (r.score_status === 'available_provisional' || (p.rubric_version || d.rubric_version) === 'buying-score-v2')) paragraph(card, 'Provisional evidence-based entry score.');
+      if (r.score_status) paragraph(card, `Original score status: ${r.score_status}.`);
+      if (p.cohort === 'v2-historical-official-close') paragraph(card, 'Historical observation; not a current entry score.');
+      paragraph(card, `${pct(r.return_pct)} · original-reference price return`, finite(r.return_pct) ? (r.return_pct >= 0 ? 'positive' : 'negative') : '');
+      paragraph(card, `Original reference ${price(r.reference_price)} · type: ${label(r.reference_price_type)} · source: ${label(r.reference_source)} · session: ${label(r.reference_session)}.`);
+      paragraph(card, `Reference time: ${timestamp(r.reference_price_timestamp)}. Publication lag: ${finite(r.reference_to_publication_lag_seconds) ? `${r.reference_to_publication_lag_seconds.toFixed(3)} seconds` : 'Unavailable'}.`);
+      paragraph(card, `End bar begins ${timestamp(r.end_bar_begins_at)}; bar close ${price(r.end_bar_close)}.`);
+      paragraph(card, `Sensitivity start ${timestamp(r.post_publication_start_bar)}, open ${price(r.post_publication_start_open)}; return ${pct(r.post_publication_return_pct)}. Not an executable fill.`);
+      paragraph(card, `Alternate quote endpoint ${price(r.quote_endpoint_price)} at ${timestamp(r.quote_endpoint_timestamp)}; return ${pct(r.quote_endpoint_return_pct)}.`);
+      if ('aligned_return_pct' in r) paragraph(card, `Aligned window: ${pct(r.aligned_return_pct)} from ${timestamp(r.aligned_start_bar)} at ${price(r.aligned_start_open)}. Sector proxy: ${label(r.sector_benchmark)}. Post-publication excess: SPY ${pp(r.post_publication_spy_excess_pp)}, sector ${pp(r.post_publication_sector_excess_pp)}. Aligned excess: SPY ${pp(r.aligned_spy_excess_pp)}, sector ${pp(r.aligned_sector_excess_pp)}.`);
+      if (r.missing_evidence != null) paragraph(card, `Missing evidence: ${displayEvidence(r.missing_evidence)}.`);
+      grid.append(card);
+    }
+    details.append(grid); cohorts.append(details);
+  }
+  root.append(cohorts);
+  const limits = elem('section', null, 'audit-block'); limits.append(elem('h2', 'Evidence and limitations'));
+  paragraph(limits, d.benchmark_status);
+  const o = d.official_close_audit;
+  if (o) paragraph(limits, `Official-close matured pairs: ${label(o.matured_one_session_n)} for one session, ${label(o.matured_five_session_n)} for five sessions. Mean return ${pct(o.mean_return_pct)}; Spearman ${num(o.spearman)}. ${label(o.status)}`);
+  const ledger=d.official_close_details;
+  if(ledger){
+    paragraph(limits, `${ledger.original_records} immutable official-close observations: ${ledger.valid_reference_n} valid original references, ${ledger.unavailable_original_n} unavailable originals, ${ledger.pending_valid_reference_n} pending valid references. Later prices never repair a missing original.`);
+    limits.append(table('Official-close cohorts remain separate',['Rubric','Original dates','Original records','Valid references','Unavailable'],ledger.rubric_cohorts.map(c=>[c.rubric,c.dates.join(', '),c.original_records,c.valid_reference_n,c.unavailable_n])));
+    paragraph(limits, `Public-history gap: ${ledger.public_history_gap.record_count} records (${ledger.public_history_gap.dates.join(', ')}). ${ledger.public_history_gap.note}`);
+  }
+  const ul = elem('ul'); (d.limitations || []).forEach(x => ul.append(elem('li', x))); limits.append(ul);
+  const qa = d.endpoint_qa;
+  if (qa) {
+    paragraph(limits, `Endpoint QA: ${label(qa.genuine_final_bars)} genuine final bars; ${label(qa.excluded_interpolated_bars)} interpolated bars excluded. ${label(qa.note)}`);
+    for (const q of qa.minute_quote_mismatches || []) paragraph(limits, `${q.symbol}: minute close ${price(q.minute_close)} versus quote ${price(q.quote_last_trade)} at ${timestamp(q.quote_timestamp)}.`);
+  }
+  root.append(limits);
+  const c = d.closing_review;
+  if (c) {
+    const close = elem('section', null, 'audit-block'); close.append(elem('h2', 'Closing report · retrospective review'));
+    paragraph(close, c.summary, 'audit-summary');
+    paragraph(close, `Original assessment ${timestamp(c.original_assessment_timestamp)}; publication ${timestamp(c.original_publication_timestamp)}; later annotation ${timestamp(c.annotation_first_published_at)}. Original records remain unchanged.`, 'audit-meta');
+    if (/^[a-zA-Z0-9_-]+$/.test(c.original_publication_id)) { const a = elem('a', 'Read the immutable original closing report'); a.href = `data/watch-history/${c.original_publication_id}.json`; close.append(a); }
+    for (const x of c.corrections || []) {
+      close.append(elem('h3', x.topic)); paragraph(close, x.statement);
+      for (const s of x.sources || []) { try { if (new URL(s).protocol !== 'https:') continue; const link = elem('a', 'Primary source'); link.href = s; link.rel = 'noopener noreferrer'; close.append(link, document.createTextNode(' ')); } catch {} }
+    }
+    const gaps = elem('details'); gaps.append(elem('summary', `${c.records.length} original closing observations`));
+    gaps.append(table('Original closing coverage', ['Ticker', 'Buying score', 'Reference', 'Status'], c.records.map(r => [r.symbol, finite(r.score) ? `${r.score} / 100` : 'Unavailable', price(r.reference_price), label(r.status)])));
+    close.append(gaps); root.append(close);
+  }
+}
+let version = 0;
+async function loadAudit(item) {
+  const v = ++version; document.getElementById('status').textContent = 'Loading saved audit…';
+  try {
+    if (!item || !/^data\/outcomes\/[a-z0-9-]+\.json$/.test(item.path)) throw Error('Path');
+    const response = await fetch(item.path, {cache:'no-store'}); if (!response.ok) throw Error('Unavailable');
+    const d = await response.json(); if (![1,2].includes(d.schema_version) || d.id !== item.id) throw Error('Identity');
+    if (v !== version) return;
+    renderAudit(d); document.getElementById('status').textContent = 'Saved audit loaded. No scores, prices or monitoring timestamps were refreshed.';
+  } catch { if (v === version) { clearAudit(); document.getElementById('status').textContent = 'Audit could not be loaded.'; } }
+}
+function clearAudit() {
+  const root = document.getElementById('audit'); root.replaceChildren(); delete root.dataset.auditId;
+}
+async function init() {
+  const select = document.getElementById('audit-date'), status = document.getElementById('status');
+  try {
+    const response = await fetch('data/outcomes/index.json', {cache:'no-store'}); if (!response.ok) throw Error();
+    const data = await response.json(); if (!Array.isArray(data.audits)) throw Error('Invalid catalog');
+    const items = [...data.audits].reverse();
+    for (const item of items) { const option = elem('option', `${item.market_date} · ${item.id}`); option.value = item.id; select.append(option); }
+    if (!items.length) { select.disabled = true; clearAudit(); status.textContent = 'No outcome audits published.'; return; }
+    function restoreSelection() {
+      const requested = new URL(window.location.href).searchParams.get('audit');
+      const item = requested === null ? items[0] : items.find(x => x.id === requested);
+      if (!item) {
+        ++version; select.value = ''; clearAudit(); status.textContent = 'The requested audit is not in the published catalog.'; return;
+      }
+      select.value = item.id; loadAudit(item);
+    }
+    select.addEventListener('change', () => {
+      const item = items.find(x => x.id === select.value); if (!item) return;
+      const url = new URL(window.location.href); url.searchParams.set('audit', item.id);
+      window.history.pushState(null, '', url); loadAudit(item);
+    });
+    window.addEventListener('popstate', restoreSelection);
+    restoreSelection();
+  } catch { select.disabled = true; clearAudit(); status.textContent = 'Audit catalog unavailable.'; }
+}
+init();

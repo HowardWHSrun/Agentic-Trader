@@ -5,19 +5,34 @@ function timestamp(value){const d=new Date(value);return value&&Number.isFinite(
 function safeUrl(value){try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 let rows=[], latestReview=null, selectedId=null, loadVersion=0;
 const reviews=new Map();
+let historyIds=new Set();
 function evidenceSummary(record) {
   if (record.rubric_version !== 'buying-score-v2') return null;
   try { return BuyingScoreV2.summarize(record.evidence_checks); } catch { return null; }
 }
 function scoreValue(record) {
-  if (record.rubric_version !== 'buying-score-v2') return record.score;
+  if (record.rubric_version !== 'buying-score-v2') return Number.isFinite(record.score) ? record.score : null;
   const summary=evidenceSummary(record);
-  return record.score!==null && summary && record.score===summary.score ? summary.score : null;
+  return Number.isFinite(record.score) && summary && record.score===summary.score ? summary.score : null;
 }
 const sortedRecords=records=>[...records].sort((a,b)=>(scoreValue(a)===null)-(scoreValue(b)===null)||(scoreValue(b)??0)-(scoreValue(a)??0)||a.symbol.localeCompare(b.symbol));
 function reviewCounts(review){const n=review.records.filter(r=>scoreValue(r)!==null).length;return n+(review.rubric_version==='buying-score-v2'?' provisionally scored · ':' scored · ')+(review.records.length-n)+' unavailable';}
 function cohortLabel(value){return String(value||'Unspecified cohort').replaceAll('_',' ').replaceAll('-',' ');}
-function selectReview(review){
+function reviewIdFromLocation(){
+  const match=location.hash.match(/^#review=([A-Za-z0-9_-]+)$/);
+  return match ? match[1] : null;
+}
+function syncReviewLocation(){
+  const id=reviewIdFromLocation();
+  if(id && reviews.has(id)){selectReview(reviews.get(id), false);byId('load-status').textContent='Saved historical review loaded.';}
+  else if(id){byId('load-status').textContent=historyIds.has(id)?'Loading the requested historical review…':'Requested historical review was not found. The current view remains unchanged.';}
+  else if(latestReview) selectReview(latestReview, false);
+}
+function selectReview(review, updateLocation=true){
+  if(updateLocation){
+    const hash=review.id===latestReview?.id ? '#research' : '#review='+encodeURIComponent(review.id);
+    if(location.hash!==hash) history.pushState(null, '', hash);
+  }
   selectedId=review.id;rows=sortedRecords(review.records);const historical=review.id!==latestReview?.id;
   byId('view-label').textContent=historical?'Historical assessment · original evidence':'Latest published assessment';
   byId('assessment-title').textContent=cohortLabel(review.cohort);
@@ -34,8 +49,8 @@ async function historyEntry(item,version){
   const raw=el('a','Original JSON');raw.href=item.path;raw.className='raw-link';entry.append(button,raw);byId('history').append(entry);
   try{let review=reviews.get(item.id);if(!review){const response=await fetch(item.path,{cache:'no-store'});if(!response.ok)throw new Error('History unavailable');review=await response.json();if(review.id!==item.id||!Array.isArray(review.records)||review.publication_timestamp!==item.publication_timestamp)throw new Error('History identity mismatch');reviews.set(item.id,review);}if(version!==loadVersion)return;
     button.lastChild.textContent=cohortLabel(review.cohort)+' · '+[...new Set(review.records.map(r=>r.reference_session).filter(Boolean))].join(' / ')+' · '+reviewCounts(review);button.disabled=false;
-    button.addEventListener('click',()=>{selectReview(review);byId('assessment-title').scrollIntoView({behavior:'auto',block:'start'});});
-  }catch{if(version===loadVersion)button.lastChild.textContent='Review could not be loaded. Use the original JSON link or refresh.';}
+    button.addEventListener('click',()=>{selectReview(review);byId('assessment-title').scrollIntoView({behavior:'auto',block:'start'});});if(reviewIdFromLocation()===review.id){selectReview(review,false);byId('load-status').textContent='Saved historical review loaded.';}
+  }catch{if(version===loadVersion){button.lastChild.textContent='Review could not be loaded. Use the original JSON link or refresh.';if(reviewIdFromLocation()===item.id)byId('load-status').textContent='Requested historical review could not be loaded. The current view remains unchanged.';}}
 }
 
 function appendEvidence(card, record, summary, value) {
@@ -73,15 +88,16 @@ function cards(){
     const score=el('div',value===null?'Unavailable':String(value),'score');
     score.append(el('small',value===null?'No numeric buying score':v2?'/ 100 · Provisional evidence-based entry score':provisional?'/ 100 · Provisional v1 buying score':'/ 100 · buying score'));
     const heading=el('div');heading.append(el('h2',r.symbol),el('p',r.rubric_version+' · '+cohortLabel(r.cohort),'quote'));
-    const quote=r.reference_price===null?'No sufficiently current price reference':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(r.reference_price)+' · '+r.reference_price_type;
+    const quote=!Number.isFinite(r.reference_price)?'Reference price unavailable':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(r.reference_price)+' · '+(r.reference_price_type||'Price type unavailable');
     heading.append(el('p',quote,'quote'));top.append(score,heading);card.append(top);
     if(r.cohort==='v2-historical-official-close')card.append(el('p','Historical observation. Dated official close; assessed now. Not a current entry score.','view-context historical'));
-    card.append(el('p',r.reference_price_timestamp?timestamp(r.reference_price_timestamp)+' · '+r.reference_session+' · '+r.reference_source+' · Delay: '+r.quote_delay:r.missing_evidence,'quote'));
-    if(v2)appendEvidence(card,r,summary,value);
-    card.append(el('p',r.reason,'reason'));
-    const action=el('p',null,'action');action.append(el('strong','Conditional action plan'),document.createTextNode(r.conditional_action));card.append(action);
-    if(r.improvement_condition)card.append(el('p','What would improve it: '+r.improvement_condition,'improvement'));
-    const details=el('details');details.append(el('summary','Evidence, limitations & sources'));
+    card.append(el('p','Reference time: '+(r.reference_price_timestamp?timestamp(r.reference_price_timestamp):'Unavailable')+' · Session: '+(r.reference_session||'Unavailable')+' · Source: '+(r.reference_source||'Unavailable')+' · Delay: '+(r.quote_delay||'Unknown'),'quote'));
+    card.append(el('p',r.reason||'Research rationale unavailable.','reason'));
+    const details=el('details');details.append(el('summary','View plan, evidence & sources'));
+    if(v2)appendEvidence(details,r,summary,value);
+    if(r.conditional_action){const action=el('p',null,'action');action.append(el('strong','Conditional action plan'),document.createTextNode(r.conditional_action));details.append(action);}
+    if(r.improvement_condition)details.append(el('p','What would improve it: '+r.improvement_condition,'improvement'));
+    if(r.missing_evidence)details.append(el('p','Missing evidence: '+(Array.isArray(r.missing_evidence)?r.missing_evidence.join('; '):r.missing_evidence)));
     if(v2&&summary)appendChecklist(details,r);
     if(r.event)details.append(el('p',typeof r.event==='string'?r.event:'Event: '+Object.entries(r.event).map(([k,v])=>k+': '+v).join(' · ')));
     const components=v2?summary?.component_scores:r.component_scores;
@@ -93,9 +109,9 @@ function cards(){
     details.append(sources);card.append(details);byId('scores').append(card);
   }
   byId('result-count').textContent=shown+' of '+rows.length+' stocks shown · Ranked within this rubric/cohort, unavailable last';
-  if(!shown)byId('scores').append(el('p','No stocks match this search. Clear the search to see the full review.','empty'));
+  if(!shown)byId('scores').append(el('p',rows.length?'No stocks match this search. Clear the search to see the full review.':'No assessment has been published yet.','empty'));
 }
-function render(data){if(data.schema_version!==2)throw new Error('Unsupported schema');const h=data.last_hard_check;const s=data.last_soft_check;latestReview=h;const priorSelection=selectedId;rows=h?sortedRecords(h.records):[];if(h)reviews.set(h.id,h);byId('hard-time').textContent=timestamp(h?.publication_timestamp);byId('hard-detail').textContent=h?'Assessment '+timestamp(h.assessment_snapshot)+'. Price timestamps remain individually labeled below.':'No completed check has been published.';byId('soft-time').textContent=timestamp(s?.checked_at);byId('soft-detail').textContent=s?s.status+' · '+s.summary+' '+s.coverage:'No soft-check timestamp has been published here. This does not establish continuous monitoring.';byId('coverage').textContent=rows.filter(r=>scoreValue(r)!==null).length+' scored / '+rows.length;byId('coverage-detail').textContent=(rows.length-rows.filter(r=>scoreValue(r)!==null).length)+' scores unavailable. '+rows.length+' assessment records; this is not a live-quote coverage count.';byId('summary').textContent=h?.summary||'No published assessment.';byId('schedule').textContent=data.schedule.hard_checks+' Soft checks: '+data.schedule.soft_checks+' '+data.schedule.controller;byId('history').replaceChildren();byId('history-count').textContent=(data.score_history||[]).length+' saved reviews';for(const item of [...(data.score_history||[])].reverse())historyEntry(item,loadVersion);byId('alerts').replaceChildren();byId('alerts-section').hidden=!(data.alerts||[]).length;for(const a of data.alerts||[]){const item=el('article',null,'stock');item.append(el('h2',a.ticker+' · '+a.name),el('p',timestamp(a.published_at),'quote'));for(const key of ['summary','entry','invalidation','risks','conclusion'])if(a[key])item.append(el('p',key+': '+a[key]));for(const source of a.sources||[]){const url=safeUrl(source.url);if(url){const link=el('a',source.title);link.href=url;link.rel='noopener noreferrer';item.append(link);}}byId('alerts').append(item);}byId('load-status').textContent='Loaded saved publication. Refresh does not initiate research or update quote timestamps.';if(h)selectReview(reviews.get(priorSelection)||h);else cards();}
-async function load(){loadVersion++;byId('refresh').disabled=true;try{const response=await fetch('data/watch.json',{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);render(await response.json());}catch{byId('load-status').textContent='Latest published data could not be loaded. Any visible data is from the prior load, not a new check.';}finally{byId('refresh').disabled=false;}}
+function render(data){if(data.schema_version!==2)throw new Error('Unsupported schema');const h=data.last_hard_check;const s=data.last_soft_check;latestReview=h;const priorSelection=selectedId;rows=h?sortedRecords(h.records):[];if(h)reviews.set(h.id,h);byId('hard-time').textContent=timestamp(h?.publication_timestamp);byId('hard-detail').textContent=h?'Assessment '+timestamp(h.assessment_snapshot)+'. Price timestamps remain individually labeled below.':'No completed check has been published.';byId('soft-time').textContent=timestamp(s?.checked_at);byId('soft-detail').textContent=s?s.status+' · '+s.summary:'No soft-check timestamp has been published here. This does not establish continuous monitoring.';byId('soft-coverage').hidden=!s?.coverage;byId('soft-coverage-text').textContent=s?.coverage||'';byId('coverage').textContent=rows.filter(r=>scoreValue(r)!==null).length+' scored / '+rows.length;byId('coverage-detail').textContent=(rows.length-rows.filter(r=>scoreValue(r)!==null).length)+' scores unavailable. '+rows.length+' assessment records; this is not a live-quote coverage count.';byId('summary').textContent=h?.summary||'No published assessment.';byId('schedule').textContent=data.schedule.hard_checks+' Soft checks: '+data.schedule.soft_checks+' '+data.schedule.controller;byId('history').replaceChildren();historyIds=new Set((data.score_history||[]).map(item=>item.id));byId('history-count').textContent=(data.score_history||[]).length+' saved reviews';for(const item of [...(data.score_history||[])].reverse())historyEntry(item,loadVersion);byId('alerts').replaceChildren();byId('alerts-section').hidden=!(data.alerts||[]).length;for(const a of data.alerts||[]){const item=el('article',null,'stock');item.append(el('h2',a.ticker+' · '+a.name),el('p',timestamp(a.published_at),'quote'));for(const key of ['summary','entry','invalidation','risks','conclusion'])if(a[key])item.append(el('p',key+': '+a[key]));for(const source of a.sources||[]){const url=safeUrl(source.url);if(url){const link=el('a',source.title);link.href=url;link.rel='noopener noreferrer';item.append(link);}}byId('alerts').append(item);}byId('load-status').textContent='Loaded saved publication. Refresh does not initiate research or update quote timestamps.';if(h){const requested=reviewIdFromLocation();selectReview(reviews.get(requested)||(!requested&&reviews.get(priorSelection))||h,false);if(requested&&!reviews.has(requested))syncReviewLocation();}else cards();}
+async function load(){byId('refresh').disabled=true;try{const response=await fetch('data/watch.json',{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);const data=await response.json();if(data.schema_version!==2)throw new Error('Unsupported schema');loadVersion++;render(data);}catch{byId('load-status').textContent='Latest published data could not be loaded. Any visible data is from the prior load, not a new check.';}finally{byId('refresh').disabled=false;}}
 byId('return-latest').addEventListener('click',()=>{if(latestReview)selectReview(latestReview);});
-byId('refresh').addEventListener('click',load);byId('search').addEventListener('input',cards);load();
+byId('refresh').addEventListener('click',load);byId('search').addEventListener('input',cards);window.addEventListener('popstate',syncReviewLocation);window.addEventListener('hashchange',syncReviewLocation);load();
