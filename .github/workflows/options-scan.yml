@@ -61,7 +61,7 @@ jobs:
           key: options-state-${{ github.run_id }}
           restore-keys: options-state-
 
-      - name: Scan options and push new alerts
+      - name: Scan options and push important alerts
         if: steps.gate.outputs.run == 'true'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -76,12 +76,14 @@ jobs:
           SMTP_SERVER: ${{ vars.SMTP_SERVER }}
           SMTP_PORT: ${{ vars.SMTP_PORT }}
           SYMBOLS: ${{ inputs.symbols }}
+          PUSH_DIGEST: ${{ vars.OPTIONS_PUSH_DIGEST }}
         run: |
           [ -z "$NTFY_SERVER" ] && unset NTFY_SERVER
           [ -z "$SMTP_SERVER" ] && unset SMTP_SERVER
           [ -z "$SMTP_PORT" ] && unset SMTP_PORT
           python3 scripts/options_analysis.py --force --scan --notify \
             --state options-scan-state.json \
+            ${PUSH_DIGEST:+--push-digest} \
             ${SYMBOLS:+--symbols "$SYMBOLS"} \
             --out options-report --iv-history options-iv-history.json \
             --report-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

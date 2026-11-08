@@ -25,10 +25,15 @@ ET = ZoneInfo('America/New_York')
 BENCHMARKS = ['SPY', 'QQQ']
 UNUSUAL_MIN_VOLUME = 500
 UNUSUAL_VOL_OI = 3.0
-IV_ALERT_PTS = 0.05        # intraday IV30 change (vol points) that triggers an alert
-FLOW_REALERT_MULT = 2.0    # re-alert a flagged contract once its volume doubles again
-MOVE_ALERT_SIGMA = 2.0     # spot move vs one-day implied sigma
-DIGEST_AFTER = dt.time(10, 0)  # first scan at/after this ET time sends the full digest
+# Push thresholds: only "important" events notify, each at most once per day.
+BIG_FLOW_MIN_VOLUME = 2000      # contracts
+BIG_FLOW_VOL_OI = 5.0           # volume vs open interest
+BIG_FLOW_MIN_PREMIUM = 1_000_000  # USD traded (volume x mid x 100)
+IV_ALERT_PTS = 0.08             # IV30 change vs the 10:00 ET baseline (vol points)...
+IV_ALERT_REL = 0.25             # ...and relative change
+MOVE_ALERT_SIGMA = 2.0          # spot move vs one-day implied sigma...
+MOVE_ALERT_MIN = 0.03           # ...and at least this absolute move
+BASELINE_AFTER = dt.time(10, 0)  # IV baseline / optional digest after the open settles
 
 
 # ---------------------------------------------------------------- pure math
@@ -115,9 +120,11 @@ def unusual(rows, side, expiry):
     for r in rows:
         vol, oi = _num(r.get('volume')) or 0, _num(r.get('openInterest')) or 0
         if vol >= UNUSUAL_MIN_VOLUME and vol >= UNUSUAL_VOL_OI * max(oi, 1):
+            mid = mid_price(r)
             hits.append({'side': side, 'expiry': expiry, 'strike': float(r['strike']),
                          'volume': int(vol), 'open_interest': int(oi),
-                         'iv': _iv(r), 'mid': mid_price(r)})
+                         'iv': _iv(r), 'mid': mid,
+                         'premium': vol * mid * 100 if mid else None})
     return hits
 
 
@@ -326,46 +333,52 @@ def render_digest(report, url=None):
 
 # ---------------------------------------------------------------- intraday scan
 
-def scan_alerts(report, state, now):
-    """Compare a scan with today's state; return (alert lines, new state).
+def is_big_flow(u):
+    return (u['volume'] >= BIG_FLOW_MIN_VOLUME
+            and u['volume'] >= BIG_FLOW_VOL_OI * max(u['open_interest'], 1)
+            and (u.get('premium') or 0) >= BIG_FLOW_MIN_PREMIUM)
 
-    State resets each trading day. Only *new* events are returned so a
-    10-minute schedule does not repeat the same push.
+
+def scan_alerts(report, state, now):
+    """Return (important alert lines, new state, baseline_just_set).
+
+    Only important events qualify, and each (symbol, kind[, contract]) is
+    pushed at most once per trading day. State resets each day.
     """
     today = report['date']
     if state.get('date') != today:
-        state = {'date': today, 'digest_sent': False, 'iv_base': {}, 'iv_alerted': {},
-                 'flow_seen': {}, 'move_alerted': {}}
+        state = {'date': today, 'baseline_set': False, 'iv_base': {}, 'alerted': []}
+    alerted = set(state['alerted'])
     alerts = []
-    send_digest = not state['digest_sent'] and now.time() >= DIGEST_AFTER
+    set_baseline = not state['baseline_set'] and now.time() >= BASELINE_AFTER
+
+    def once(key, text):
+        if key not in alerted:
+            alerted.add(key)
+            alerts.append(text)
+
     for m in report['symbols']:
         sym, iv = m['symbol'], m.get('iv30')
-        if iv:
-            if send_digest or sym not in state['iv_base'] and state['digest_sent']:
-                state['iv_base'][sym] = iv
-            base = state['iv_base'].get(sym)
-            last = state['iv_alerted'].get(sym, base)
-            if base and last is not None and abs(iv - last) >= IV_ALERT_PTS:
-                arrow = '↑' if iv > last else '↓'
-                alerts.append(f"{sym} IV30 {arrow} {pct(iv)}（开盘基准 {pct(base)}，{(iv - base) * 100:+.1f} 点）")
-                state['iv_alerted'][sym] = iv
+        if iv and (set_baseline or (state['baseline_set'] and sym not in state['iv_base'])):
+            state['iv_base'][sym] = iv
+        base = state['iv_base'].get(sym)
+        if iv and base and abs(iv - base) >= IV_ALERT_PTS and abs(iv - base) / base >= IV_ALERT_REL:
+            once(f'{sym}|iv', f"⚡ {sym} IV30 {'飙升' if iv > base else '骤降'} {pct(base)} → {pct(iv)}"
+                              f"（{(iv - base) * 100:+.1f} 点）")
         move, sigma = m.get('day_change'), (iv / math.sqrt(252) if iv else None)
-        if move is not None and sigma:
-            level = int(abs(move) / (MOVE_ALERT_SIGMA * sigma))
-            if level > state['move_alerted'].get(sym, 0):
-                alerts.append(f"{sym} 日内 {move * 100:+.1f}%，超过隐含单日波动 {level * MOVE_ALERT_SIGMA:g}σ（σ≈{sigma * 100:.1f}%）")
-                state['move_alerted'][sym] = level
+        if move is not None and sigma and abs(move) >= max(MOVE_ALERT_SIGMA * sigma, MOVE_ALERT_MIN):
+            once(f'{sym}|move', f"📉 {sym} 日内 {move * 100:+.1f}%，约 {abs(move) / sigma:.1f}σ（隐含单日 σ≈{sigma * 100:.1f}%）"
+                 if move < 0 else f"📈 {sym} 日内 {move * 100:+.1f}%，约 {abs(move) / sigma:.1f}σ（隐含单日 σ≈{sigma * 100:.1f}%）")
         for u in m.get('unusual', []):
-            key = f"{sym}|{u['expiry']}|{u['strike']:g}|{u['side']}"
-            seen = state['flow_seen'].get(key)
-            if seen is None or u['volume'] >= FLOW_REALERT_MULT * seen:
-                tag = '新' if seen is None else '加量'
-                alerts.append(f"{sym} 异常{tag} {u['expiry'][5:]} {u['strike']:g}{u['side'][0].upper()} "
-                              f"量 {u['volume']:,} / 仓 {u['open_interest']:,}" + (f" IV {pct(u['iv'])}" if u.get('iv') else ''))
-                state['flow_seen'][key] = u['volume']
-    if send_digest:
-        state['digest_sent'] = True
-    return alerts, state, send_digest
+            if is_big_flow(u):
+                once(f"{sym}|{u['expiry']}|{u['strike']:g}|{u['side']}",
+                     f"🐋 {sym} 大单 {u['expiry'][5:]} {u['strike']:g}{u['side'][0].upper()} "
+                     f"量 {u['volume']:,} / 仓 {u['open_interest']:,}，成交额约 ${u['premium'] / 1e6:.1f}M"
+                     + (f"，IV {pct(u['iv'])}" if u.get('iv') else ''))
+    if set_baseline:
+        state['baseline_set'] = True
+    state['alerted'] = sorted(alerted)
+    return alerts, state, set_baseline
 
 
 # ---------------------------------------------------------------- main
@@ -389,6 +402,8 @@ def main(argv=None):
     parser.add_argument('--scan', action='store_true',
                         help='Intraday mode: run only in session, send the digest once a day and push only new alerts')
     parser.add_argument('--state', default='options-scan-state.json', help='Intraday alert state (with --scan)')
+    parser.add_argument('--push-digest', action='store_true',
+                        help='With --scan, also push the full daily digest once (default: important alerts only)')
     args = parser.parse_args(argv)
 
     now = dt.datetime.now(ET)
@@ -439,16 +454,17 @@ def main(argv=None):
     if args.scan:
         state_path = Path(args.state)
         state = json.loads(state_path.read_text()) if state_path.exists() else {}
-        alerts, state, send_digest = scan_alerts(report, state, now)
+        alerts, state, baseline_now = scan_alerts(report, state, now)
         state_path.write_text(json.dumps(state, indent=1) + '\n')
+        send_digest = args.push_digest and baseline_now
         if send_digest:
             messages.append((f'期权日报 {today}', digest))
         if alerts:
             body = '\n'.join(alerts[:30]) + (f'\n…另有 {len(alerts) - 30} 条' if len(alerts) > 30 else '')
             if args.report_url:
                 body += f'\n完整报告: {args.report_url}'
-            messages.append((f'期权异动 {now:%H:%M} ET', body + '\n研究用途，非交易指令。'))
-        print(f'Scan {now:%H:%M} ET: {len(alerts)} new alert(s); digest {"sent" if send_digest else "not due"}.')
+            messages.append((f'期权重要异动 {now:%H:%M} ET', body + '\n研究用途，非交易指令。'))
+        print(f'Scan {now:%H:%M} ET: {len(alerts)} important alert(s); digest {"pushed" if send_digest else "not pushed"}.')
     else:
         messages.append((f'期权日报 {today}', digest))
     for title, body in messages:

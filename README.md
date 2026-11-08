@@ -18,7 +18,13 @@ The legacy scanner's published universe contains 60 U.S. stocks/ETFs plus spot B
 
 ## Options intraday scan / 期权盘中扫描
 
-A GitHub Actions workflow (`.github/workflows/options-scan.yml`) scans every 10 minutes during the NYSE regular session (09:30–16:00 ET; 13:00 on early-close days; no runs on weekends or NYSE holidays). It analyses the watch universe plus SPY/QQQ with delayed Yahoo Finance chains. The first scan at or after 10:00 ET pushes the full daily digest; later scans push only **new** alerts: newly flagged unusual volume (or a flagged contract whose volume doubles), IV30 moving ≥5 vol points from the 10:00 baseline, or a price move beyond 2σ of the one-day implied move. Repeats are suppressed with per-day state in the Actions cache. GitHub may delay or skip scheduled runs under load. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
+A GitHub Actions workflow (`.github/workflows/options-scan.yml`) scans every 10 minutes during the NYSE regular session (09:30–16:00 ET; 13:00 on early-close days; no runs on weekends or NYSE holidays). It analyses the watch universe plus SPY/QQQ with delayed Yahoo Finance chains and **pushes only important events, each at most once per day**:
+
+- **Big block** (🐋): one contract with ≥2,000 volume, ≥5× open interest and ≥$1M premium traded.
+- **IV shock** (⚡): IV30 moves ≥8 vol points *and* ≥25% from the 10:00 ET baseline.
+- **Big move** (📈/📉): price move ≥2σ of the one-day implied move and ≥3%.
+
+Quiet days send nothing. Every scan's full report still lands in the run summary and a 7-day artifact. Set the repository variable `OPTIONS_PUSH_DIGEST=true` to also receive one full digest at 10:00 ET. Thresholds are constants at the top of `scripts/options_analysis.py`. GitHub may delay or skip scheduled runs under load. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
 
 Metrics: IV30 (ATM ~30 DTE), HV20, IV/HV, IV Rank (from IV history kept in the Actions cache, shown after 20 runs), weekly expected move (ATM straddle), 95/105 put–call skew, put/call volume and open-interest ratios, front-expiry max pain, unusual volume (≥3× OI and ≥500 contracts), earnings within 14 days.
 

@@ -158,11 +158,11 @@ class EndToEndTest(unittest.TestCase):
             state = Path(tmp) / 'state.json'
             scan_args = ['--symbols', 'AAPL', '--out', tmp, '--iv-history', str(hist), '--scan', '--state', str(state)]
             self.assertEqual(oa.main(scan_args), 0)
-            self.assertTrue(json.loads(state.read_text())['digest_sent'])
-            self.assertIn('期权异动', out.getvalue())
+            self.assertTrue(json.loads(state.read_text())['baseline_set'])
+            self.assertIn('digest not pushed', out.getvalue())
             out.truncate(0)
             self.assertEqual(oa.main(scan_args), 0)
-            self.assertIn('0 new alert(s); digest not due', out.getvalue())
+            self.assertIn('0 important alert(s)', out.getvalue())
 
     def test_skips_non_trading_day(self):
         now = dt.datetime(2026, 11, 26, 10, 0, tzinfo=oa.ET)
@@ -181,47 +181,58 @@ class EndToEndTest(unittest.TestCase):
 
 
 class ScanTest(unittest.TestCase):
-    def report(self, iv=0.30, flow_volume=1000, move=0.0):
-        return {'date': '2026-11-09', 'symbols': [{
-            'symbol': 'AAPL', 'iv30': iv, 'day_change': move,
-            'unusual': [{'side': 'call', 'expiry': '2026-11-20', 'strike': 230.0,
-                         'volume': flow_volume, 'open_interest': 100, 'iv': 0.4}] if flow_volume else []}]}
+    def report(self, iv=0.30, flow_volume=5000, mid=3.0, move=0.0):
+        flows = []
+        if flow_volume:
+            flows.append({'side': 'call', 'expiry': '2026-11-20', 'strike': 230.0, 'volume': flow_volume,
+                          'open_interest': 100, 'iv': 0.4, 'mid': mid, 'premium': flow_volume * mid * 100})
+        return {'date': '2026-11-09', 'symbols': [{'symbol': 'AAPL', 'iv30': iv, 'day_change': move, 'unusual': flows}]}
 
-    def at(self, hh, mm):
-        return dt.datetime(2026, 11, 9, hh, mm, tzinfo=oa.ET)
+    def at(self, hh, mm, day=9):
+        return dt.datetime(2026, 11, day, hh, mm, tzinfo=oa.ET)
 
-    def test_digest_once_and_dedupe(self):
-        alerts, state, digest = oa.scan_alerts(self.report(), {}, self.at(9, 40))
-        self.assertFalse(digest)
-        self.assertEqual(len(alerts), 1)  # new unusual flow alerts even before the digest
-        alerts, state, digest = oa.scan_alerts(self.report(), state, self.at(10, 0))
-        self.assertTrue(digest)
-        self.assertEqual(alerts, [])  # same contract, same volume: no repeat
-        alerts, state, digest = oa.scan_alerts(self.report(flow_volume=2500), state, self.at(10, 10))
-        self.assertFalse(digest)
+    def test_big_flow_pushed_once(self):
+        alerts, state, baseline = oa.scan_alerts(self.report(), {}, self.at(9, 40))
+        self.assertFalse(baseline)
         self.assertEqual(len(alerts), 1)
-        self.assertIn('加量', alerts[0])
+        self.assertIn('大单', alerts[0])
+        alerts, state, baseline = oa.scan_alerts(self.report(flow_volume=20000), state, self.at(10, 0))
+        self.assertTrue(baseline)
+        self.assertEqual(alerts, [])  # same contract never repeats the same day
 
-    def test_iv_and_move_alerts(self):
+    def test_small_flow_ignored(self):
+        self.assertEqual(oa.scan_alerts(self.report(flow_volume=1500), {}, self.at(10, 0))[0], [])
+        self.assertEqual(oa.scan_alerts(self.report(mid=0.5), {}, self.at(10, 0))[0], [])  # $250k premium
+
+    def test_iv_alert_needs_big_change_and_fires_once(self):
         _, state, _ = oa.scan_alerts(self.report(flow_volume=0), {}, self.at(10, 0))
-        alerts, state, _ = oa.scan_alerts(self.report(iv=0.33, flow_volume=0), state, self.at(10, 10))
-        self.assertEqual(alerts, [])
-        alerts, state, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0), state, self.at(10, 20))
+        alerts, state, _ = oa.scan_alerts(self.report(iv=0.37, flow_volume=0), state, self.at(10, 10))
+        self.assertEqual(alerts, [])  # +7 pts: not important
+        alerts, state, _ = oa.scan_alerts(self.report(iv=0.39, flow_volume=0), state, self.at(10, 20))
         self.assertEqual(len(alerts), 1)
-        self.assertIn('IV30 ↑', alerts[0])
-        sigma = 0.36 / math.sqrt(252)
-        alerts, state, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0, move=-2.5 * sigma), state, self.at(10, 30))
-        self.assertEqual(len(alerts), 1)
-        self.assertIn('2σ', alerts[0])
-        alerts, _, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0, move=-2.6 * sigma), state, self.at(10, 40))
+        self.assertIn('飙升', alerts[0])
+        alerts, _, _ = oa.scan_alerts(self.report(iv=0.50, flow_volume=0), state, self.at(10, 30))
         self.assertEqual(alerts, [])
+
+    def test_no_iv_alert_before_baseline(self):
+        _, state, _ = oa.scan_alerts(self.report(iv=0.30, flow_volume=0), {}, self.at(9, 40))
+        alerts, _, _ = oa.scan_alerts(self.report(iv=0.60, flow_volume=0), state, self.at(9, 50))
+        self.assertEqual(alerts, [])
+
+    def test_move_alert(self):
+        sigma = 0.30 / math.sqrt(252)  # ~1.9%
+        self.assertEqual(oa.scan_alerts(self.report(flow_volume=0, move=-0.028), {}, self.at(11, 0))[0], [])
+        alerts, state, _ = oa.scan_alerts(self.report(flow_volume=0, move=-2.5 * sigma), {}, self.at(11, 0))
+        self.assertEqual(len(alerts), 1)
+        self.assertIn('📉', alerts[0])
+        self.assertEqual(oa.scan_alerts(self.report(flow_volume=0, move=-0.08), state, self.at(11, 10))[0], [])
 
     def test_state_resets_next_day(self):
         _, state, _ = oa.scan_alerts(self.report(), {}, self.at(10, 0))
         nxt = self.report()
         nxt['date'] = '2026-11-10'
-        alerts, state, digest = oa.scan_alerts(nxt, state, dt.datetime(2026, 11, 10, 10, 0, tzinfo=oa.ET))
-        self.assertTrue(digest)
+        alerts, state, baseline = oa.scan_alerts(nxt, state, self.at(10, 0, day=10))
+        self.assertTrue(baseline)
         self.assertEqual(len(alerts), 1)
 
     def test_in_session(self):
