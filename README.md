@@ -16,9 +16,9 @@ No private portfolio information or personalized purchase sizing is included in 
 
 The legacy scanner's published universe contains 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. These dated scanner results do not establish fair value, an investment recommendation or the active watch's scope. Crypto is not part of the current stock/ETF alert mandate. Earlier strategy examples, their percentage-based rules and their 1–5-session review clock remain historical context, not personal allocation instructions.
 
-## Options daily report / 期权日报
+## Options intraday scan / 期权盘中扫描
 
-A GitHub Actions workflow (`.github/workflows/options-daily.yml`) runs at 09:45 America/Chicago on NYSE trading days only (weekends, NYSE holidays and the wrong DST slot are skipped; early closes are flagged). It analyses the watch universe plus SPY/QQQ with delayed Yahoo Finance chains and pushes a digest. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
+A GitHub Actions workflow (`.github/workflows/options-scan.yml`) scans every 10 minutes during the NYSE regular session (09:30–16:00 ET; 13:00 on early-close days; no runs on weekends or NYSE holidays). It analyses the watch universe plus SPY/QQQ with delayed Yahoo Finance chains. The first scan at or after 10:00 ET pushes the full daily digest; later scans push only **new** alerts: newly flagged unusual volume (or a flagged contract whose volume doubles), IV30 moving ≥5 vol points from the 10:00 baseline, or a price move beyond 2σ of the one-day implied move. Repeats are suppressed with per-day state in the Actions cache. GitHub may delay or skip scheduled runs under load. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
 
 Metrics: IV30 (ATM ~30 DTE), HV20, IV/HV, IV Rank (from IV history kept in the Actions cache, shown after 20 runs), weekly expected move (ATM straddle), 95/105 put–call skew, put/call volume and open-interest ratios, front-expiry max pain, unusual volume (≥3× OI and ≥500 contracts), earnings within 14 days.
 
@@ -35,7 +35,8 @@ The full Markdown report appears in the run summary and as a 30-day artifact. Sc
 
 ```sh
 pip install -r requirements-options.txt
-python3 scripts/options_analysis.py --symbols SPY,AAPL --force
+python3 scripts/options_analysis.py --symbols SPY,AAPL --force          # one-off report
+python3 scripts/options_analysis.py --scan                                # intraday alerts
 python3 scripts/trading_calendar.py --date 2026-11-26
 ```
 

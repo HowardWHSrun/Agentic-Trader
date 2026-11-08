@@ -19,12 +19,16 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from trading_calendar import early_close, is_trading_day  # noqa: E402
+from trading_calendar import early_close, in_session, is_trading_day  # noqa: E402
 
 ET = ZoneInfo('America/New_York')
 BENCHMARKS = ['SPY', 'QQQ']
 UNUSUAL_MIN_VOLUME = 500
 UNUSUAL_VOL_OI = 3.0
+IV_ALERT_PTS = 0.05        # intraday IV30 change (vol points) that triggers an alert
+FLOW_REALERT_MULT = 2.0    # re-alert a flagged contract once its volume doubles again
+MOVE_ALERT_SIGMA = 2.0     # spot move vs one-day implied sigma
+DIGEST_AFTER = dt.time(10, 0)  # first scan at/after this ET time sends the full digest
 
 
 # ---------------------------------------------------------------- pure math
@@ -174,6 +178,9 @@ def analyze_symbol(symbol, today, iv_history):
     if not closes:
         raise RuntimeError('no price history')
     spot = float(closes[-1])
+    last_bar = getattr(hist.index[-1], 'date', lambda: None)()
+    has_today = last_bar == today and len(closes) >= 2
+    day_change = spot / float(closes[-2]) - 1 if has_today else None
     expiries = list(ticker.options or [])
     if not expiries:
         raise RuntimeError('no listed options')
@@ -215,6 +222,7 @@ def analyze_symbol(symbol, today, iv_history):
     metrics = {
         'symbol': symbol,
         'spot': round(spot, 2),
+        'day_change': day_change,
         'trend': None if sma50 is None else ('up' if spot >= sma50 else 'down'),
         'hv20': hv20,
         'iv30': iv30,
@@ -316,6 +324,50 @@ def render_digest(report, url=None):
     return '\n'.join(out)
 
 
+# ---------------------------------------------------------------- intraday scan
+
+def scan_alerts(report, state, now):
+    """Compare a scan with today's state; return (alert lines, new state).
+
+    State resets each trading day. Only *new* events are returned so a
+    10-minute schedule does not repeat the same push.
+    """
+    today = report['date']
+    if state.get('date') != today:
+        state = {'date': today, 'digest_sent': False, 'iv_base': {}, 'iv_alerted': {},
+                 'flow_seen': {}, 'move_alerted': {}}
+    alerts = []
+    send_digest = not state['digest_sent'] and now.time() >= DIGEST_AFTER
+    for m in report['symbols']:
+        sym, iv = m['symbol'], m.get('iv30')
+        if iv:
+            if send_digest or sym not in state['iv_base'] and state['digest_sent']:
+                state['iv_base'][sym] = iv
+            base = state['iv_base'].get(sym)
+            last = state['iv_alerted'].get(sym, base)
+            if base and last is not None and abs(iv - last) >= IV_ALERT_PTS:
+                arrow = '↑' if iv > last else '↓'
+                alerts.append(f"{sym} IV30 {arrow} {pct(iv)}（开盘基准 {pct(base)}，{(iv - base) * 100:+.1f} 点）")
+                state['iv_alerted'][sym] = iv
+        move, sigma = m.get('day_change'), (iv / math.sqrt(252) if iv else None)
+        if move is not None and sigma:
+            level = int(abs(move) / (MOVE_ALERT_SIGMA * sigma))
+            if level > state['move_alerted'].get(sym, 0):
+                alerts.append(f"{sym} 日内 {move * 100:+.1f}%，超过隐含单日波动 {level * MOVE_ALERT_SIGMA:g}σ（σ≈{sigma * 100:.1f}%）")
+                state['move_alerted'][sym] = level
+        for u in m.get('unusual', []):
+            key = f"{sym}|{u['expiry']}|{u['strike']:g}|{u['side']}"
+            seen = state['flow_seen'].get(key)
+            if seen is None or u['volume'] >= FLOW_REALERT_MULT * seen:
+                tag = '新' if seen is None else '加量'
+                alerts.append(f"{sym} 异常{tag} {u['expiry'][5:]} {u['strike']:g}{u['side'][0].upper()} "
+                              f"量 {u['volume']:,} / 仓 {u['open_interest']:,}" + (f" IV {pct(u['iv'])}" if u.get('iv') else ''))
+                state['flow_seen'][key] = u['volume']
+    if send_digest:
+        state['digest_sent'] = True
+    return alerts, state, send_digest
+
+
 # ---------------------------------------------------------------- main
 
 def load_symbols(path):
@@ -334,12 +386,18 @@ def main(argv=None):
     parser.add_argument('--force', action='store_true', help='Run even if today is not a trading day')
     parser.add_argument('--notify', action='store_true', help='Push the digest via configured channels')
     parser.add_argument('--report-url', help='Link added to the digest')
+    parser.add_argument('--scan', action='store_true',
+                        help='Intraday mode: run only in session, send the digest once a day and push only new alerts')
+    parser.add_argument('--state', default='options-scan-state.json', help='Intraday alert state (with --scan)')
     args = parser.parse_args(argv)
 
     now = dt.datetime.now(ET)
     today = now.date()
     if not args.force and not is_trading_day(today):
         print(f'{today} is not an NYSE trading day; skipping.')
+        return 0
+    if args.scan and not args.force and not in_session(now):
+        print(f'{now:%H:%M} ET is outside the regular session; skipping.')
         return 0
 
     if args.symbols:
@@ -377,12 +435,30 @@ def main(argv=None):
     (out / f'options-{today}.md').write_text(render_markdown(report))
     hist_path.write_text(json.dumps(store, indent=1, sort_keys=True) + '\n')
     digest = render_digest(report, args.report_url)
-    print(digest)
+    messages = []
+    if args.scan:
+        state_path = Path(args.state)
+        state = json.loads(state_path.read_text()) if state_path.exists() else {}
+        alerts, state, send_digest = scan_alerts(report, state, now)
+        state_path.write_text(json.dumps(state, indent=1) + '\n')
+        if send_digest:
+            messages.append((f'期权日报 {today}', digest))
+        if alerts:
+            body = '\n'.join(alerts[:30]) + (f'\n…另有 {len(alerts) - 30} 条' if len(alerts) > 30 else '')
+            if args.report_url:
+                body += f'\n完整报告: {args.report_url}'
+            messages.append((f'期权异动 {now:%H:%M} ET', body + '\n研究用途，非交易指令。'))
+        print(f'Scan {now:%H:%M} ET: {len(alerts)} new alert(s); digest {"sent" if send_digest else "not due"}.')
+    else:
+        messages.append((f'期权日报 {today}', digest))
+    for title, body in messages:
+        print(f'--- {title}\n{body}')
 
-    if args.notify:
+    if args.notify and messages:
         from notify import send_all
-        sent = send_all(f'期权日报 {today}', digest)
-        print(f'Notified: {", ".join(sent) or "no channel configured"}')
+        for title, body in messages:
+            sent = send_all(title, body)
+            print(f'Notified "{title}": {", ".join(sent) or "no channel configured"}')
     if not results:
         print('No symbols analyzed.', file=sys.stderr)
         return 2

@@ -88,6 +88,23 @@ def early_close(day):
     return None
 
 
+def session_bounds(day):
+    """(open, close) ET times of the regular session, or None when closed."""
+    if not is_trading_day(day):
+        return None
+    return dt.time(9, 30), dt.time(13, 0) if early_close(day) else dt.time(16, 0)
+
+
+def in_session(now_et, grace_minutes=5):
+    """True while the regular session is open (ET-aware datetime), plus a short grace."""
+    bounds = session_bounds(now_et.date())
+    if bounds is None:
+        return False
+    start = dt.datetime.combine(now_et.date(), bounds[0], now_et.tzinfo)
+    end = dt.datetime.combine(now_et.date(), bounds[1], now_et.tzinfo) + dt.timedelta(minutes=grace_minutes)
+    return start <= now_et <= end
+
+
 def next_trading_day(day):
     day += dt.timedelta(days=1)
     while not is_trading_day(day):
@@ -98,7 +115,15 @@ def next_trading_day(day):
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Exit 0 on an NYSE trading day, 1 otherwise.')
     parser.add_argument('--date', help='YYYY-MM-DD (default: today in America/New_York)')
+    parser.add_argument('--in-session', action='store_true',
+                        help='Exit 0 only while the regular session is open right now')
     args = parser.parse_args(argv)
+    if args.in_session:
+        from zoneinfo import ZoneInfo
+        now = dt.datetime.now(ZoneInfo('America/New_York'))
+        is_open = in_session(now)
+        print(f'{now:%Y-%m-%d %H:%M} ET: regular session {"open" if is_open else "closed"}')
+        return 0 if is_open else 1
     if args.date:
         day = dt.date.fromisoformat(args.date)
     else:

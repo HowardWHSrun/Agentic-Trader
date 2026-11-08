@@ -117,7 +117,8 @@ class EndToEndTest(unittest.TestCase):
             def history(self, **_):
                 if self.symbol == 'BAD':
                     return pd.DataFrame()
-                return pd.DataFrame({'Close': [100 + (i % 3) for i in range(120)]})
+                idx = pd.date_range(end='2026-11-09', periods=120, freq='D')
+                return pd.DataFrame({'Close': [100 + (i % 3) for i in range(119)] + [110]}, index=idx)
 
             def option_chain(self, _exp):
                 c, p = chain(101, vol=50)
@@ -148,11 +149,20 @@ class EndToEndTest(unittest.TestCase):
             self.assertIn('BAD', report['errors'])
             aapl = report['symbols'][1]
             self.assertEqual(aapl['days_to_earnings'], 3)
+            self.assertAlmostEqual(aapl['day_change'], 110 / 101 - 1)
             self.assertEqual(aapl['front_expiry'], '2026-11-20')
             self.assertTrue(aapl['unusual'])
             self.assertIn('| AAPL |', md)
             self.assertIn('2026-11-09', json.loads(hist.read_text())['AAPL'])
             self.assertIn('期权日报 2026-11-09', out.getvalue())
+            state = Path(tmp) / 'state.json'
+            scan_args = ['--symbols', 'AAPL', '--out', tmp, '--iv-history', str(hist), '--scan', '--state', str(state)]
+            self.assertEqual(oa.main(scan_args), 0)
+            self.assertTrue(json.loads(state.read_text())['digest_sent'])
+            self.assertIn('期权异动', out.getvalue())
+            out.truncate(0)
+            self.assertEqual(oa.main(scan_args), 0)
+            self.assertIn('0 new alert(s); digest not due', out.getvalue())
 
     def test_skips_non_trading_day(self):
         now = dt.datetime(2026, 11, 26, 10, 0, tzinfo=oa.ET)
@@ -168,6 +178,60 @@ class EndToEndTest(unittest.TestCase):
         symbols = oa.load_symbols(Path(__file__).resolve().parents[1] / 'docs/data/watch.json')
         self.assertIn('AAPL', symbols)
         self.assertGreaterEqual(len(symbols), 30)
+
+
+class ScanTest(unittest.TestCase):
+    def report(self, iv=0.30, flow_volume=1000, move=0.0):
+        return {'date': '2026-11-09', 'symbols': [{
+            'symbol': 'AAPL', 'iv30': iv, 'day_change': move,
+            'unusual': [{'side': 'call', 'expiry': '2026-11-20', 'strike': 230.0,
+                         'volume': flow_volume, 'open_interest': 100, 'iv': 0.4}] if flow_volume else []}]}
+
+    def at(self, hh, mm):
+        return dt.datetime(2026, 11, 9, hh, mm, tzinfo=oa.ET)
+
+    def test_digest_once_and_dedupe(self):
+        alerts, state, digest = oa.scan_alerts(self.report(), {}, self.at(9, 40))
+        self.assertFalse(digest)
+        self.assertEqual(len(alerts), 1)  # new unusual flow alerts even before the digest
+        alerts, state, digest = oa.scan_alerts(self.report(), state, self.at(10, 0))
+        self.assertTrue(digest)
+        self.assertEqual(alerts, [])  # same contract, same volume: no repeat
+        alerts, state, digest = oa.scan_alerts(self.report(flow_volume=2500), state, self.at(10, 10))
+        self.assertFalse(digest)
+        self.assertEqual(len(alerts), 1)
+        self.assertIn('加量', alerts[0])
+
+    def test_iv_and_move_alerts(self):
+        _, state, _ = oa.scan_alerts(self.report(flow_volume=0), {}, self.at(10, 0))
+        alerts, state, _ = oa.scan_alerts(self.report(iv=0.33, flow_volume=0), state, self.at(10, 10))
+        self.assertEqual(alerts, [])
+        alerts, state, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0), state, self.at(10, 20))
+        self.assertEqual(len(alerts), 1)
+        self.assertIn('IV30 ↑', alerts[0])
+        sigma = 0.36 / math.sqrt(252)
+        alerts, state, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0, move=-2.5 * sigma), state, self.at(10, 30))
+        self.assertEqual(len(alerts), 1)
+        self.assertIn('2σ', alerts[0])
+        alerts, _, _ = oa.scan_alerts(self.report(iv=0.36, flow_volume=0, move=-2.6 * sigma), state, self.at(10, 40))
+        self.assertEqual(alerts, [])
+
+    def test_state_resets_next_day(self):
+        _, state, _ = oa.scan_alerts(self.report(), {}, self.at(10, 0))
+        nxt = self.report()
+        nxt['date'] = '2026-11-10'
+        alerts, state, digest = oa.scan_alerts(nxt, state, dt.datetime(2026, 11, 10, 10, 0, tzinfo=oa.ET))
+        self.assertTrue(digest)
+        self.assertEqual(len(alerts), 1)
+
+    def test_in_session(self):
+        et = oa.ET
+        self.assertTrue(tc.in_session(dt.datetime(2026, 11, 9, 9, 30, tzinfo=et)))
+        self.assertFalse(tc.in_session(dt.datetime(2026, 11, 9, 9, 29, tzinfo=et)))
+        self.assertTrue(tc.in_session(dt.datetime(2026, 11, 9, 16, 5, tzinfo=et)))
+        self.assertFalse(tc.in_session(dt.datetime(2026, 11, 9, 16, 6, tzinfo=et)))
+        self.assertFalse(tc.in_session(dt.datetime(2026, 11, 27, 14, 0, tzinfo=et)))  # early close
+        self.assertFalse(tc.in_session(dt.datetime(2026, 11, 26, 11, 0, tzinfo=et)))  # Thanksgiving
 
 
 class NotifyTest(unittest.TestCase):
