@@ -23,6 +23,7 @@ A GitHub Actions workflow (`.github/workflows/options-scan.yml`) scans every 10 
 - **Big block** (🐋): one contract with ≥2,000 volume, ≥5× open interest and ≥$1M premium traded.
 - **IV shock** (⚡): IV30 moves ≥8 vol points *and* ≥25% from the 10:00 ET baseline.
 - **Big move** (📈/📉): price move ≥2σ of the one-day implied move and ≥3%.
+- **Technical entry candidate** (🎯): `scripts/entry_screen.py` automates the price-derivable buying-score-v2 checks from completed daily bars: close > SMA20 > SMA50, SMA20 rising, 20-session return beating SPY, price within 1 ATR14 of SMA20, a setup within 0.5 ATR (pullback to SMA20 or fresh 20-session-high breakout), a structural invalidation, a 2R path clear of the 120-session high, ≥$20M average dollar volume and no earnings within ~5 sessions. Catalyst, fundamentals, spread and macro-event checks are not automated, so a 🎯 is a candidate to research, not a buy signal.
 
 Quiet days send nothing. Every scan's full report still lands in the run summary and a 7-day artifact. Set the repository variable `OPTIONS_PUSH_DIGEST=true` to also receive one full digest at 10:00 ET. Thresholds are constants at the top of `scripts/options_analysis.py`. GitHub may delay or skip scheduled runs under load. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
 

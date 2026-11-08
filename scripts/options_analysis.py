@@ -19,6 +19,7 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from entry_screen import bars_from_history, entry_signal  # noqa: E402
 from trading_calendar import early_close, in_session, is_trading_day  # noqa: E402
 
 ET = ZoneInfo('America/New_York')
@@ -176,11 +177,11 @@ def _records(frame):
     return [] if frame is None or frame.empty else frame.to_dict('records')
 
 
-def analyze_symbol(symbol, today, iv_history):
+def analyze_symbol(symbol, today, iv_history, spy_closes=None):
     import yfinance as yf
 
     ticker = yf.Ticker(symbol)
-    hist = ticker.history(period='6mo', auto_adjust=False)
+    hist = ticker.history(period='1y', auto_adjust=False)
     closes = hist['Close'].tolist() if not hist.empty else []
     if not closes:
         raise RuntimeError('no price history')
@@ -248,8 +249,16 @@ def analyze_symbol(symbol, today, iv_history):
         'unusual': flow[:5],
         'days_to_earnings': days_to_earnings,
     }
+    bars, live = bars_from_history(hist, today)
+    if symbol in BENCHMARKS:
+        days_to_earnings_for_entry = 99  # ETFs have no earnings event
+    else:
+        days_to_earnings_for_entry = days_to_earnings
+    metrics['entry'] = entry_signal(bars, live, spy_closes, days_to_earnings_for_entry) if bars else None
     metrics['notes'], metrics['ideas'] = classify(metrics)
-    return metrics
+    if metrics['entry'] and metrics['entry']['candidate']:
+        metrics['notes'].append(f"技术面进场候选：{metrics['entry']['setup']}")
+    return metrics, (bars or {}).get('close')
 
 
 # ---------------------------------------------------------------- reporting
@@ -284,6 +293,17 @@ def render_markdown(report):
         for sym, u in sorted(flows, key=lambda x: -x[1]['volume'])[:25]:
             lines.append(f"| {sym} | {u['side']} | {u['expiry']} | {u['strike']:g} | {u['volume']:,} | "
                          f"{u['open_interest']:,} | {pct(u['iv'])} | {fmt(u['mid'])} |")
+    cands = [(m['symbol'], m['entry']) for m in report['symbols'] if m.get('entry') and m['entry'].get('candidate')]
+    near = [(m['symbol'], m['entry']) for m in report['symbols']
+            if m.get('entry') and m['entry'].get('setup') and not m['entry'].get('candidate')]
+    lines += ['', '## 技术面进场筛选（buying-score-v2 可自动化部分）', '']
+    if cands:
+        lines += [f'- {entry_text(s, e)}' for s, e in cands]
+    else:
+        lines.append('- 暂无全部通过的候选。')
+    if near:
+        lines += [f"- 接近：{s}（{e['setup']}）未通过 {'、'.join(e['failed'])}" for s, e in near]
+    lines.append('- 只覆盖趋势/位置/风险回报/流动性/财报日；催化剂、基本面、价差需人工研究，非买入建议。')
     ideas = [(m['symbol'], i) for m in report['symbols'] for i in m['ideas']]
     if ideas:
         lines += ['', '## 策略思路（需自行判断，非建议）', '']
@@ -315,6 +335,8 @@ def render_digest(report, url=None):
     cheap = sorted(ranked, key=score)[:5]
     out.append('IV偏贵: ' + ', '.join(f"{m['symbol']} {pct(m['iv30'])} (IV/HV {fmt(m['iv_hv_ratio'])})" for m in rich))
     out.append('IV偏便宜: ' + ', '.join(f"{m['symbol']} {pct(m['iv30'])} (IV/HV {fmt(m['iv_hv_ratio'])})" for m in cheap))
+    cands = [f"{m['symbol']}({m['entry']['setup']})" for m in syms if m.get('entry') and m['entry'].get('candidate')]
+    out.append('技术面进场候选: ' + (', '.join(cands) if cands else '无'))
     earn = [f"{m['symbol']}({m['days_to_earnings']}天)" for m in syms
             if m['days_to_earnings'] is not None and m['days_to_earnings'] <= 14]
     if earn:
@@ -332,6 +354,15 @@ def render_digest(report, url=None):
 
 
 # ---------------------------------------------------------------- intraday scan
+
+def entry_text(sym, e):
+    risk = f"{e['risk_pct'] * 100:.1f}%" if e.get('risk_pct') else '—'
+    text = (f"🎯 {sym} 技术面进场候选（{e['setup']}）现价 {e['price']}，关键位 {e['level']}，"
+            f"失效 {e['invalidation']}（-{risk}），2R 目标 {e['target_2r']}，通过 {e['passed']}")
+    if e.get('unknown'):
+        text += f"；未确认：{'、'.join(e['unknown'])}"
+    return text
+
 
 def is_big_flow(u):
     return (u['volume'] >= BIG_FLOW_MIN_VOLUME
@@ -369,6 +400,9 @@ def scan_alerts(report, state, now):
         if move is not None and sigma and abs(move) >= max(MOVE_ALERT_SIGMA * sigma, MOVE_ALERT_MIN):
             once(f'{sym}|move', f"📉 {sym} 日内 {move * 100:+.1f}%，约 {abs(move) / sigma:.1f}σ（隐含单日 σ≈{sigma * 100:.1f}%）"
                  if move < 0 else f"📈 {sym} 日内 {move * 100:+.1f}%，约 {abs(move) / sigma:.1f}σ（隐含单日 σ≈{sigma * 100:.1f}%）")
+        e = m.get('entry')
+        if e and e.get('candidate'):
+            once(f'{sym}|entry', entry_text(sym, e) + '。需自行核实催化剂/基本面/价差。')
         for u in m.get('unusual', []):
             if is_big_flow(u):
                 once(f"{sym}|{u['expiry']}|{u['strike']:g}|{u['side']}",
@@ -423,11 +457,14 @@ def main(argv=None):
     hist_path = Path(args.iv_history)
     store = json.loads(hist_path.read_text()) if hist_path.exists() else {}
     results, errors = [], {}
+    spy_closes = None
     for sym in symbols:
         series = store.get(sym, {})
         past = [v for d, v in sorted(series.items()) if d != today.isoformat()][-252:]
         try:
-            m = analyze_symbol(sym, today, past)
+            m, completed = analyze_symbol(sym, today, past, spy_closes)
+            if sym == 'SPY':
+                spy_closes = completed
         except Exception as exc:  # one bad ticker must not sink the report
             errors[sym] = str(exc)[:200]
             print(f'{sym}: {exc}', file=sys.stderr)
@@ -463,7 +500,7 @@ def main(argv=None):
             body = '\n'.join(alerts[:30]) + (f'\n…另有 {len(alerts) - 30} 条' if len(alerts) > 30 else '')
             if args.report_url:
                 body += f'\n完整报告: {args.report_url}'
-            messages.append((f'期权重要异动 {now:%H:%M} ET', body + '\n研究用途，非交易指令。'))
+            messages.append((f'重要提醒 {now:%H:%M} ET', body + '\n研究用途，非交易指令。'))
         print(f'Scan {now:%H:%M} ET: {len(alerts)} important alert(s); digest {"pushed" if send_digest else "not pushed"}.')
     else:
         messages.append((f'期权日报 {today}', digest))

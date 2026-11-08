@@ -118,7 +118,9 @@ class EndToEndTest(unittest.TestCase):
                 if self.symbol == 'BAD':
                     return pd.DataFrame()
                 idx = pd.date_range(end='2026-11-09', periods=120, freq='D')
-                return pd.DataFrame({'Close': [100 + (i % 3) for i in range(119)] + [110]}, index=idx)
+                close = [100 + (i % 3) for i in range(119)] + [110]
+                return pd.DataFrame({'Close': close, 'High': [x + 1 for x in close],
+                                     'Low': [x - 1 for x in close], 'Volume': [1e6] * 120}, index=idx)
 
             def option_chain(self, _exp):
                 c, p = chain(101, vol=50)
@@ -153,6 +155,8 @@ class EndToEndTest(unittest.TestCase):
             self.assertEqual(aapl['front_expiry'], '2026-11-20')
             self.assertTrue(aapl['unusual'])
             self.assertIn('| AAPL |', md)
+            self.assertIn('技术面进场筛选', md)
+            self.assertIn('entry', aapl)
             self.assertIn('2026-11-09', json.loads(hist.read_text())['AAPL'])
             self.assertIn('期权日报 2026-11-09', out.getvalue())
             state = Path(tmp) / 'state.json'
