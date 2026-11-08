@@ -1,0 +1,107 @@
+name: Options and entry intraday scan
+
+on:
+  schedule:
+    # Every 10 minutes, 13:00-21:59 UTC on weekdays. That window covers the regular
+    # session (09:30-16:00 ET) in both EDT and EST; the gate drops runs outside it,
+    # on NYSE holidays and after 13:00 ET on early-close days.
+    # GitHub may delay or skip scheduled runs under load.
+    - cron: '*/10 13-21 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: 'Comma-separated tickers (blank = watch universe + SPY,QQQ)'
+        required: false
+        default: ''
+      force:
+        description: 'Run even outside the regular session / on a non-trading day'
+        type: boolean
+        default: false
+
+concurrency:
+  group: options-scan
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Gate on regular session
+        id: gate
+        env:
+          FORCE: ${{ inputs.force }}
+        run: |
+          if [ "$FORCE" = "true" ] || python3 scripts/trading_calendar.py --in-session; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: pip install -r requirements-options.txt
+
+      - name: Restore IV history and today's alert state
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            options-iv-history.json
+            options-scan-state.json
+          key: options-state-${{ github.run_id }}
+          restore-keys: options-state-
+
+      - name: Scan options and push important alerts
+        if: steps.gate.outputs.run == 'true'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_SERVER: ${{ vars.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECEIVERS: ${{ secrets.EMAIL_RECEIVERS }}
+          SMTP_SERVER: ${{ vars.SMTP_SERVER }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SYMBOLS: ${{ inputs.symbols }}
+          PUSH_DIGEST: ${{ vars.OPTIONS_PUSH_DIGEST }}
+        run: |
+          [ -z "$NTFY_SERVER" ] && unset NTFY_SERVER
+          [ -z "$SMTP_SERVER" ] && unset SMTP_SERVER
+          [ -z "$SMTP_PORT" ] && unset SMTP_PORT
+          python3 scripts/options_analysis.py --force --scan --notify \
+            --state options-scan-state.json \
+            ${PUSH_DIGEST:+--push-digest} \
+            ${SYMBOLS:+--symbols "$SYMBOLS"} \
+            --out options-report --iv-history options-iv-history.json \
+            --report-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          cat options-report/*.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save IV history and alert state
+        if: always() && steps.gate.outputs.run == 'true' && hashFiles('options-scan-state.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            options-iv-history.json
+            options-scan-state.json
+          key: options-state-${{ github.run_id }}
+
+      - name: Upload report
+        if: always() && steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: options-report-${{ github.run_id }}
+          path: options-report/
+          retention-days: 7
