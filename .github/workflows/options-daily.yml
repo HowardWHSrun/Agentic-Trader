@@ -1,0 +1,113 @@
+name: Options daily report
+
+on:
+  schedule:
+    # 09:45 America/Chicago (10:45 ET), 15 minutes after the open so quotes and IV settle.
+    # Two crons cover CDT and CST; the gate step keeps only the one matching today's offset.
+    - cron: '45 14 * * 1-5'   # CDT (UTC-5)
+    - cron: '45 15 * * 1-5'   # CST (UTC-6)
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: 'Comma-separated tickers (blank = watch universe + SPY,QQQ)'
+        required: false
+        default: ''
+      force:
+        description: 'Run even if today is not an NYSE trading day'
+        type: boolean
+        default: false
+
+concurrency:
+  group: options-daily
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Gate on trading day and DST-matching cron
+        id: gate
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          python3 - <<'PY'
+          import datetime as dt, os, sys
+          from zoneinfo import ZoneInfo
+          sys.path.insert(0, 'scripts')
+          from trading_calendar import is_trading_day, holiday_name
+          run = 'true'
+          today = dt.datetime.now(ZoneInfo('America/New_York')).date()
+          sched = os.environ.get('SCHEDULE', '')
+          if sched:
+              offset = dt.datetime.combine(today, dt.time(9, 45), ZoneInfo('America/Chicago')).utcoffset()
+              expected_utc_hour = (9 - int(offset.total_seconds() // 3600)) % 24
+              if int(sched.split()[1]) != expected_utc_hour:
+                  print(f'Cron {sched!r} is the other DST slot; skipping.'); run = 'false'
+          if run == 'true' and os.environ.get('FORCE') != 'true' and not is_trading_day(today):
+              print(f'{today} is not a trading day ({holiday_name(today) or "weekend"}); skipping.'); run = 'false'
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'run={run}\n')
+          PY
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: pip install -r requirements-options.txt
+
+      - name: Restore IV history (for IV Rank)
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: options-iv-history.json
+          key: options-iv-${{ github.run_id }}
+          restore-keys: options-iv-
+
+      - name: Run options analysis and notify
+        if: steps.gate.outputs.run == 'true'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_SERVER: ${{ vars.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECEIVERS: ${{ secrets.EMAIL_RECEIVERS }}
+          SMTP_SERVER: ${{ vars.SMTP_SERVER }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SYMBOLS: ${{ inputs.symbols }}
+        run: |
+          [ -z "$NTFY_SERVER" ] && unset NTFY_SERVER
+          [ -z "$SMTP_SERVER" ] && unset SMTP_SERVER
+          [ -z "$SMTP_PORT" ] && unset SMTP_PORT
+          python3 scripts/options_analysis.py --force --notify \
+            ${SYMBOLS:+--symbols "$SYMBOLS"} \
+            --out options-report --iv-history options-iv-history.json \
+            --report-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          cat options-report/*.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save IV history
+        if: always() && steps.gate.outputs.run == 'true' && hashFiles('options-iv-history.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: options-iv-history.json
+          key: options-iv-${{ github.run_id }}
+
+      - name: Upload report
+        if: always() && steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: options-report-${{ github.run_id }}
+          path: options-report/
+          retention-days: 30

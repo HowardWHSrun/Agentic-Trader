@@ -16,6 +16,29 @@ No private portfolio information or personalized purchase sizing is included in 
 
 The legacy scanner's published universe contains 60 U.S. stocks/ETFs plus spot Bitcoin and Ethereum. Equities use completed exchange sessions and SPY-relative strength; crypto uses completed UTC days and a BTC/USD benchmark. Crypto volume and quotes are specific to the displayed venue, not consolidated market activity or Robinhood execution prices. These dated scanner results do not establish fair value, an investment recommendation or the active watch's scope. Crypto is not part of the current stock/ETF alert mandate. Earlier strategy examples, their percentage-based rules and their 1–5-session review clock remain historical context, not personal allocation instructions.
 
+## Options daily report / 期权日报
+
+A GitHub Actions workflow (`.github/workflows/options-daily.yml`) runs at 09:45 America/Chicago on NYSE trading days only (weekends, NYSE holidays and the wrong DST slot are skipped; early closes are flagged). It analyses the watch universe plus SPY/QQQ with delayed Yahoo Finance chains and pushes a digest. Inspired by the scheduling/notification design of [ZhuLinsen/daily_stock_analysis](https://github.com/ZhuLinsen/daily_stock_analysis). This is research output only; it places no orders and does not change the watch's execution rules.
+
+Metrics: IV30 (ATM ~30 DTE), HV20, IV/HV, IV Rank (from IV history kept in the Actions cache, shown after 20 runs), weekly expected move (ATM straddle), 95/105 put–call skew, put/call volume and open-interest ratios, front-expiry max pain, unusual volume (≥3× OI and ≥500 contracts), earnings within 14 days.
+
+Set any of these repository **Secrets** to receive the reminder (Settings → Secrets and variables → Actions):
+
+| Channel | Secrets |
+|---|---|
+| ntfy (phone push, no account) | `NTFY_TOPIC` (optional `NTFY_TOKEN`; variable `NTFY_SERVER`) |
+| Telegram | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
+| Discord | `DISCORD_WEBHOOK_URL` |
+| Email (Gmail app password) | `EMAIL_SENDER`, `EMAIL_PASSWORD`, `EMAIL_RECEIVERS` (variables `SMTP_SERVER`, `SMTP_PORT`) |
+
+The full Markdown report appears in the run summary and as a 30-day artifact. Scheduled workflows only run from the default branch. Run locally:
+
+```sh
+pip install -r requirements-options.txt
+python3 scripts/options_analysis.py --symbols SPY,AAPL --force
+python3 scripts/trading_calendar.py --date 2026-11-26
+```
+
 ## What is published
 
 Only the static site and purpose-built public exports are stored here. The existing exporter selects market metrics, research decisions, safe explanatory text, public source links, timestamps, and percentage-based strategy rules. A separately authorized My portfolio page shows purchase costs, share counts, dated position values, estimated unrealized P&L and aggregate account totals/cash/buying power. Account identifiers, deposits, orders, bank records, authentication details, personal recommendation quantities and raw source logs remain outside this repository. Some account-specific sentences are omitted from the public journal.
