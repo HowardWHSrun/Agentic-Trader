@@ -86,7 +86,10 @@ class ContractTests(unittest.TestCase):
 
     def test_budget_falls_back_to_spread_or_blocks(self):
         pick = {"single": {"cost_per_contract": 900}, "spread": {"max_loss_per_contract": 300}, "prefer": "single"}
+        o.SINGLE_LEG_ONLY = False
         self.assertEqual(o.choose_structure(pick, 500), ("spread", None))
+        o.SINGLE_LEG_ONLY = True
+        self.assertIsNone(o.choose_structure(pick, 500)[0])  # level 2: no spreads
         pick["spread"] = None
         structure, reason = o.choose_structure(pick, 500)
         self.assertIsNone(structure)

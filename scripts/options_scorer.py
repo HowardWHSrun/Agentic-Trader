@@ -70,6 +70,7 @@ MAX_SPREAD_PCT = 0.10
 TAKE_PROFIT = 0.80   # +80% of entry mid (single option)
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
 MAX_COST_DEFAULT = 500.0   # USD per contract (100 shares)
+SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
 STOP_LOSS = -0.50    # -50% of entry mid
 TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
@@ -512,7 +513,7 @@ def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earn
 def choose_structure(pick: dict, max_cost: float) -> tuple[str | None, str | None]:
     """Pick single or spread within the per-contract budget. Returns (structure, block_reason)."""
     single_cost = pick["single"]["cost_per_contract"]
-    spread_cost = pick["spread"]["max_loss_per_contract"] if pick["spread"] else None
+    spread_cost = pick["spread"]["max_loss_per_contract"] if pick["spread"] and not SINGLE_LEG_ONLY else None
     if pick["prefer"] == "spread" and spread_cost is not None and spread_cost <= max_cost:
         return "spread", None
     if single_cost <= max_cost:
