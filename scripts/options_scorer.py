@@ -125,7 +125,12 @@ class CboeClient:
         except RuntimeError:
             return bars
         day = (q.get("last_trade_time") or "")[:10]
-        price = q.get("current_price") or q.get("close")  # intraday: live (delayed) price
+        # Live (delayed) price only during today's regular session; otherwise the
+        # official close (pre-market / after-hours prices must not overwrite it).
+        ltt = q.get("last_trade_time") or ""
+        today_et = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+        in_session = day == today_et and "09:30:00" <= ltt[11:19] < "16:00:00"
+        price = (q.get("current_price") if in_session else None) or q.get("close")
         if day and price and q.get("high"):
             bar = {"t": day, "o": q.get("open") or price, "h": max(q["high"], price),
                    "l": min(q.get("low") or price, price), "c": price, "v": q.get("volume", 0)}
