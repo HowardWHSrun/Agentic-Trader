@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v1",
- "generated_at": "2026-11-09T13:44:39.511160+00:00",
- "generated_at_ct": "2026-11-09 07:44 CT",
+ "generated_at": "2026-11-09T14:35:45.744875+00:00",
+ "generated_at_ct": "2026-11-09 08:35 CT",
  "data_source": "Cboe delayed quotes (about 15 minutes delayed; free, no account). Daily history plus option chains with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
  "coverage": {
   "scored": 32,
@@ -90,8 +90,8 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-08",
    "iv_vs_hv20": 0.9,
-   "last_value": 2.08,
-   "pnl_pct": 0.0
+   "last_value": 2.18,
+   "pnl_pct": 4.81
   }
  ],
  "earnings_unverified": [
@@ -238,7 +238,7 @@
    "symbol": "META",
    "score": 20,
    "direction": "看跌",
-   "reason": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
+   "reason": "最便宜的方案每张约 $3258，超过每张上限 $500"
   },
   {
    "symbol": "TSLA",
@@ -2538,8 +2538,29 @@
    "earnings": null,
    "earnings_soon": false,
    "rank": 27,
-   "contracts": null,
-   "entry_block": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
+   "contracts": {
+    "single": {
+     "contract": "META261218P00625000",
+     "type": "put",
+     "strike": 625.0,
+     "expiration": "2026-12-18",
+     "dte": 39,
+     "delta": -0.46,
+     "bid": 31.0,
+     "ask": 34.15,
+     "mid": 32.58,
+     "spread_pct": 9.7,
+     "iv": 42.3,
+     "open_interest": 1836,
+     "volume": 113,
+     "cost_per_contract": 3257.5,
+     "breakeven": 592.42
+    },
+    "spread": null,
+    "iv_vs_hv20": 1.03,
+    "prefer": "single"
+   },
+   "entry_block": "最便宜的方案每张约 $3258，超过每张上限 $500"
   },
   {
    "score": 20,
@@ -2706,7 +2727,7 @@
      "ask": 13.3,
      "mid": 12.78,
      "spread_pct": 8.2,
-     "iv": 58.2,
+     "iv": 58.4,
      "open_interest": 264,
      "volume": 34,
      "cost_per_contract": 1277.5,
@@ -2724,7 +2745,7 @@
       "ask": 13.3,
       "mid": 12.78,
       "spread_pct": 8.2,
-      "iv": 58.2,
+      "iv": 58.4,
       "open_interest": 264,
       "volume": 34
      },
@@ -2739,7 +2760,7 @@
       "ask": 4.65,
       "mid": 4.53,
       "spread_pct": 5.5,
-      "iv": 65.2,
+      "iv": 65.3,
       "open_interest": 385,
       "volume": 121
      },
