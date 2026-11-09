@@ -65,6 +65,18 @@ def check_positions(path: Path, now: datetime) -> list[str]:
     return alerts
 
 
+def sync_branch(branch: str, now: datetime) -> None:
+    """Commit the scan's public data files and push them to the working branch."""
+    git = ["git", "-C", str(ROOT)]
+    subprocess.run(git + ["add", "docs/data/options"], capture_output=True)
+    if subprocess.run(git + ["diff", "--cached", "--quiet"]).returncode == 0:
+        return
+    subprocess.run(git + ["commit", "-q", "-m", f"Options scan {now:%Y-%m-%d %H:%M} CT"], capture_output=True)
+    push = subprocess.run(git + ["push", "-q", "origin", f"HEAD:{branch}"], capture_output=True, text=True)
+    if push.returncode:
+        print(f"push failed: {push.stderr.strip()[-200:]}", flush=True)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--every", type=int, default=10, help="minutes between scans")
@@ -72,6 +84,8 @@ def main() -> int:
     ap.add_argument("--start", default="08:25", help="CT time to begin scanning")
     ap.add_argument("--until", default="15:05", help="CT time to stop scanning")
     ap.add_argument("--signal-file", type=Path, default=Path("/tmp/options-signal.json"))
+    ap.add_argument("--push-branch", default="claude/jolly-goodall-r03ihs",
+                    help="commit and push scan data to this branch after each scan ('' to disable)")
     ap.add_argument("--positions", type=Path, default=ROOT.parent / ".options-private" / "positions.json",
                     help="private file with the user's real fills (kept outside the repo)")
     args = ap.parse_args()
@@ -89,6 +103,8 @@ def main() -> int:
                                   capture_output=True, text=True)
             status = "ok" if proc.returncode == 0 else f"error {proc.returncode}: {proc.stderr.strip()[-200:]}"
             print(f"{now:%H:%M} scan {status}", flush=True)
+            if args.push_branch:
+                sync_branch(args.push_branch, now)
             alerts = check_positions(args.positions, now)
             if alerts:
                 args.signal_file.write_text(json.dumps({"title": "持仓提醒", "body": "\n".join(alerts)},
