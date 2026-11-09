@@ -72,6 +72,7 @@ MAX_COST_DEFAULT = 500.0   # USD per contract (100 shares)
 STOP_LOSS = -0.50    # -50% of entry mid
 TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
+COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
 EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
 
 RISK_RULES = [
@@ -124,8 +125,14 @@ class CboeClient:
         except RuntimeError:
             return bars
         day = (q.get("last_trade_time") or "")[:10]
-        if day and q.get("close") and q.get("high") and (not bars or day > bars[-1]["t"]):
-            bars.append({"t": day, "o": q["open"], "h": q["high"], "l": q["low"], "c": q["close"], "v": q.get("volume", 0)})
+        price = q.get("current_price") or q.get("close")  # intraday: live (delayed) price
+        if day and price and q.get("high"):
+            bar = {"t": day, "o": q.get("open") or price, "h": max(q["high"], price),
+                   "l": min(q.get("low") or price, price), "c": price, "v": q.get("volume", 0)}
+            if not bars or day > bars[-1]["t"]:
+                bars.append(bar)
+            elif day == bars[-1]["t"]:
+                bars[-1] = bar
         return bars
 
 
@@ -467,6 +474,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         except RuntimeError as exc:
             bars[sym], errors[sym] = [], str(exc)[:160]
     spy = bars.get("SPY", [])
+    bench_prices = {b: bars[b][-1]["c"] for b in BENCHMARKS if bars.get(b)}
     rows = []
     for sym in UNIVERSE:
         series = bars.get(sym, [])
@@ -495,6 +503,8 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
 
     # New entries: strongest calls and puts, liquid contract, no earnings inside the hold.
     held = {s["symbol"] for s in still_open}
+    cooling = {s["symbol"]: s["exit_date"] for s in state.get("closed", []) + exits
+               if (today - date.fromisoformat(s["exit_date"])).days < COOLDOWN_DAYS}
     entries, watch = [], []
     for side, pool in (("call", [r for r in rows if r["direction"] == "看涨"]),
                        ("put", [r for r in reversed(rows) if r["direction"] == "看跌"])):
@@ -505,6 +515,9 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             r["contracts"] = None
             if r["symbol"] in held:
                 r["entry_block"] = "已有持仓信号"
+                continue
+            if r["symbol"] in cooling:
+                r["entry_block"] = f"{cooling[r['symbol']]} 刚退场，冷却 {COOLDOWN_DAYS} 天"
                 continue
             if r["earnings_soon"]:
                 r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
@@ -553,6 +566,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "blocked": [{"symbol": r["symbol"], "score": r["score"], "direction": r["direction"], "reason": r["entry_block"]}
                     for r in rows if r.get("entry_block")],
         "rankings": rows,
+        "benchmark_prices": bench_prices,
     }
 
 
@@ -609,11 +623,29 @@ def write_outputs(result: dict) -> Path:
     stamp = datetime.fromisoformat(result["generated_at"]).strftime("%Y%m%dT%H%M%SZ")
     payload = json.dumps(result, ensure_ascii=False, indent=1) + "\n"
     (OUT_DIR / "latest.json").write_text(payload)
-    (OUT_DIR / "history" / f"{stamp}.json").write_text(payload)
+    if result["entries"] or result["exits"] or not any((OUT_DIR / "history").iterdir()):
+        (OUT_DIR / "history" / f"{stamp}.json").write_text(payload)  # keep only signal snapshots
+    write_daily_snapshot(result)
     state = {"updated_at": result["generated_at"], "open": result["open"],
              "closed": (load_state().get("closed", []) + result["exits"])[-200:]}
     (OUT_DIR / "state.json").write_text(json.dumps(state, ensure_ascii=False, indent=1) + "\n")
     return OUT_DIR / "latest.json"
+
+
+def write_daily_snapshot(result: dict) -> None:
+    """Keep the day's first and latest scores/prices for the end-of-day review."""
+    day = result["generated_at_ct"][:10]
+    path = OUT_DIR / "daily" / f"{day}.json"
+    path.parent.mkdir(exist_ok=True)
+    snap = {"at": result["generated_at"], "rules_version": result["rules_version"],
+            "scores": {r["symbol"]: r["score"] for r in result["rankings"]},
+            "prices": {**{r["symbol"]: r.get("price") for r in result["rankings"]},
+                       **result.get("benchmark_prices", {})},
+            "sectors": {r["symbol"]: r.get("sector_etf") for r in result["rankings"]}}
+    data = json.loads(path.read_text()) if path.exists() else {"date": day}
+    data.setdefault("first", snap)
+    data["last"] = snap
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
 
 
 def load_state() -> dict:
@@ -626,6 +658,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("command", choices=["run", "check"])
     ap.add_argument("--earnings", type=Path, help='JSON {"dates": {"AAPL": "2027-01-29"}} of verified next earnings dates (default docs/data/options/earnings.json)')
     ap.add_argument("--max-cost", type=float, default=MAX_COST_DEFAULT, help="max USD per contract (default 500)")
+    ap.add_argument("--signal-file", type=Path, help="write {title, body} JSON here when there are entries/exits")
     ap.add_argument("--dry-run", action="store_true", help="print report, do not write files")
     args = ap.parse_args(argv)
     client = CboeClient()
@@ -642,7 +675,13 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if not args.dry_run:
         write_outputs(result)
-    print(report(result))
+    text = report(result)
+    print(text)
+    if args.signal_file and (result["entries"] or result["exits"]):
+        title = "期权信号：" + "，".join(
+            [f"进场 {e['symbol']} {'Call' if e['type'] == 'call' else 'Put'}" for e in result["entries"]] +
+            [f"退场 {x['symbol']}" for x in result["exits"]])
+        args.signal_file.write_text(json.dumps({"title": title, "body": text}, ensure_ascii=False))
     return 0
 
 

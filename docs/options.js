@@ -71,6 +71,44 @@
     $("rule-list").appendChild(el("li", null, d.data_source));
   }
 
+  function renderReview(r) {
+    const box = $("review-body");
+    box.textContent = "";
+    box.appendChild(el("p", "meta", `${r.date} 收盘 · 规则 ${r.rules_version}`));
+    const rows = [["same_day", "今天"], ["one_day", "1 天"], ["five_day", "5 天"]];
+    const wrap = el("div", "table-wrap");
+    const t = el("table");
+    const head = el("tr");
+    ["周期", "SPY", "看涨组平均", "看涨组上涨比例", "看跌组平均", "看跌组下跌比例", "看涨−看跌", "相关性"].forEach((h) => head.appendChild(el("th", null, h)));
+    t.appendChild(head);
+    rows.forEach(([k, name]) => {
+      const g = r[k];
+      const tr = el("tr");
+      tr.appendChild(el("td", null, name));
+      if (!g) { const td = el("td", "note", "数据还不够"); td.colSpan = 7; tr.appendChild(td); t.appendChild(tr); return; }
+      tr.appendChild(el("td", null, pct(g.spy_ret)));
+      tr.appendChild(el("td", g.bull.avg_ret > 0 ? "pos" : "neg", pct(g.bull.avg_ret)));
+      tr.appendChild(el("td", null, g.bull.hit_rate == null ? "—" : g.bull.hit_rate + "%"));
+      tr.appendChild(el("td", g.bear.avg_ret < 0 ? "pos" : "neg", pct(g.bear.avg_ret)));
+      tr.appendChild(el("td", null, g.bear.hit_rate == null ? "—" : g.bear.hit_rate + "%"));
+      tr.appendChild(el("td", g.bull_minus_bear > 0 ? "pos" : "neg", pct(g.bull_minus_bear)));
+      tr.appendChild(el("td", null, g.rank_corr == null ? "—" : g.rank_corr));
+      t.appendChild(tr);
+    });
+    wrap.appendChild(t);
+    box.appendChild(wrap);
+    const v = el("p", "warn");
+    v.textContent = `最近 ${r.rolling.days} 个交易日结论：${r.verdict}。${r.action}`;
+    box.appendChild(v);
+    const sg = r.signals;
+    box.appendChild(el("p", null, `信号战绩：已平仓 ${sg.closed} 笔，赢 ${sg.wins} 笔${sg.closed ? `，胜率 ${sg.win_rate}%，平均 ${pct(sg.avg_pnl_pct)}` : ""}`));
+  }
+
+  fetch("data/options/review/latest.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((r) => r && renderReview(r))
+    .catch(() => {});
+
   fetch("data/options/latest.json", { cache: "no-store" })
     .then((r) => {
       if (!r.ok) throw new Error(String(r.status));

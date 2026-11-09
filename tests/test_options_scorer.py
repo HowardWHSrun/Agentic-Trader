@@ -132,6 +132,10 @@ class RunTests(unittest.TestCase):
         # Earnings inside the window blocks the entry.
         res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": []}, max_cost=5000)
         self.assertNotIn("KO", {e["symbol"] for e in res2["entries"]})
+        # A fresh exit puts the stock on cooldown.
+        state = {"open": [], "closed": [{"symbol": "KO", "exit_date": "2026-11-08"}]}
+        res3 = o.run(FakeClient(bars, chains), TODAY, now, {}, state, max_cost=5000)
+        self.assertNotIn("KO", {e["symbol"] for e in res3["entries"]})
 
 
 if __name__ == "__main__":

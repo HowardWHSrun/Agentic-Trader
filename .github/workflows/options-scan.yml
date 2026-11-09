@@ -1,0 +1,57 @@
+name: Options scan
+
+# Every 10 minutes on weekdays, roughly 06:00-16:00 America/Chicago
+# (UTC 11:00-21:59 covers both CST and CDT). GitHub may delay scheduled runs.
+on:
+  schedule:
+    - cron: "*/10 11-21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: options-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Score 32 stocks and pick option signals
+        run: python3 scripts/options_scorer.py run --signal-file "$RUNNER_TEMP/signal.json"
+
+      - name: Publish scorecard to the website
+        run: |
+          git config user.name "options-scan[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/options
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "Options scan $(TZ=America/Chicago date '+%Y-%m-%d %H:%M CT')"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((2 ** i))
+          done
+          exit 1
+
+      - name: Notify on entry / exit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          f="$RUNNER_TEMP/signal.json"
+          [ -f "$f" ] || { echo "No new signal"; exit 0; }
+          title=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['title'])" "$f")
+          python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['body'])" "$f" > "$RUNNER_TEMP/body.md"
+          printf '\n\n网页：https://%s.github.io/%s/options.html\n' "$OWNER" "${GITHUB_REPOSITORY#*/}" >> "$RUNNER_TEMP/body.md"
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$RUNNER_TEMP/body.md" --assignee "$OWNER"
