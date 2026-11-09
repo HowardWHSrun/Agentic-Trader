@@ -4,11 +4,15 @@
 
 ## 每天怎么运行
 
-| 什么 | 时间（芝加哥） | 在哪跑 | 结果 |
+所有提醒都发在用户的 Claude 对话里（桌面 App），网站每天收盘后更新一次。
+
+| 什么 | 时间（芝加哥） | 怎么跑 | 结果 |
 | --- | --- | --- | --- |
-| 扫描打分 | 周一到周五，约 6:00–16:00，每 10 分钟一次 | GitHub Actions `.github/workflows/options-scan.yml` | 更新网页；有进场/退场就开 Issue 指派给仓库主人（GitHub 会发邮件/手机通知） |
-| 盘前检查 | 每个交易日盘前 | Claude 定时任务 | 核对财报日期（`docs/data/options/earnings.json`），推送当天要点 |
-| 收盘复盘 | 每个交易日收盘后 | Claude 定时任务 | `scripts/options_review.py`：高分是否真涨、低分是否真跌，推送总结 |
+| 盘前检查 | 交易日 7:41 | Claude 定时任务（发回同一个对话） | 核对财报日期，跑一次打分，启动 10 分钟扫描 |
+| 10 分钟扫描 | 8:25–15:05 | 对话里的后台任务 `scripts/options_watch.py` | 没信号不打扰；一有进场/退场马上在对话里提醒 |
+| 收盘复盘 | 交易日 15:47 | Claude 定时任务（发回同一个对话） | `scripts/options_review.py` 复盘；每天一次提交并更新网站 |
+
+`.github/workflows/options-scan.yml` 只保留手动运行。
 
 ## 打分（0–100，50 中性）
 

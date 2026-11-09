@@ -1,10 +1,8 @@
 name: Options scan
 
-# Every 10 minutes on weekdays, roughly 06:00-16:00 America/Chicago
-# (UTC 11:00-21:59 covers both CST and CDT). GitHub may delay scheduled runs.
+# Manual only. The 10-minute scan runs in the owner's Claude session, which
+# alerts there and publishes the website once a day after the close.
 on:
-  schedule:
-    - cron: "*/10 11-21 * * 1-5"
   workflow_dispatch:
 
 permissions:
