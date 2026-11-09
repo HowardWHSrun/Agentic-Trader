@@ -1,0 +1,138 @@
+"""Offline tests for scripts/options_scorer.py using synthetic data (no network)."""
+import sys
+import unittest
+from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+import options_scorer as o  # noqa: E402
+
+TODAY = date(2026, 11, 9)
+
+
+def series(n, start, step, wiggle=0.0):
+    bars, d = [], date(2025, 1, 2)
+    for i in range(n):
+        c = start + step * i + (wiggle if i % 2 else -wiggle)
+        bars.append({"t": d.isoformat(), "o": c, "h": c + 1, "l": c - 1, "c": c, "v": 1e6})
+        d += timedelta(days=1)
+    return bars
+
+
+def occ(root, exp, cp, strike):
+    return f"{root}{exp.strftime('%y%m%d')}{cp}{int(strike * 1000):08d}"
+
+
+def chain(root, px, exp, cp, oi=500, spread=0.05):
+    rows = []
+    for k in range(int(px * 0.8), int(px * 1.2) + 1, 5):
+        moneyness = (px - k) / px if cp == "C" else (k - px) / px
+        delta = max(0.02, min(0.98, 0.5 + moneyness * 4))
+        mid = max(0.1, px * 0.04 + (px - k if cp == "C" else k - px) * delta)
+        rows.append({"option": occ(root, exp, cp, k), "bid": round(mid - spread / 2, 2),
+                     "ask": round(mid + spread / 2, 2), "delta": delta if cp == "C" else -delta,
+                     "iv": 0.3, "open_interest": oi, "volume": 10})
+    return rows
+
+
+class FakeClient:
+    def __init__(self, bars, chains):
+        self._bars, self._chains = bars, chains
+
+    def daily_bars(self, sym):
+        return self._bars.get(sym, [])
+
+    def chain(self, sym):
+        return {"quote": {}, "options": self._chains.get(sym, []), "timestamp": "x"}
+
+
+class IndicatorTests(unittest.TestCase):
+    def test_sma_and_rsi_extremes(self):
+        closes = list(range(1, 31))
+        self.assertEqual(o.sma(closes, 5), 28)
+        self.assertEqual(o.rsi(closes), 100.0)
+        self.assertLess(o.rsi(closes[::-1]), 1)
+
+    def test_parse_occ(self):
+        m = o.parse_occ("AAPL261218C00250000")
+        self.assertEqual((m["type"], m["strike"], m["expiration"]), ("call", 250.0, date(2026, 12, 18)))
+        self.assertIsNone(o.parse_occ("garbage"))
+
+
+class ScoreTests(unittest.TestCase):
+    def test_uptrend_scores_high_downtrend_low(self):
+        spy = series(260, 100, 0.05)
+        up = o.score_symbol(series(260, 100, 0.5, 0.3), spy, None)
+        down = o.score_symbol(series(260, 300, -0.5, 0.3), spy, None)
+        self.assertGreaterEqual(up["score"], o.CALL_ENTRY)
+        self.assertLessEqual(down["score"], o.PUT_ENTRY)
+
+    def test_short_history_skips_sma200_and_too_short_is_unavailable(self):
+        spy = series(260, 100, 0.05)
+        res = o.score_symbol(series(100, 100, 0.5, 0.3), spy, None)
+        self.assertIsNotNone(res["score"])
+        self.assertIsNone(res["sma200"])
+        self.assertIsNone(o.score_symbol(series(30, 100, 0.5), spy, None)["score"])
+
+
+class ContractTests(unittest.TestCase):
+    def test_pick_respects_dte_delta_and_liquidity(self):
+        exp = TODAY + timedelta(days=30)
+        pick = o.pick_contracts(chain("X", 100, exp, "C"), "call", TODAY, 25)
+        self.assertIsNotNone(pick)
+        self.assertTrue(o.LONG_DELTA[0] <= pick["single"]["delta"] <= o.LONG_DELTA[1])
+        self.assertIsNone(o.pick_contracts(chain("X", 100, exp, "C", oi=5), "call", TODAY, 25))
+        self.assertIsNone(o.pick_contracts(chain("X", 100, TODAY + timedelta(days=5), "C"), "call", TODAY, 25))
+
+    def test_budget_falls_back_to_spread_or_blocks(self):
+        pick = {"single": {"cost_per_contract": 900}, "spread": {"max_loss_per_contract": 300}, "prefer": "single"}
+        self.assertEqual(o.choose_structure(pick, 500), ("spread", None))
+        pick["spread"] = None
+        structure, reason = o.choose_structure(pick, 500)
+        self.assertIsNone(structure)
+        self.assertIn("$900", reason)
+
+
+class ExitTests(unittest.TestCase):
+    def sig(self, **kw):
+        base = {"symbol": "X", "type": "call", "structure": "single", "expiration": "2026-12-18",
+                "entry_cost": 2.0, "legs": [{"contract": "C1", "qty": 1, "strike": 100, "entry_mid": 2.0}]}
+        return {**base, **kw}
+
+    def check(self, mid, score=80, today=TODAY, earnings=None, **kw):
+        snaps = {"C1": {"bid": mid - 0.05, "ask": mid + 0.05}}
+        return o.review_open([self.sig(**kw)], snaps, {"X": {"score": score}}, earnings or {}, today)
+
+    def test_rules(self):
+        self.assertIn("止盈", self.check(3.7)[1][0]["exit_reason"])
+        self.assertIn("止损", self.check(0.9)[1][0]["exit_reason"])
+        self.assertIn("时间", self.check(2.0, today=date(2026, 12, 10))[1][0]["exit_reason"])
+        self.assertIn("财报", self.check(2.0, earnings={"X": "2026-11-10"})[1][0]["exit_reason"])
+        self.assertIn("趋势", self.check(2.0, score=45)[1][0]["exit_reason"])
+        still, exits = self.check(2.2)
+        self.assertEqual((len(still), len(exits)), (1, 0))
+        self.assertEqual(still[0]["pnl_pct"], 10.0)
+
+
+class RunTests(unittest.TestCase):
+    def test_end_to_end_with_fake_data(self):
+        bars = {s: series(260, 100, 0.05) for s in o.UNIVERSE + o.BENCHMARKS}
+        bars["KO"] = series(260, 50, 0.2, 0.1)    # strong uptrend
+        bars["BAC"] = series(260, 120, -0.3, 0.1)  # strong downtrend
+        exp = TODAY + timedelta(days=30)
+        chains = {"KO": chain("KO", bars["KO"][-1]["c"], exp, "C"),
+                  "BAC": chain("BAC", bars["BAC"][-1]["c"], exp, "P")}
+        now = datetime(2026, 11, 9, 15, tzinfo=timezone.utc)
+        res = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": []}, max_cost=5000)
+        self.assertEqual(res["coverage"]["scored"], 32)
+        self.assertEqual(res["rankings"][0]["symbol"], "KO")
+        self.assertEqual(res["rankings"][-1]["symbol"], "BAC")
+        self.assertEqual({(e["symbol"], e["type"]) for e in res["entries"]}, {("KO", "call"), ("BAC", "put")})
+        self.assertIn("进场", o.report(res))
+        # Earnings inside the window blocks the entry.
+        res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": []}, max_cost=5000)
+        self.assertNotIn("KO", {e["symbol"] for e in res2["entries"]})
+
+
+if __name__ == "__main__":
+    unittest.main()

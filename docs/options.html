@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#132c2b"><title>Options Scorecard · Agentic Trader</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="options.css?v=20261109"><script src="options.js?v=20261109" defer></script></head>
+<body>
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>OPTIONS SCORECARD</small></span></a><nav aria-label="Primary navigation"><a href="#signals">信号</a><a href="#ranking">排名</a><a href="#rules">规则</a><a href="watch.html">股票研究</a></nav></header>
+<main>
+<section class="hero"><p class="eyebrow">期权评分 · 32 只股票</p><h1>今天<em>哪只</em>值得做？</h1><p class="meta" id="meta">加载中…</p><p class="warn">评分是技术面排序，不是赚钱概率。报价来自 Cboe（延迟约 15 分钟），下单前请在券商核对实时买卖价，并用限价单。只用亏光也不影响生活的钱。</p></section>
+<section id="signals"><h2>进场 / 退场</h2><div id="exits"></div><div id="entries"></div><div id="open"></div><p id="none" class="muted" hidden>本次没有新的进场或退场信号。</p></section>
+<section id="ranking"><h2>排名（高 → 低）</h2><p class="muted">50 分中性；≥70 看涨（买 Call），≤30 看跌（买 Put）。</p><div class="table-wrap"><table><thead><tr><th>#</th><th>股票</th><th>评分</th><th>方向</th><th>股价</th><th>20日涨跌</th><th>相对SPY</th><th>RSI</th><th>备注</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="rules"><h2>规则</h2><ul id="rule-list"></ul></section>
+</main>
+</body></html>

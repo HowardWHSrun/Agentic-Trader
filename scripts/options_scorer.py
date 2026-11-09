@@ -1,0 +1,650 @@
+#!/usr/bin/env python3
+"""Daily options scorecard for the fixed 32-stock universe.
+
+Scores each stock 0-100 (50 = neutral, high = bullish -> calls, low = bearish
+-> puts), picks a liquid long call/put and a debit spread for the strongest
+names, and tracks previously published signals so it can say when to exit.
+
+Rules: buy-to-open only (long calls/puts or debit spreads). Maximum loss is the
+premium paid. No naked option selling, margin, or borrowed money.
+
+Data: Cboe's free delayed quotes (no account or API key): daily history plus
+full option chains with Greeks, implied volatility and open interest. Quotes
+are about 15 minutes delayed; verify the live bid/ask at your broker.
+
+Usage:
+  python3 scripts/options_scorer.py run [--earnings earnings.json] [--dry-run]
+  python3 scripts/options_scorer.py check   # verify API access only
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT_DIR = ROOT / "docs" / "data" / "options"
+CT = ZoneInfo("America/Chicago")
+RULES_VERSION = "options-score-v1"
+
+UNIVERSE = [
+    "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
+    "KO", "PG", "WMT", "ABBV", "LLY", "UNH", "BAC", "JPM", "V", "CVX", "XOM",
+    "CAT", "DE", "GE", "RTX", "DUK", "NEE", "FCX", "LIN", "PLD", "TSLA", "SPCX",
+]
+SECTOR = {
+    "AAPL": "XLK", "AVGO": "XLK", "CRM": "XLK", "MSFT": "XLK", "NVDA": "XLK",
+    "GOOGL": "XLC", "META": "XLC", "AMZN": "XLY", "HD": "XLY", "TSLA": "XLY",
+    "COST": "XLP", "KO": "XLP", "PG": "XLP", "WMT": "XLP",
+    "ABBV": "XLV", "LLY": "XLV", "UNH": "XLV",
+    "BAC": "XLF", "JPM": "XLF", "V": "XLF",
+    "CVX": "XLE", "XOM": "XLE",
+    "CAT": "XLI", "DE": "XLI", "GE": "XLI", "RTX": "XLI",
+    "DUK": "XLU", "NEE": "XLU", "FCX": "XLB", "LIN": "XLB", "PLD": "XLRE",
+    "SPCX": None,
+}
+BENCHMARKS = ["SPY"] + sorted({s for s in SECTOR.values() if s})
+
+# Signal thresholds
+CALL_ENTRY = 70
+PUT_ENTRY = 30
+MAX_NEW_PER_SIDE = 3
+MAX_OPEN = 5
+# Contract selection
+DTE_MIN, DTE_MAX = 21, 45
+LONG_DELTA = (0.45, 0.65)
+SHORT_DELTA = (0.20, 0.35)
+MAX_SPREAD_PCT = 0.10
+# Exit rules (premium-based, on the long single-leg idea)
+TAKE_PROFIT = 0.80   # +80% of entry mid (single option)
+TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
+MAX_COST_DEFAULT = 500.0   # USD per contract (100 shares)
+STOP_LOSS = -0.50    # -50% of entry mid
+TIME_EXIT_DTE = 10
+EARNINGS_EXIT_DAYS = 2
+EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
+
+RISK_RULES = [
+    "只买入开仓（买看涨/看跌期权或借方价差），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
+    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每张合约默认不超过 $500。",
+    "亏 50% 止损；单腿赚 80%、价差赚 60% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
+    "评分是技术面排序，不是赚钱概率。报价为 Cboe 免费数据（延迟约 15 分钟），下单前请在券商核对实时买卖价，用限价单。",
+]
+
+OCC_RE = re.compile(r"^([A-Z.]+)(\d{6})([CP])(\d{8})$")
+
+
+# ---------------------------------------------------------------- data access
+class CboeClient:
+    BASE = "https://cdn-api.cboe.com/api/global/delayed_quotes"
+    UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+
+    def __init__(self):
+        self._chains: dict[str, dict] = {}
+
+    def _get(self, path: str) -> dict:
+        req = urllib.request.Request(f"{self.BASE}/{path}", headers={"User-Agent": self.UA, "Accept": "application/json"})
+        last = None
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    return json.load(resp)
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+                last = exc
+                time.sleep(2 ** attempt)
+        raise RuntimeError(f"Cboe {path}: {last}")
+
+    def chain(self, symbol: str) -> dict:
+        """{"quote": {...underlying...}, "options": [...], "timestamp": str}"""
+        if symbol not in self._chains:
+            raw = self._get(f"options/{symbol}.json")
+            data = raw.get("data") or {}
+            self._chains[symbol] = {"quote": {k: v for k, v in data.items() if k != "options"},
+                                    "options": data.get("options") or [],
+                                    "timestamp": raw.get("timestamp")}
+        return self._chains[symbol]
+
+    def daily_bars(self, symbol: str) -> list[dict]:
+        rows = self._get(f"charts/historical/{symbol}.json").get("data") or []
+        bars = [{"t": r["date"], "o": r["open"], "h": r["high"], "l": r["low"], "c": r["close"], "v": r["volume"]}
+                for r in rows if r.get("close")]
+        # The history file lags; append the latest session from the quote feed.
+        try:
+            q = self.chain(symbol)["quote"]
+        except RuntimeError:
+            return bars
+        day = (q.get("last_trade_time") or "")[:10]
+        if day and q.get("close") and q.get("high") and (not bars or day > bars[-1]["t"]):
+            bars.append({"t": day, "o": q["open"], "h": q["high"], "l": q["low"], "c": q["close"], "v": q.get("volume", 0)})
+        return bars
+
+
+# ---------------------------------------------------------------- indicators
+def sma(values: list[float], n: int, offset: int = 0) -> float | None:
+    end = len(values) - offset
+    if end < n:
+        return None
+    return sum(values[end - n:end]) / n
+
+
+def ema_series(values: list[float], n: int) -> list[float]:
+    k = 2 / (n + 1)
+    out = [values[0]]
+    for v in values[1:]:
+        out.append(v * k + out[-1] * (1 - k))
+    return out
+
+
+def rsi(closes: list[float], n: int = 14) -> float | None:
+    if len(closes) <= n:
+        return None
+    gains = [max(closes[i] - closes[i - 1], 0) for i in range(1, len(closes))]
+    losses = [max(closes[i - 1] - closes[i], 0) for i in range(1, len(closes))]
+    ag, al = sum(gains[:n]) / n, sum(losses[:n]) / n
+    for g, l in zip(gains[n:], losses[n:]):
+        ag, al = (ag * (n - 1) + g) / n, (al * (n - 1) + l) / n
+    if al == 0:
+        return 100.0
+    return 100 - 100 / (1 + ag / al)
+
+
+def atr(bars: list[dict], n: int = 14) -> float | None:
+    if len(bars) <= n:
+        return None
+    trs = [max(b["h"] - b["l"], abs(b["h"] - p["c"]), abs(b["l"] - p["c"]))
+           for p, b in zip(bars, bars[1:])]
+    a = sum(trs[:n]) / n
+    for tr in trs[n:]:
+        a = (a * (n - 1) + tr) / n
+    return a
+
+
+def ret(closes: list[float], n: int) -> float | None:
+    if len(closes) <= n or closes[-1 - n] == 0:
+        return None
+    return closes[-1] / closes[-1 - n] - 1
+
+
+def ret_on_dates(bars: list[dict], start: str, end: str) -> float | None:
+    """Benchmark return over exactly the same dates as the stock."""
+    closes = {b["t"][:10]: b["c"] for b in bars}
+    if start not in closes or end not in closes or not closes[start]:
+        return None
+    return closes[end] / closes[start] - 1
+
+
+def hist_vol(closes: list[float], n: int = 20) -> float | None:
+    if len(closes) <= n:
+        return None
+    rs = [math.log(closes[i] / closes[i - 1]) for i in range(len(closes) - n, len(closes))]
+    mean = sum(rs) / n
+    return math.sqrt(sum((r - mean) ** 2 for r in rs) / (n - 1) * 252)
+
+
+# ---------------------------------------------------------------- scoring
+def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -> dict:
+    """Return a direction score 0-100 (50 neutral) and its transparent parts.
+
+    Bull and bear checks mirror each other (each worth 0-100); the final score
+    is 50 + (bull - bear) / 2.
+    """
+    closes = [b["c"] for b in bars]
+    if len(closes) < 60:
+        return {"score": None, "missing": f"需要至少 60 个交易日数据，只有 {len(closes)} 个"}
+    px = closes[-1]
+    s20, s50, s200 = sma(closes, 20), sma(closes, 50), sma(closes, 200)  # s200 None if <200 bars
+    s20_prev = sma(closes, 20, offset=5)
+    r14 = rsi(closes)
+    a14 = atr(bars)
+    macd_line = [f - s for f, s in zip(ema_series(closes, 12), ema_series(closes, 26))]
+    signal = ema_series(macd_line, 9)
+    hist_now, hist_prev = macd_line[-1] - signal[-1], macd_line[-2] - signal[-2]
+    r20 = ret(closes, 20)
+    dates = [b["t"][:10] for b in bars]
+    spy20 = ret_on_dates(spy, dates[-21], dates[-1]) if spy else None
+    sec20 = ret_on_dates(sector, dates[-21], dates[-1]) if sector else None
+    rel_spy = (r20 - spy20) if r20 is not None and spy20 is not None else None
+    rel_sec = (r20 - sec20) if r20 is not None and sec20 is not None else None
+    stretch = (px - s20) / a14 if a14 else 0.0
+
+    def rel_points(rel: float | None, full: float, cap: float) -> tuple[float, float]:
+        if rel is None:
+            return 0.0, 0.0
+        pts = min(abs(rel) / cap, 1.0) * full
+        return (pts, 0.0) if rel > 0 else (0.0, pts)
+
+    checks = []  # (name, bull_points, bear_points, max)
+    checks.append(("价格 vs 20日均线", 10 * (px > s20), 10 * (px < s20), 10))
+    checks.append(("20日 vs 50日均线", 10 * (s20 > s50), 10 * (s20 < s50), 10))
+    if s200 is not None:  # newly listed stocks (e.g. SPCX) simply lack this check
+        checks.append(("50日 vs 200日均线", 10 * (s50 > s200), 10 * (s50 < s200), 10))
+    checks.append(("20日均线方向", 10 * (s20 > s20_prev), 10 * (s20 < s20_prev), 10))
+    b, r = rel_points(rel_spy, 15, 0.06)
+    checks.append(("20日相对 SPY", b, r, 15))
+    b, r = rel_points(rel_sec, 10, 0.05)
+    checks.append(("20日相对行业ETF", b, r, 10))
+    # RSI: momentum zone earns points; overextended zones earn less.
+    if r14 >= 80:
+        rb, rr = 4, 0
+    elif r14 >= 55:
+        rb, rr = 10, 0
+    elif r14 > 45:
+        rb, rr = 0, 0
+    elif r14 > 20:
+        rb, rr = 0, 10
+    else:
+        rb, rr = 0, 4
+    checks.append(("RSI14 动能", rb, rr, 10))
+    mb = 10 * (hist_now > 0) * (1 if hist_now >= hist_prev else 0.5)
+    mr = 10 * (hist_now < 0) * (1 if hist_now <= hist_prev else 0.5)
+    checks.append(("MACD 柱", mb, mr, 10))
+    # Not chasing: within 1 ATR of SMA20 on the trend side is the best entry.
+    ext = abs(stretch)
+    ext_pts = 15 if ext <= 1 else 8 if ext <= 2 else 0
+    checks.append(("离20日均线不过远", ext_pts * (stretch >= 0), ext_pts * (stretch < 0), 15))
+
+    total = sum(c[3] for c in checks)
+    bull = sum(c[1] for c in checks) * 100 / total
+    bear = sum(c[2] for c in checks) * 100 / total
+    score = round(50 + (bull - bear) / 2)
+    return {
+        "score": max(0, min(100, score)),
+        "bull": round(bull, 1), "bear": round(bear, 1),
+        "checks": [{"name": n, "bull": round(bp, 1), "bear": round(rp, 1), "max": m}
+                   for n, bp, rp, m in checks],
+        "price": round(px, 2), "sma20": round(s20, 2), "sma50": round(s50, 2),
+        "sma200": round(s200, 2) if s200 else None, "rsi14": round(r14, 1), "atr14": round(a14, 2),
+        "stretch_atr": round(stretch, 2),
+        "ret20": _pct(r20), "rel_spy20": _pct(rel_spy), "rel_sector20": _pct(rel_sec),
+        "hv20": _pct(hist_vol(closes)),
+        "bar_date": bars[-1]["t"][:10],
+    }
+
+
+def _pct(x: float | None) -> float | None:
+    return None if x is None else round(x * 100, 2)
+
+
+# ---------------------------------------------------------------- options
+def parse_occ(sym: str) -> dict | None:
+    m = OCC_RE.match(sym)
+    if not m:
+        return None
+    root, ymd, cp, strike = m.groups()
+    return {"root": root, "expiration": datetime.strptime(ymd, "%y%m%d").date(),
+            "type": "call" if cp == "C" else "put", "strike": int(strike) / 1000}
+
+
+MIN_OPEN_INTEREST = 100
+
+
+def quote_mid(row: dict) -> tuple[float | None, float | None, float | None, float | None]:
+    bid, ask = row.get("bid") or 0, row.get("ask") or 0
+    if bid <= 0 or ask <= 0 or ask < bid:
+        return None, None, None, None
+    mid = (bid + ask) / 2
+    return mid, bid, ask, (ask - bid) / mid
+
+
+def candidates(options: list[dict], today: date) -> list[dict]:
+    out = []
+    for row in options:
+        meta = parse_occ(row.get("option", ""))
+        mid, bid, ask, spread = quote_mid(row)
+        if not meta or mid is None or not row.get("delta"):
+            continue
+        out.append({**meta, "contract": row["option"], "delta": row["delta"], "mid": mid, "bid": bid,
+                    "ask": ask, "spread_pct": spread, "iv": row.get("iv"),
+                    "open_interest": int(row.get("open_interest") or 0),
+                    "volume": int(row.get("volume") or 0),
+                    "dte": (meta["expiration"] - today).days})
+    return out
+
+
+def pick_contracts(options: list[dict], side: str, today: date, hv20_pct: float | None) -> dict | None:
+    """Choose a long single option and a same-expiry debit spread."""
+    opts = [c for c in candidates(options, today)
+            if c["type"] == side and DTE_MIN <= c["dte"] <= DTE_MAX
+            and c["spread_pct"] <= MAX_SPREAD_PCT and c["open_interest"] >= MIN_OPEN_INTEREST]
+    longs = [c for c in opts if LONG_DELTA[0] <= abs(c["delta"]) <= LONG_DELTA[1]]
+    if not longs:
+        return None
+    target_dte = 30
+    long = min(longs, key=lambda c: (abs(abs(c["delta"]) - 0.55) + abs(c["dte"] - target_dte) / 60))
+    sign = 1 if long["type"] == "call" else -1
+    shorts = [c for c in opts if c["expiration"] == long["expiration"]
+              and SHORT_DELTA[0] <= abs(c["delta"]) <= SHORT_DELTA[1]
+              and sign * (c["strike"] - long["strike"]) > 0]
+    spread = None
+    if shorts:
+        short = min(shorts, key=lambda c: abs(abs(c["delta"]) - 0.28))
+        debit = long["mid"] - short["mid"]
+        width = abs(short["strike"] - long["strike"])
+        if 0 < debit < width:
+            spread = {
+                "buy": short_view(long), "sell": short_view(short),
+                "debit": round(debit, 2), "max_loss_per_contract": round(debit * 100, 2),
+                "max_gain_per_contract": round((width - debit) * 100, 2),
+                "breakeven": round(long["strike"] + sign * debit, 2),
+            }
+    iv = long["iv"]
+    iv_vs_hv = round(iv * 100 / hv20_pct, 2) if iv and hv20_pct else None
+    return {
+        "single": {**short_view(long),
+                   "cost_per_contract": round(long["mid"] * 100, 2),
+                   "breakeven": round(long["strike"] + sign * long["mid"], 2)},
+        "spread": spread,
+        "iv_vs_hv20": iv_vs_hv,
+        "prefer": "spread" if spread and iv_vs_hv and iv_vs_hv >= 1.3 else "single",
+    }
+
+
+def short_view(c: dict) -> dict:
+    return {"contract": c["contract"], "type": c["type"], "strike": c["strike"],
+            "expiration": c["expiration"].isoformat(), "dte": c["dte"],
+            "delta": round(c["delta"], 2), "bid": c["bid"], "ask": c["ask"],
+            "mid": round(c["mid"], 2), "spread_pct": round(c["spread_pct"] * 100, 1),
+            "iv": round(c["iv"] * 100, 1) if c["iv"] else None,
+            "open_interest": c["open_interest"], "volume": c["volume"]}
+
+
+# ---------------------------------------------------------------- signals
+def direction_for(score: int | None) -> str:
+    if score is None:
+        return "无数据"
+    if score >= CALL_ENTRY:
+        return "看涨"
+    if score <= PUT_ENTRY:
+        return "看跌"
+    return "观望"
+
+
+def earnings_soon(earnings: dict, sym: str, today: date, days: int) -> str | None:
+    d = earnings.get(sym)
+    if not d:
+        return None
+    ed = date.fromisoformat(d)
+    return d if 0 <= (ed - today).days <= days else None
+
+
+def position_value(sig: dict, option_snaps: dict) -> float | None:
+    """Current net mid of all legs (per share), or None if any leg lacks a quote."""
+    total = 0.0
+    for leg in sig["legs"]:
+        mid, *_ = quote_mid(option_snaps.get(leg["contract"]) or {})
+        if mid is None:
+            return None
+        total += leg["qty"] * mid
+    return total
+
+
+def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earnings: dict,
+                today: date) -> tuple[list[dict], list[dict]]:
+    """Return (still_open, exits)."""
+    still, exits = [], []
+    for sig in open_signals:
+        value = position_value(sig, option_snaps)
+        sig = {**sig, "last_value": round(value, 2) if value is not None else sig.get("last_value")}
+        pnl = (value / sig["entry_cost"] - 1) if value is not None and sig["entry_cost"] else None
+        sig["pnl_pct"] = _pct(pnl) if pnl is not None else sig.get("pnl_pct")
+        dte = (date.fromisoformat(sig["expiration"]) - today).days
+        score = scores.get(sig["symbol"], {}).get("score")
+        tp = TAKE_PROFIT if sig["structure"] == "single" else TAKE_PROFIT_SPREAD
+        reason = None
+        if pnl is not None and pnl >= tp:
+            reason = f"止盈：+{pnl * 100:.0f}%"
+        elif pnl is not None and pnl <= STOP_LOSS:
+            reason = f"止损：{pnl * 100:.0f}%"
+        elif dte <= TIME_EXIT_DTE:
+            reason = f"时间退场：只剩 {dte} 天到期"
+        elif earnings_soon(earnings, sig["symbol"], today, EARNINGS_EXIT_DAYS):
+            reason = f"财报前退场（财报日 {earnings[sig['symbol']]}）"
+        elif score is not None and sig["type"] == "call" and score < 50:
+            reason = f"趋势失效：评分降到 {score}"
+        elif score is not None and sig["type"] == "put" and score > 50:
+            reason = f"趋势失效：评分升到 {score}"
+        if reason:
+            exits.append({**sig, "exit_reason": reason, "exit_date": today.isoformat()})
+        else:
+            still.append(sig)
+    return still, exits
+
+
+def choose_structure(pick: dict, max_cost: float) -> tuple[str | None, str | None]:
+    """Pick single or spread within the per-contract budget. Returns (structure, block_reason)."""
+    single_cost = pick["single"]["cost_per_contract"]
+    spread_cost = pick["spread"]["max_loss_per_contract"] if pick["spread"] else None
+    if pick["prefer"] == "spread" and spread_cost is not None and spread_cost <= max_cost:
+        return "spread", None
+    if single_cost <= max_cost:
+        return "single", None
+    if spread_cost is not None and spread_cost <= max_cost:
+        return "spread", None
+    cheapest = min(c for c in (single_cost, spread_cost) if c is not None)
+    return None, f"最便宜的方案每张约 ${cheapest:.0f}，超过每张上限 ${max_cost:.0f}"
+
+
+def make_entry(r: dict, side: str, pick: dict, structure: str, today: date) -> dict:
+    single = pick["single"]
+    if structure == "single":
+        legs = [{"contract": single["contract"], "qty": 1, "strike": single["strike"], "entry_mid": single["mid"]}]
+        cost, breakeven, max_gain = single["mid"], single["breakeven"], None
+    else:
+        sp = pick["spread"]
+        legs = [{"contract": sp["buy"]["contract"], "qty": 1, "strike": sp["buy"]["strike"], "entry_mid": sp["buy"]["mid"]},
+                {"contract": sp["sell"]["contract"], "qty": -1, "strike": sp["sell"]["strike"], "entry_mid": sp["sell"]["mid"]}]
+        cost, breakeven, max_gain = sp["debit"], sp["breakeven"], sp["max_gain_per_contract"]
+    tp = TAKE_PROFIT if structure == "single" else TAKE_PROFIT_SPREAD
+    return {
+        "symbol": r["symbol"], "type": side, "structure": structure, "score_at_entry": r["score"],
+        "underlying_at_entry": r["price"], "legs": legs, "expiration": single["expiration"],
+        "entry_cost": round(cost, 2), "cost_per_contract": round(cost * 100, 2),
+        "max_gain_per_contract": max_gain, "breakeven": breakeven,
+        "stop_value": round(cost * (1 + STOP_LOSS), 2), "target_value": round(cost * (1 + tp), 2),
+        "exit_by": (date.fromisoformat(single["expiration"]) - timedelta(days=TIME_EXIT_DTE)).isoformat(),
+        "entry_date": today.isoformat(), "iv_vs_hv20": pick["iv_vs_hv20"],
+    }
+
+
+# ---------------------------------------------------------------- run
+def run(client, today: date, now: datetime, earnings: dict, state: dict,
+        max_cost: float = MAX_COST_DEFAULT) -> dict:
+    bars: dict[str, list[dict]] = {}
+    errors: dict[str, str] = {}
+    for sym in UNIVERSE + BENCHMARKS:
+        try:
+            bars[sym] = client.daily_bars(sym)
+        except RuntimeError as exc:
+            bars[sym], errors[sym] = [], str(exc)[:160]
+    spy = bars.get("SPY", [])
+    rows = []
+    for sym in UNIVERSE:
+        series = bars.get(sym, [])
+        sec = bars.get(SECTOR[sym] or "", None)
+        res = score_symbol(series, spy, sec) if series else {"score": None, "missing": f"没有行情数据 {errors.get(sym, '')}".strip()}
+        res.update(symbol=sym, sector_etf=SECTOR[sym], direction=direction_for(res.get("score")))
+        soon = earnings_soon(earnings, sym, today, EARNINGS_BLOCK_DAYS)
+        res["earnings"] = earnings.get(sym)
+        res["earnings_soon"] = bool(soon)
+        rows.append(res)
+    rows.sort(key=lambda r: (r["score"] is None, -(r["score"] or 0), r["symbol"]))
+    for i, r in enumerate(rows, 1):
+        r["rank"] = i
+    by_sym = {r["symbol"]: r for r in rows}
+
+    # Exits for previously published signals.
+    open_prev = state.get("open", [])
+    open_prev = [x for x in open_prev if "legs" in x]  # ignore pre-v1 records
+    osnaps: dict[str, dict] = {}
+    for sym in {s["symbol"] for s in open_prev}:
+        try:
+            osnaps.update({o["option"]: o for o in client.chain(sym)["options"]})
+        except RuntimeError:
+            pass
+    still_open, exits = review_open(open_prev, osnaps, by_sym, earnings, today)
+
+    # New entries: strongest calls and puts, liquid contract, no earnings inside the hold.
+    held = {s["symbol"] for s in still_open}
+    entries, watch = [], []
+    for side, pool in (("call", [r for r in rows if r["direction"] == "看涨"]),
+                       ("put", [r for r in reversed(rows) if r["direction"] == "看跌"])):
+        added = 0
+        for r in pool:
+            if added >= MAX_NEW_PER_SIDE:
+                break
+            r["contracts"] = None
+            if r["symbol"] in held:
+                r["entry_block"] = "已有持仓信号"
+                continue
+            if r["earnings_soon"]:
+                r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
+                watch.append(r["symbol"])
+                continue
+            px = r["price"]
+            try:
+                chain = client.chain(r["symbol"])["options"]
+            except RuntimeError as exc:
+                r["entry_block"] = f"期权链获取失败：{exc}"[:160]
+                continue
+            pick = pick_contracts(chain, side, today, r.get("hv20"))
+            r["contracts"] = pick
+            if not pick:
+                r["entry_block"] = f"没有买卖价差 ≤10%、未平仓量 ≥{MIN_OPEN_INTEREST} 的 21–45 天合约"
+                continue
+            structure, block = choose_structure(pick, max_cost)
+            if block:
+                r["entry_block"] = block
+                continue
+            if len(still_open) + len(entries) >= MAX_OPEN:
+                r["entry_block"] = f"已达同时持仓上限 {MAX_OPEN} 笔"
+                continue
+            entries.append(make_entry(r, side, pick, structure, today))
+            added += 1
+
+    scored = [r for r in rows if r["score"] is not None]
+    return {
+        "rules_version": RULES_VERSION,
+        "generated_at": now.isoformat(),
+        "generated_at_ct": now.astimezone(CT).strftime("%Y-%m-%d %H:%M CT"),
+        "data_source": "Cboe delayed quotes (about 15 minutes delayed; free, no account). Daily history plus option chains with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
+        "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
+        "risk_rules": RISK_RULES,
+        "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY,
+                       "max_cost_per_contract": max_cost,
+                       "take_profit_pct": TAKE_PROFIT * 100, "take_profit_spread_pct": TAKE_PROFIT_SPREAD * 100, "stop_loss_pct": STOP_LOSS * 100,
+                       "time_exit_dte": TIME_EXIT_DTE},
+        "top": [r["symbol"] for r in scored[:5]],
+        "bottom": [r["symbol"] for r in scored[-5:][::-1]],
+        "entries": entries,
+        "exits": exits,
+        "open": still_open + entries,
+        "earnings_unverified": [s for s in UNIVERSE if s not in earnings],
+        "earnings_blocked": watch,
+        "blocked": [{"symbol": r["symbol"], "score": r["score"], "direction": r["direction"], "reason": r["entry_block"]}
+                    for r in rows if r.get("entry_block")],
+        "rankings": rows,
+    }
+
+
+def legs_text(sig: dict) -> str:
+    kind = "C" if sig["type"] == "call" else "P"
+    parts = [("买" if l["qty"] > 0 else "卖") + f" {l['strike']:g}{kind}" for l in sig["legs"]]
+    return " / ".join(parts) + f" {sig['expiration']}"
+
+
+def report(result: dict) -> str:
+    lines = [f"# 期权评分播报 {result['generated_at_ct']}",
+             f"覆盖 {result['coverage']['scored']}/{result['coverage']['total']} 只。50 分中性，越高越看涨，越低越看跌。", ""]
+    if result["exits"]:
+        lines.append("## 🔴 退场")
+        for s in result["exits"]:
+            lines.append(f"- {s['symbol']} {legs_text(s)}：{s['exit_reason']}（进场 {s['entry_cost']} → 现在 {s.get('last_value')}）")
+        lines.append("")
+    if result["entries"]:
+        lines.append("## 🟢 进场")
+        for e in result["entries"]:
+            kind = "看涨" if e["type"] == "call" else "看跌"
+            what = "单买期权" if e["structure"] == "single" else "借方价差"
+            gain = f"，最多赚 ${e['max_gain_per_contract']:.0f}" if e["max_gain_per_contract"] else ""
+            lines.append(f"- **{e['symbol']} {kind}**（评分 {e['score_at_entry']}，股价 {e['underlying_at_entry']}）{what}：{legs_text(e)}")
+            lines.append(f"  - 净成本约 {e['entry_cost']}（每张约 ${e['cost_per_contract']:.0f}，最多亏这么多{gain}），盈亏平衡 {e['breakeven']}")
+            lines.append(f"  - 止损 {e['stop_value']} ｜ 止盈 {e['target_value']} ｜ 最晚 {e['exit_by']} 退场")
+        lines.append("")
+    if not result["entries"] and not result["exits"]:
+        lines += ["本次没有新的进场或退场信号。", ""]
+    held = [s for s in result["open"] if s not in result["entries"]]
+    if held:
+        lines.append("## 持有中")
+        for s in held:
+            lines.append(f"- {s['symbol']} {legs_text(s)}：盈亏 {s.get('pnl_pct')}%")
+        lines.append("")
+    if result.get("blocked"):
+        lines.append("## 高/低分但没进场的原因")
+        for b in result["blocked"]:
+            lines.append(f"- {b['symbol']}（{b['score']}，{b['direction']}）：{b['reason']}")
+        lines.append("")
+    lines.append("## 排名（高 → 低）")
+    for r in result["rankings"]:
+        sc = "—" if r["score"] is None else r["score"]
+        lines.append(f"{r['rank']:>2}. {r['symbol']:<5} {sc:>3}  {r['direction']}")
+    if result["earnings_unverified"]:
+        lines += ["", f"⚠️ 财报日期未核实：{len(result['earnings_unverified'])} 只。下单前请确认未来 14 天内没有财报。"]
+    lines += ["", *[f"- {x}" for x in result["risk_rules"]]]
+    return "\n".join(lines)
+
+
+def write_outputs(result: dict) -> Path:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    (OUT_DIR / "history").mkdir(exist_ok=True)
+    stamp = datetime.fromisoformat(result["generated_at"]).strftime("%Y%m%dT%H%M%SZ")
+    payload = json.dumps(result, ensure_ascii=False, indent=1) + "\n"
+    (OUT_DIR / "latest.json").write_text(payload)
+    (OUT_DIR / "history" / f"{stamp}.json").write_text(payload)
+    state = {"updated_at": result["generated_at"], "open": result["open"],
+             "closed": (load_state().get("closed", []) + result["exits"])[-200:]}
+    (OUT_DIR / "state.json").write_text(json.dumps(state, ensure_ascii=False, indent=1) + "\n")
+    return OUT_DIR / "latest.json"
+
+
+def load_state() -> dict:
+    p = OUT_DIR / "state.json"
+    return json.loads(p.read_text()) if p.exists() else {"open": [], "closed": []}
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("command", choices=["run", "check"])
+    ap.add_argument("--earnings", type=Path, help='JSON {"dates": {"AAPL": "2027-01-29"}} of verified next earnings dates (default docs/data/options/earnings.json)')
+    ap.add_argument("--max-cost", type=float, default=MAX_COST_DEFAULT, help="max USD per contract (default 500)")
+    ap.add_argument("--dry-run", action="store_true", help="print report, do not write files")
+    args = ap.parse_args(argv)
+    client = CboeClient()
+    if args.command == "check":
+        q = client.chain("SPY")
+        print("OK", q["timestamp"], q["quote"].get("current_price"), len(q["options"]), "contracts")
+        return 0
+    epath = args.earnings or (OUT_DIR / "earnings.json")
+    earnings = json.loads(epath.read_text()).get("dates", {}) if epath.exists() else {}
+    now = datetime.now(timezone.utc)
+    result = run(client, now.astimezone(CT).date(), now, earnings, load_state(), args.max_cost)
+    if result["coverage"]["scored"] == 0:
+        print("ERROR: no symbols could be scored; nothing written.", file=sys.stderr)
+        return 2
+    if not args.dry_run:
+        write_outputs(result)
+    print(report(result))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
