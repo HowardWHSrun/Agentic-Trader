@@ -12,15 +12,57 @@ Exit codes / last line:
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 CT = ZoneInfo("America/Chicago")
+
+
+def check_positions(path: Path, now: datetime) -> list[str]:
+    """Alert once per condition on the user's real positions (stop/target/time/trend)."""
+    if not path.exists():
+        return []
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import options_scorer as o  # noqa: PLC0415
+
+    data = json.loads(path.read_text())
+    latest = json.loads((ROOT / "docs" / "data" / "options" / "latest.json").read_text())
+    scores = {r["symbol"]: r["score"] for r in latest["rankings"]}
+    client = o.CboeClient()
+    alerts = []
+    for p in data["positions"]:
+        try:
+            row = next((x for x in client.chain(p["symbol"])["options"] if x["option"] == p["contract"]), {})
+        except RuntimeError:
+            continue
+        mid, bid, ask, _ = o.quote_mid(row)
+        if mid is None:
+            continue
+        pnl = (mid / p["fill"] - 1) * 100
+        score = scores.get(p["symbol"])
+        dte = (date.fromisoformat(p["expiration"]) - now.date()).days
+        checks = {
+            "target": mid >= p["target"],
+            "stop": mid <= p["stop"],
+            "time": now.date().isoformat() >= p["exit_by"],
+            "trend": score is not None and ((p["type"] == "call" and score < 50) or (p["type"] == "put" and score > 50)),
+        }
+        label = {"target": "🟢 止盈到了", "stop": "🔴 止损到了", "time": "⏰ 时间退场",
+                 "trend": "⚠️ 趋势反转"}
+        for key, hit in checks.items():
+            if hit and key not in p["alerted"]:
+                p["alerted"].append(key)
+                alerts.append(f"{label[key]}：{p['symbol']} {p['contract']} × {p['qty']}，"
+                              f"现在 买{bid}/卖{ask}（中间价 {mid:.2f}），成本 {p['fill']}，盈亏 {pnl:+.0f}%，"
+                              f"评分 {score}，剩 {dte} 天到期")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
+    return alerts
 
 
 def main() -> int:
@@ -30,6 +72,8 @@ def main() -> int:
     ap.add_argument("--start", default="08:25", help="CT time to begin scanning")
     ap.add_argument("--until", default="15:05", help="CT time to stop scanning")
     ap.add_argument("--signal-file", type=Path, default=Path("/tmp/options-signal.json"))
+    ap.add_argument("--positions", type=Path, default=ROOT.parent / ".options-private" / "positions.json",
+                    help="private file with the user's real fills (kept outside the repo)")
     args = ap.parse_args()
     started = time.monotonic()
     args.signal_file.unlink(missing_ok=True)
@@ -45,6 +89,10 @@ def main() -> int:
                                   capture_output=True, text=True)
             status = "ok" if proc.returncode == 0 else f"error {proc.returncode}: {proc.stderr.strip()[-200:]}"
             print(f"{now:%H:%M} scan {status}", flush=True)
+            alerts = check_positions(args.positions, now)
+            if alerts:
+                args.signal_file.write_text(json.dumps({"title": "持仓提醒", "body": "\n".join(alerts)},
+                                                       ensure_ascii=False))
             if args.signal_file.exists():
                 print("SIGNAL", args.signal_file, flush=True)
                 return 0
