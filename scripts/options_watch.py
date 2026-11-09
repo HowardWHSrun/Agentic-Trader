@@ -34,13 +34,15 @@ def check_positions(path: Path, now: datetime) -> list[str]:
     data = json.loads(path.read_text())
     latest = json.loads((ROOT / "docs" / "data" / "options" / "latest.json").read_text())
     scores = {r["symbol"]: r["score"] for r in latest["rankings"]}
-    client = o.CboeClient()
+    client, live = o.CboeClient(), o.NasdaqClient()
     alerts = []
     for p in data["positions"]:
-        try:
-            row = next((x for x in client.chain(p["symbol"])["options"] if x["option"] == p["contract"]), {})
-        except RuntimeError:
-            continue
+        row = live.option_quote(p["contract"])  # fresher than Cboe's delayed chain
+        if not row:
+            try:
+                row = next((x for x in client.chain(p["symbol"])["options"] if x["option"] == p["contract"]), {})
+            except RuntimeError:
+                continue
         mid, bid, ask, _ = o.quote_mid(row)
         if mid is None:
             continue
@@ -79,7 +81,7 @@ def sync_branch(branch: str, now: datetime) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--every", type=int, default=10, help="minutes between scans")
+    ap.add_argument("--every", type=int, default=5, help="minutes between scans")
     ap.add_argument("--max-minutes", type=int, default=110)
     ap.add_argument("--start", default="08:25", help="CT time to begin scanning")
     ap.add_argument("--until", default="15:05", help="CT time to stop scanning")

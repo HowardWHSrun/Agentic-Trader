@@ -28,6 +28,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -86,12 +87,75 @@ OCC_RE = re.compile(r"^([A-Z.]+)(\d{6})([CP])(\d{8})$")
 
 
 # ---------------------------------------------------------------- data access
+ET = ZoneInfo("America/New_York")
+ETF_SYMBOLS = {"SPY", "XLK", "XLC", "XLY", "XLP", "XLV", "XLF", "XLE", "XLI", "XLU", "XLB", "XLRE"}
+
+
+def regular_session_open(now: datetime | None = None) -> bool:
+    now = (now or datetime.now(ET)).astimezone(ET)
+    return now.weekday() < 5 and "09:30" <= now.strftime("%H:%M") < "16:00"
+
+
+class NasdaqClient:
+    """Nasdaq.com quote API: real-time last sale for stocks; option chain bid/ask."""
+    BASE = "https://api.nasdaq.com/api/quote"
+    UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+
+    def _get(self, path: str) -> dict:
+        req = urllib.request.Request(f"{self.BASE}/{path}", headers={"User-Agent": self.UA, "Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.load(resp).get("data") or {}
+
+    @staticmethod
+    def _num(x) -> float | None:
+        try:
+            return float(str(x).replace("$", "").replace(",", ""))
+        except (TypeError, ValueError):
+            return None
+
+    def last_sale(self, symbol: str) -> tuple[float, str] | None:
+        """(price, 'YYYY-MM-DD') of today's real-time last sale, or None."""
+        asset = "etf" if symbol in ETF_SYMBOLS else "stocks"
+        try:
+            p = self._get(f"{symbol}/info?assetclass={asset}").get("primaryData") or {}
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+            return None
+        price = self._num(p.get("lastSalePrice"))
+        ts = (p.get("lastTradeTimestamp") or "").replace(" ET", "")
+        try:
+            day = datetime.strptime(ts, "%b %d, %Y %I:%M %p").date().isoformat()
+        except ValueError:
+            return None
+        return (price, day) if price else None
+
+    def option_quote(self, contract: str) -> dict | None:
+        """{'bid','ask','last'} for an OCC contract symbol, or None."""
+        meta = parse_occ(contract)
+        if not meta:
+            return None
+        exp = meta["expiration"].isoformat()
+        asset = "etf" if meta["root"] in ETF_SYMBOLS else "stocks"
+        try:
+            data = self._get(f"{meta['root']}/option-chain?assetclass={asset}&limit=1000&fromdate={exp}"
+                             f"&todate={exp}&excode=oprac&callput={meta['type']}&money=all&type=all")
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+            return None
+        side = "c_" if meta["type"] == "call" else "p_"
+        for row in (data.get("table") or {}).get("rows") or []:
+            if self._num(row.get("strike")) == meta["strike"]:
+                bid, ask = self._num(row.get(side + "Bid")), self._num(row.get(side + "Ask"))
+                if bid and ask:
+                    return {"bid": bid, "ask": ask, "last": self._num(row.get(side + "Last"))}
+        return None
+
+
 class CboeClient:
     BASE = "https://cdn-api.cboe.com/api/global/delayed_quotes"
     UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 
-    def __init__(self):
+    def __init__(self, live: NasdaqClient | None = None):
         self._chains: dict[str, dict] = {}
+        self.live = live
 
     def _get(self, path: str) -> dict:
         req = urllib.request.Request(f"{self.BASE}/{path}", headers={"User-Agent": self.UA, "Accept": "application/json"})
@@ -138,6 +202,17 @@ class CboeClient:
                 bars.append(bar)
             elif day == bars[-1]["t"]:
                 bars[-1] = bar
+        # Real-time last sale (Nasdaq) replaces Cboe's delayed price during the session.
+        if self.live and regular_session_open():
+            sale = self.live.last_sale(symbol)
+            today = datetime.now(ET).date().isoformat()
+            if sale and sale[1] == today:
+                px = sale[0]
+                if bars and bars[-1]["t"] == today:
+                    b = bars[-1]
+                    bars[-1] = {**b, "c": px, "h": max(b["h"], px), "l": min(b["l"], px)}
+                else:
+                    bars.append({"t": today, "o": px, "h": px, "l": px, "c": px, "v": 0})
         return bars
 
 
@@ -473,11 +548,17 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         max_cost: float = MAX_COST_DEFAULT) -> dict:
     bars: dict[str, list[dict]] = {}
     errors: dict[str, str] = {}
-    for sym in UNIVERSE + BENCHMARKS:
+    def fetch(sym: str) -> tuple[str, list[dict], str | None]:
         try:
-            bars[sym] = client.daily_bars(sym)
-        except RuntimeError as exc:
-            bars[sym], errors[sym] = [], str(exc)[:160]
+            return sym, client.daily_bars(sym), None
+        except Exception as exc:  # one bad symbol must not stop the scan
+            return sym, [], str(exc)[:160]
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        for sym, series, err in pool.map(fetch, UNIVERSE + BENCHMARKS):
+            bars[sym] = series
+            if err:
+                errors[sym] = err
     spy = bars.get("SPY", [])
     bench_prices = {b: bars[b][-1]["c"] for b in BENCHMARKS if bars.get(b)}
     rows = []
@@ -554,7 +635,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "rules_version": RULES_VERSION,
         "generated_at": now.isoformat(),
         "generated_at_ct": now.astimezone(CT).strftime("%Y-%m-%d %H:%M CT"),
-        "data_source": "Cboe delayed quotes (about 15 minutes delayed; free, no account). Daily history plus option chains with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
+        "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
         "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY,
@@ -666,7 +747,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--signal-file", type=Path, help="write {title, body} JSON here when there are entries/exits")
     ap.add_argument("--dry-run", action="store_true", help="print report, do not write files")
     args = ap.parse_args(argv)
-    client = CboeClient()
+    client = CboeClient(live=NasdaqClient())
     if args.command == "check":
         q = client.chain("SPY")
         print("OK", q["timestamp"], q["quote"].get("current_price"), len(q["options"]), "contracts")
