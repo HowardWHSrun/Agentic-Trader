@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v1"
+RULES_VERSION = "options-score-v1.1"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -74,11 +74,13 @@ STOP_LOSS = -0.50    # -50% of entry mid
 TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
 COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
+MAX_NEW_PER_DAY = 2  # cap new signals per day (all sides)
+MAX_STRETCH_ATR = 2.0  # don't chase: skip entries this many ATRs past the 20-day average
 EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
 
 RISK_RULES = [
     "只买入开仓（买看涨/看跌期权或借方价差），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
-    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每张合约默认不超过 $500。",
+    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $500。",
     "亏 50% 止损；单腿赚 80%、价差赚 60% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
     "评分是技术面排序，不是赚钱概率。报价为 Cboe 免费数据（延迟约 15 分钟），下单前请在券商核对实时买卖价，用限价单。",
 ]
@@ -589,6 +591,8 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
 
     # New entries: strongest calls and puts, liquid contract, no earnings inside the hold.
     held = {s["symbol"] for s in still_open}
+    qualified: list[str] = []
+    new_today = sum(1 for s in still_open + state.get("closed", []) if s.get("entry_date") == today.isoformat())
     cooling = {s["symbol"]: s["exit_date"] for s in state.get("closed", []) + exits
                if (today - date.fromisoformat(s["exit_date"])).days < COOLDOWN_DAYS}
     entries, watch = [], []
@@ -604,6 +608,10 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                 continue
             if r["symbol"] in cooling:
                 r["entry_block"] = f"{cooling[r['symbol']]} 刚退场，冷却 {COOLDOWN_DAYS} 天"
+                continue
+            stretch = r.get("stretch_atr") or 0
+            if (side == "call" and stretch > MAX_STRETCH_ATR) or (side == "put" and stretch < -MAX_STRETCH_ATR):
+                r["entry_block"] = f"离20日均线 {abs(stretch):.1f} 倍ATR，涨/跌太多了，不追"
                 continue
             if r["earnings_soon"]:
                 r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
@@ -627,6 +635,13 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if len(still_open) + len(entries) >= MAX_OPEN:
                 r["entry_block"] = f"已达同时持仓上限 {MAX_OPEN} 笔"
                 continue
+            qualified.append(r["symbol"])
+            if r["symbol"] not in state.get("qualified", []):
+                r["entry_block"] = "刚符合条件，下一轮扫描再确认一次"
+                continue
+            if new_today + len(entries) >= MAX_NEW_PER_DAY:
+                r["entry_block"] = f"今天已有 {MAX_NEW_PER_DAY} 个新信号，明天再看"
+                continue
             entries.append(make_entry(r, side, pick, structure, today))
             added += 1
 
@@ -647,6 +662,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "entries": entries,
         "exits": exits,
         "open": still_open + entries,
+        "qualified": qualified,
         "earnings_unverified": [s for s in UNIVERSE if s not in earnings],
         "earnings_blocked": watch,
         "blocked": [{"symbol": r["symbol"], "score": r["score"], "direction": r["direction"], "reason": r["entry_block"]}
@@ -712,7 +728,7 @@ def write_outputs(result: dict) -> Path:
     if result["entries"] or result["exits"] or not any((OUT_DIR / "history").iterdir()):
         (OUT_DIR / "history" / f"{stamp}.json").write_text(payload)  # keep only signal snapshots
     write_daily_snapshot(result)
-    state = {"updated_at": result["generated_at"], "open": result["open"],
+    state = {"updated_at": result["generated_at"], "open": result["open"], "qualified": result["qualified"],
              "closed": (load_state().get("closed", []) + result["exits"])[-200:]}
     (OUT_DIR / "state.json").write_text(json.dumps(state, ensure_ascii=False, indent=1) + "\n")
     return OUT_DIR / "latest.json"

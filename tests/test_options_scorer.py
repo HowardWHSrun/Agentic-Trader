@@ -123,19 +123,26 @@ class RunTests(unittest.TestCase):
         chains = {"KO": chain("KO", bars["KO"][-1]["c"], exp, "C"),
                   "BAC": chain("BAC", bars["BAC"][-1]["c"], exp, "P")}
         now = datetime(2026, 11, 9, 15, tzinfo=timezone.utc)
-        res = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": []}, max_cost=5000)
+        first = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": []}, max_cost=5000)
+        self.assertEqual(first["entries"], [])  # must be confirmed on a second scan
+        self.assertEqual(set(first["qualified"]), {"KO", "BAC"})
+        res = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": [], "qualified": first["qualified"]}, max_cost=5000)
         self.assertEqual(res["coverage"]["scored"], 32)
         self.assertEqual(res["rankings"][0]["symbol"], "KO")
         self.assertEqual(res["rankings"][-1]["symbol"], "BAC")
         self.assertEqual({(e["symbol"], e["type"]) for e in res["entries"]}, {("KO", "call"), ("BAC", "put")})
         self.assertIn("进场", o.report(res))
         # Earnings inside the window blocks the entry.
-        res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": []}, max_cost=5000)
+        res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": [], "qualified": ["KO", "BAC"]}, max_cost=5000)
         self.assertNotIn("KO", {e["symbol"] for e in res2["entries"]})
         # A fresh exit puts the stock on cooldown.
-        state = {"open": [], "closed": [{"symbol": "KO", "exit_date": "2026-11-08"}]}
+        state = {"open": [], "qualified": ["KO", "BAC"], "closed": [{"symbol": "KO", "exit_date": "2026-11-08"}]}
         res3 = o.run(FakeClient(bars, chains), TODAY, now, {}, state, max_cost=5000)
         self.assertNotIn("KO", {e["symbol"] for e in res3["entries"]})
+        # Daily cap: two signals already opened today blocks a third.
+        opened = [{"symbol": s, "entry_date": TODAY.isoformat(), "exit_date": TODAY.isoformat()} for s in ("X1", "X2")]
+        res4 = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": [], "closed": opened, "qualified": ["KO", "BAC"]}, max_cost=5000)
+        self.assertEqual(res4["entries"], [])
 
 
 if __name__ == "__main__":
