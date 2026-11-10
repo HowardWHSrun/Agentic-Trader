@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v1.1",
- "generated_at": "2026-11-10T14:33:17.872969+00:00",
- "generated_at_ct": "2026-11-10 08:33 CT",
+ "generated_at": "2026-11-10T14:38:28.542640+00:00",
+ "generated_at_ct": "2026-11-10 08:38 CT",
  "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
  "coverage": {
   "scored": 32,
@@ -316,7 +316,7 @@
    "symbol": "META",
    "score": 18,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $4402，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $4178，超过每张上限 $500"
   },
   {
    "symbol": "NVDA",
@@ -2537,27 +2537,27 @@
    "rank": 26,
    "contracts": {
     "single": {
-     "contract": "META261218P00660000",
+     "contract": "META261218P00655000",
      "type": "put",
-     "strike": 660.0,
+     "strike": 655.0,
      "expiration": "2026-12-18",
      "dte": 38,
-     "delta": -0.58,
-     "bid": 42.05,
-     "ask": 46.0,
-     "mid": 44.02,
-     "spread_pct": 9.0,
-     "iv": 38.9,
-     "open_interest": 4273,
-     "volume": 33,
-     "cost_per_contract": 4402.5,
-     "breakeven": 615.98
+     "delta": -0.56,
+     "bid": 39.95,
+     "ask": 43.6,
+     "mid": 41.78,
+     "spread_pct": 8.7,
+     "iv": 39.1,
+     "open_interest": 639,
+     "volume": 64,
+     "cost_per_contract": 4177.5,
+     "breakeven": 613.23
     },
     "spread": null,
-    "iv_vs_hv20": 0.89,
+    "iv_vs_hv20": 0.9,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $4402，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $4178，超过每张上限 $500"
   },
   {
    "score": 18,
