@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v1.1",
- "generated_at": "2026-11-10T14:38:28.542640+00:00",
- "generated_at_ct": "2026-11-10 08:38 CT",
+ "generated_at": "2026-11-10T14:43:41.529472+00:00",
+ "generated_at_ct": "2026-11-10 08:43 CT",
  "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
  "coverage": {
   "scored": 32,
@@ -280,7 +280,7 @@
    "symbol": "RTX",
    "score": 78,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $805，超过每张上限 $500"
+   "reason": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
   },
   {
    "symbol": "JPM",
@@ -316,7 +316,7 @@
    "symbol": "META",
    "score": 18,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $4178，超过每张上限 $500"
+   "reason": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
   },
   {
    "symbol": "NVDA",
@@ -1691,29 +1691,8 @@
    "earnings": null,
    "earnings_soon": false,
    "rank": 16,
-   "contracts": {
-    "single": {
-     "contract": "RTX261218C00195000",
-     "type": "call",
-     "strike": 195.0,
-     "expiration": "2026-12-18",
-     "dte": 38,
-     "delta": 0.55,
-     "bid": 7.65,
-     "ask": 8.45,
-     "mid": 8.05,
-     "spread_pct": 9.9,
-     "iv": 28.6,
-     "open_interest": 2522,
-     "volume": 49,
-     "cost_per_contract": 805.0,
-     "breakeven": 203.05
-    },
-    "spread": null,
-    "iv_vs_hv20": 0.88,
-    "prefer": "single"
-   },
-   "entry_block": "最便宜的方案每张约 $805，超过每张上限 $500"
+   "contracts": null,
+   "entry_block": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
   },
   {
    "score": 76,
@@ -2535,29 +2514,8 @@
    "earnings": null,
    "earnings_soon": false,
    "rank": 26,
-   "contracts": {
-    "single": {
-     "contract": "META261218P00655000",
-     "type": "put",
-     "strike": 655.0,
-     "expiration": "2026-12-18",
-     "dte": 38,
-     "delta": -0.56,
-     "bid": 39.95,
-     "ask": 43.6,
-     "mid": 41.78,
-     "spread_pct": 8.7,
-     "iv": 39.1,
-     "open_interest": 639,
-     "volume": 64,
-     "cost_per_contract": 4177.5,
-     "breakeven": 613.23
-    },
-    "spread": null,
-    "iv_vs_hv20": 0.9,
-    "prefer": "single"
-   },
-   "entry_block": "最便宜的方案每张约 $4178，超过每张上限 $500"
+   "contracts": null,
+   "entry_block": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
   },
   {
    "score": 18,
