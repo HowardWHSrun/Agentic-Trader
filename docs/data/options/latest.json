@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v1.1",
- "generated_at": "2026-11-10T20:10:24.889701+00:00",
- "generated_at_ct": "2026-11-10 14:10 CT",
+ "generated_at": "2026-11-10T20:13:35.156119+00:00",
+ "generated_at_ct": "2026-11-10 14:13 CT",
  "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
  "coverage": {
   "scored": 32,
@@ -123,8 +123,8 @@
    "exit_by": "2026-12-01",
    "entry_date": "2026-11-09",
    "iv_vs_hv20": 0.97,
-   "last_value": 4.4,
-   "pnl_pct": -9.28
+   "last_value": 4.37,
+   "pnl_pct": -9.79
   },
   {
    "symbol": "NEE",
@@ -204,8 +204,8 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-10",
    "iv_vs_hv20": 0.87,
-   "last_value": 7.35,
-   "pnl_pct": 1.38
+   "last_value": 7.3,
+   "pnl_pct": 0.69
   }
  ],
  "qualified": [],
@@ -280,7 +280,13 @@
    "symbol": "AMZN",
    "score": 89,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1200，超过每张上限 $1000"
+   "reason": "最便宜的方案每张约 $1202，超过每张上限 $1000"
+  },
+  {
+   "symbol": "MSFT",
+   "score": 88,
+   "direction": "看涨",
+   "reason": "最便宜的方案每张约 $1828，超过每张上限 $1000"
   },
   {
    "symbol": "DE",
@@ -311,12 +317,6 @@
    "score": 80,
    "direction": "看涨",
    "reason": "离20日均线 2.6 倍ATR，涨/跌太多了，不追"
-  },
-  {
-   "symbol": "MSFT",
-   "score": 80,
-   "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1838，超过每张上限 $1000"
   },
   {
    "symbol": "NEE",
@@ -358,7 +358,7 @@
    "symbol": "META",
    "score": 18,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $4102，超过每张上限 $1000"
+   "reason": "最便宜的方案每张约 $4055，超过每张上限 $1000"
   },
   {
    "symbol": "NVDA",
@@ -394,7 +394,7 @@
  "rankings": [
   {
    "score": 92,
-   "bull": 89.7,
+   "bull": 89.5,
    "bear": 5.0,
    "checks": [
     {
@@ -423,7 +423,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 14.7,
+     "bull": 14.5,
      "bear": 0.0,
      "max": 15
     },
@@ -452,17 +452,17 @@
      "max": 15
     }
    ],
-   "price": 348.59,
-   "sma20": 344.24,
-   "sma50": 337.27,
+   "price": 348.34,
+   "sma20": 344.22,
+   "sma50": 337.26,
    "sma200": 299.78,
-   "rsi14": 55.7,
+   "rsi14": 55.5,
    "atr14": 8.75,
-   "stretch_atr": 0.5,
-   "ret20": 2.14,
-   "rel_spy20": 5.87,
-   "rel_sector20": 16.41,
-   "hv20": 26.71,
+   "stretch_atr": 0.47,
+   "ret20": 2.07,
+   "rel_spy20": 5.79,
+   "rel_sector20": 16.34,
+   "hv20": 26.74,
    "bar_date": "2026-11-10",
    "symbol": "AAPL",
    "sector_etf": "XLK",
@@ -541,8 +541,8 @@
    "atr14": 47.56,
    "stretch_atr": 2.22,
    "ret20": 22.78,
-   "rel_spy20": 26.51,
-   "rel_sector20": 11.66,
+   "rel_spy20": 26.49,
+   "rel_sector20": 11.67,
    "hv20": 39.89,
    "bar_date": "2026-11-10",
    "symbol": "LLY",
@@ -557,7 +557,7 @@
   {
    "score": 91,
    "bull": 83.0,
-   "bear": 1.6,
+   "bear": 1.4,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -592,7 +592,7 @@
     {
      "name": "20日相对行业ETF",
      "bull": 0.0,
-     "bear": 1.6,
+     "bear": 1.4,
      "max": 10
     },
     {
@@ -622,8 +622,8 @@
    "atr14": 1.75,
    "stretch_atr": 1.7,
    "ret20": 7.54,
-   "rel_spy20": 11.27,
-   "rel_sector20": -0.81,
+   "rel_spy20": 11.25,
+   "rel_sector20": -0.71,
    "hv20": 21.47,
    "bar_date": "2026-11-10",
    "symbol": "KO",
@@ -695,16 +695,16 @@
      "max": 15
     }
    ],
-   "price": 169.25,
-   "sma20": 161.8,
+   "price": 169.14,
+   "sma20": 161.79,
    "sma50": 152.97,
    "sma200": 149.58,
-   "rsi14": 68.5,
+   "rsi14": 68.4,
    "atr14": 3.36,
-   "stretch_atr": 2.22,
-   "ret20": 10.59,
-   "rel_spy20": 14.32,
-   "rel_sector20": 2.24,
+   "stretch_atr": 2.19,
+   "ret20": 10.52,
+   "rel_spy20": 14.23,
+   "rel_sector20": 2.27,
    "hv20": 29.28,
    "bar_date": "2026-11-10",
    "symbol": "PG",
@@ -776,17 +776,17 @@
      "max": 15
     }
    ],
-   "price": 200.36,
-   "sma20": 195.02,
+   "price": 200.28,
+   "sma20": 195.01,
    "sma50": 193.0,
    "sma200": 195.31,
-   "rsi14": 56.8,
+   "rsi14": 56.7,
    "atr14": 5.44,
-   "stretch_atr": 0.98,
-   "ret20": 9.47,
-   "rel_spy20": 13.2,
-   "rel_sector20": 9.54,
-   "hv20": 31.98,
+   "stretch_atr": 0.97,
+   "ret20": 9.43,
+   "rel_spy20": 13.15,
+   "rel_sector20": 9.5,
+   "hv20": 31.96,
    "bar_date": "2026-11-10",
    "symbol": "RTX",
    "sector_etf": "XLI",
@@ -799,7 +799,7 @@
   },
   {
    "score": 90,
-   "bull": 79.2,
+   "bull": 79.3,
    "bear": 0.0,
    "checks": [
     {
@@ -834,7 +834,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 1.2,
+     "bull": 1.3,
      "bear": 0.0,
      "max": 10
     },
@@ -865,8 +865,8 @@
    "atr14": 8.99,
    "stretch_atr": 1.4,
    "ret20": 7.18,
-   "rel_spy20": 10.91,
-   "rel_sector20": 0.6,
+   "rel_spy20": 10.89,
+   "rel_sector20": 0.64,
    "hv20": 26.32,
    "bar_date": "2026-11-10",
    "symbol": "V",
@@ -902,7 +902,7 @@
   {
    "score": 89,
    "bull": 83.0,
-   "bear": 5.0,
+   "bear": 4.9,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -937,7 +937,7 @@
     {
      "name": "20日相对行业ETF",
      "bull": 0.0,
-     "bear": 5.0,
+     "bear": 4.9,
      "max": 10
     },
     {
@@ -959,17 +959,17 @@
      "max": 15
     }
    ],
-   "price": 271.88,
-   "sma20": 255.31,
-   "sma50": 254.2,
+   "price": 272.01,
+   "sma20": 255.32,
+   "sma50": 254.21,
    "sma200": 244.25,
-   "rsi14": 62.1,
+   "rsi14": 62.2,
    "atr14": 9.46,
-   "stretch_atr": 1.75,
-   "ret20": 5.14,
-   "rel_spy20": 8.87,
-   "rel_sector20": -2.52,
-   "hv20": 42.59,
+   "stretch_atr": 1.76,
+   "ret20": 5.19,
+   "rel_spy20": 8.91,
+   "rel_sector20": -2.47,
+   "hv20": 42.62,
    "bar_date": "2026-11-10",
    "symbol": "AMZN",
    "sector_etf": "XLY",
@@ -985,21 +985,193 @@
      "expiration": "2026-12-11",
      "dte": 31,
      "delta": 0.56,
-     "bid": 11.85,
+     "bid": 11.9,
      "ask": 12.15,
-     "mid": 12.0,
-     "spread_pct": 2.5,
-     "iv": 33.4,
+     "mid": 12.03,
+     "spread_pct": 2.1,
+     "iv": 33.2,
      "open_interest": 792,
-     "volume": 383,
-     "cost_per_contract": 1200.0,
-     "breakeven": 282.0
+     "volume": 385,
+     "cost_per_contract": 1202.5,
+     "breakeven": 282.02
     },
-    "spread": null,
+    "spread": {
+     "buy": {
+      "contract": "AMZN261211C00270000",
+      "type": "call",
+      "strike": 270.0,
+      "expiration": "2026-12-11",
+      "dte": 31,
+      "delta": 0.56,
+      "bid": 11.9,
+      "ask": 12.15,
+      "mid": 12.03,
+      "spread_pct": 2.1,
+      "iv": 33.2,
+      "open_interest": 792,
+      "volume": 385
+     },
+     "sell": {
+      "contract": "AMZN261211C00290000",
+      "type": "call",
+      "strike": 290.0,
+      "expiration": "2026-12-11",
+      "dte": 31,
+      "delta": 0.27,
+      "bid": 3.7,
+      "ask": 4.0,
+      "mid": 3.85,
+      "spread_pct": 7.8,
+      "iv": 31.1,
+      "open_interest": 1465,
+      "volume": 129
+     },
+     "debit": 8.18,
+     "max_loss_per_contract": 817.5,
+     "max_gain_per_contract": 1182.5,
+     "breakeven": 278.18
+    },
     "iv_vs_hv20": 0.78,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1200，超过每张上限 $1000"
+   "entry_block": "最便宜的方案每张约 $1202，超过每张上限 $1000"
+  },
+  {
+   "score": 88,
+   "bull": 75.3,
+   "bear": 0.0,
+   "checks": [
+    {
+     "name": "价格 vs 20日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日 vs 50日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "50日 vs 200日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日均线方向",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日相对 SPY",
+     "bull": 5.3,
+     "bear": 0.0,
+     "max": 15
+    },
+    {
+     "name": "20日相对行业ETF",
+     "bull": 10.0,
+     "bear": 0.0,
+     "max": 10
+    },
+    {
+     "name": "RSI14 动能",
+     "bull": 0,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "MACD 柱",
+     "bull": 5.0,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "离20日均线不过远",
+     "bull": 15,
+     "bear": 0,
+     "max": 15
+    }
+   ],
+   "price": 534.88,
+   "sma20": 531.18,
+   "sma50": 517.83,
+   "sma200": 440.57,
+   "rsi14": 53.0,
+   "atr14": 15.83,
+   "stretch_atr": 0.23,
+   "ret20": -1.58,
+   "rel_spy20": 2.14,
+   "rel_sector20": 12.69,
+   "hv20": 36.77,
+   "bar_date": "2026-11-10",
+   "symbol": "MSFT",
+   "sector_etf": "XLK",
+   "direction": "看涨",
+   "earnings": null,
+   "earnings_soon": false,
+   "rank": 8,
+   "contracts": {
+    "single": {
+     "contract": "MSFT261204C00530000",
+     "type": "call",
+     "strike": 530.0,
+     "expiration": "2026-12-04",
+     "dte": 24,
+     "delta": 0.57,
+     "bid": 17.45,
+     "ask": 19.1,
+     "mid": 18.27,
+     "spread_pct": 9.0,
+     "iv": 28.3,
+     "open_interest": 396,
+     "volume": 3,
+     "cost_per_contract": 1827.5,
+     "breakeven": 548.27
+    },
+    "spread": {
+     "buy": {
+      "contract": "MSFT261204C00530000",
+      "type": "call",
+      "strike": 530.0,
+      "expiration": "2026-12-04",
+      "dte": 24,
+      "delta": 0.57,
+      "bid": 17.45,
+      "ask": 19.1,
+      "mid": 18.27,
+      "spread_pct": 9.0,
+      "iv": 28.3,
+      "open_interest": 396,
+      "volume": 3
+     },
+     "sell": {
+      "contract": "MSFT261204C00555000",
+      "type": "call",
+      "strike": 555.0,
+      "expiration": "2026-12-04",
+      "dte": 24,
+      "delta": 0.31,
+      "bid": 6.5,
+      "ask": 6.9,
+      "mid": 6.7,
+      "spread_pct": 6.0,
+      "iv": 25.9,
+      "open_interest": 440,
+      "volume": 54
+     },
+     "debit": 11.57,
+     "max_loss_per_contract": 1157.5,
+     "max_gain_per_contract": 1342.5,
+     "breakeven": 541.58
+    },
+    "iv_vs_hv20": 0.77,
+    "prefer": "single"
+   },
+   "entry_block": "最便宜的方案每张约 $1828，超过每张上限 $1000"
   },
   {
    "score": 86,
@@ -1069,7 +1241,7 @@
    "atr14": 20.04,
    "stretch_atr": 1.62,
    "ret20": 5.85,
-   "rel_spy20": 9.58,
+   "rel_spy20": 9.56,
    "rel_sector20": 5.91,
    "hv20": 23.34,
    "bar_date": "2026-11-10",
@@ -1078,7 +1250,7 @@
    "direction": "看涨",
    "earnings": "2026-11-25",
    "earnings_soon": false,
-   "rank": 8,
+   "rank": 9,
    "contracts": {
     "single": {
      "contract": "DE261218C00690000",
@@ -1171,7 +1343,7 @@
    "atr14": 2.29,
    "stretch_atr": 1.8,
    "ret20": 9.11,
-   "rel_spy20": 12.84,
+   "rel_spy20": 12.83,
    "rel_sector20": 4.82,
    "hv20": 23.8,
    "bar_date": "2026-11-10",
@@ -1180,7 +1352,7 @@
    "direction": "看涨",
    "earnings": null,
    "earnings_soon": false,
-   "rank": 9,
+   "rank": 10,
    "contracts": null,
    "entry_block": "没有买卖价差 ≤10%、未平仓量 ≥100 的 21–45 天合约"
   },
@@ -1252,8 +1424,8 @@
    "atr14": 7.28,
    "stretch_atr": 0.75,
    "ret20": 6.96,
-   "rel_spy20": 10.69,
-   "rel_sector20": -4.16,
+   "rel_spy20": 10.68,
+   "rel_sector20": -4.14,
    "hv20": 23.96,
    "bar_date": "2026-11-10",
    "symbol": "ABBV",
@@ -1261,7 +1433,7 @@
    "direction": "看涨",
    "earnings": null,
    "earnings_soon": false,
-   "rank": 10,
+   "rank": 11,
    "contracts": {
     "single": {
      "contract": "ABBV261218C00290000",
@@ -1323,7 +1495,7 @@
   },
   {
    "score": 83,
-   "bull": 75.7,
+   "bull": 75.8,
    "bear": 10.0,
    "checks": [
     {
@@ -1358,7 +1530,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 7.7,
+     "bull": 7.8,
      "bear": 0.0,
      "max": 10
     },
@@ -1381,16 +1553,16 @@
      "max": 15
     }
    ],
-   "price": 125.97,
-   "sma20": 121.9,
-   "sma50": 113.36,
+   "price": 125.91,
+   "sma20": 121.89,
+   "sma50": 113.35,
    "sma200": 118.79,
-   "rsi14": 64.3,
+   "rsi14": 64.2,
    "atr14": 2.95,
-   "stretch_atr": 1.38,
-   "ret20": 12.19,
-   "rel_spy20": 15.92,
-   "rel_sector20": 3.84,
+   "stretch_atr": 1.36,
+   "ret20": 12.14,
+   "rel_spy20": 15.85,
+   "rel_sector20": 3.89,
    "hv20": 27.65,
    "bar_date": "2026-11-10",
    "symbol": "WMT",
@@ -1398,7 +1570,7 @@
    "direction": "看涨",
    "earnings": "2026-11-19",
    "earnings_soon": true,
-   "rank": 11,
+   "rank": 12,
    "contracts": null,
    "entry_block": "14天内有财报（2026-11-19），财报后期权价格易暴跌，先不进"
   },
@@ -1470,7 +1642,7 @@
    "atr14": 9.38,
    "stretch_atr": 2.6,
    "ret20": 19.57,
-   "rel_spy20": 23.3,
+   "rel_spy20": 23.29,
    "rel_sector20": 11.91,
    "hv20": 38.85,
    "bar_date": "2026-11-10",
@@ -1479,146 +1651,9 @@
    "direction": "看涨",
    "earnings": "2026-11-17",
    "earnings_soon": true,
-   "rank": 12,
+   "rank": 13,
    "contracts": null,
    "entry_block": "离20日均线 2.6 倍ATR，涨/跌太多了，不追"
-  },
-  {
-   "score": 80,
-   "bull": 70.4,
-   "bear": 10.0,
-   "checks": [
-    {
-     "name": "价格 vs 20日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日 vs 50日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "50日 vs 200日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日均线方向",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日相对 SPY",
-     "bull": 5.4,
-     "bear": 0.0,
-     "max": 15
-    },
-    {
-     "name": "20日相对行业ETF",
-     "bull": 10.0,
-     "bear": 0.0,
-     "max": 10
-    },
-    {
-     "name": "RSI14 动能",
-     "bull": 0,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "MACD 柱",
-     "bull": 0.0,
-     "bear": 10,
-     "max": 10
-    },
-    {
-     "name": "离20日均线不过远",
-     "bull": 15,
-     "bear": 0,
-     "max": 15
-    }
-   ],
-   "price": 534.84,
-   "sma20": 531.18,
-   "sma50": 517.83,
-   "sma200": 440.57,
-   "rsi14": 53.0,
-   "atr14": 15.83,
-   "stretch_atr": 0.23,
-   "ret20": -1.58,
-   "rel_spy20": 2.15,
-   "rel_sector20": 12.68,
-   "hv20": 36.77,
-   "bar_date": "2026-11-10",
-   "symbol": "MSFT",
-   "sector_etf": "XLK",
-   "direction": "看涨",
-   "earnings": null,
-   "earnings_soon": false,
-   "rank": 13,
-   "contracts": {
-    "single": {
-     "contract": "MSFT261204C00530000",
-     "type": "call",
-     "strike": 530.0,
-     "expiration": "2026-12-04",
-     "dte": 24,
-     "delta": 0.57,
-     "bid": 17.6,
-     "ask": 19.15,
-     "mid": 18.38,
-     "spread_pct": 8.4,
-     "iv": 28.6,
-     "open_interest": 396,
-     "volume": 3,
-     "cost_per_contract": 1837.5,
-     "breakeven": 548.38
-    },
-    "spread": {
-     "buy": {
-      "contract": "MSFT261204C00530000",
-      "type": "call",
-      "strike": 530.0,
-      "expiration": "2026-12-04",
-      "dte": 24,
-      "delta": 0.57,
-      "bid": 17.6,
-      "ask": 19.15,
-      "mid": 18.38,
-      "spread_pct": 8.4,
-      "iv": 28.6,
-      "open_interest": 396,
-      "volume": 3
-     },
-     "sell": {
-      "contract": "MSFT261204C00555000",
-      "type": "call",
-      "strike": 555.0,
-      "expiration": "2026-12-04",
-      "dte": 24,
-      "delta": 0.31,
-      "bid": 6.55,
-      "ask": 6.95,
-      "mid": 6.75,
-      "spread_pct": 5.9,
-      "iv": 26.0,
-      "open_interest": 440,
-      "volume": 52
-     },
-     "debit": 11.62,
-     "max_loss_per_contract": 1162.5,
-     "max_gain_per_contract": 1337.5,
-     "breakeven": 541.62
-    },
-    "iv_vs_hv20": 0.78,
-    "prefer": "single"
-   },
-   "entry_block": "最便宜的方案每张约 $1838，超过每张上限 $1000"
   },
   {
    "score": 80,
@@ -1688,7 +1723,7 @@
    "atr14": 1.76,
    "stretch_atr": 2.09,
    "ret20": 10.43,
-   "rel_spy20": 14.16,
+   "rel_spy20": 14.15,
    "rel_sector20": 6.13,
    "hv20": 28.2,
    "bar_date": "2026-11-10",
@@ -1703,7 +1738,7 @@
   },
   {
    "score": 79,
-   "bull": 67.1,
+   "bull": 67.3,
    "bear": 10.0,
    "checks": [
     {
@@ -1738,7 +1773,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 7.1,
+     "bull": 7.3,
      "bear": 0.0,
      "max": 10
     },
@@ -1769,8 +1804,8 @@
    "atr14": 19.66,
    "stretch_atr": 2.69,
    "ret20": 11.9,
-   "rel_spy20": 15.63,
-   "rel_sector20": 3.55,
+   "rel_spy20": 15.61,
+   "rel_sector20": 3.65,
    "hv20": 23.5,
    "bar_date": "2026-11-10",
    "symbol": "COST",
@@ -1850,7 +1885,7 @@
    "atr14": 9.41,
    "stretch_atr": 1.4,
    "ret20": 6.18,
-   "rel_spy20": 9.91,
+   "rel_spy20": 9.89,
    "rel_sector20": -0.08,
    "hv20": 17.55,
    "bar_date": "2026-11-10",
@@ -1866,7 +1901,7 @@
   {
    "score": 77,
    "bull": 70.0,
-   "bear": 15.9,
+   "bear": 15.8,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -1901,7 +1936,7 @@
     {
      "name": "20日相对行业ETF",
      "bull": 0.0,
-     "bear": 5.9,
+     "bear": 5.8,
      "max": 10
     },
     {
@@ -1931,8 +1966,8 @@
    "atr14": 7.79,
    "stretch_atr": 0.7,
    "ret20": 3.63,
-   "rel_spy20": 7.36,
-   "rel_sector20": -2.94,
+   "rel_spy20": 7.35,
+   "rel_sector20": -2.91,
    "hv20": 27.77,
    "bar_date": "2026-11-10",
    "symbol": "JPM",
@@ -2068,7 +2103,7 @@
    "atr14": 11.04,
    "stretch_atr": 2.43,
    "ret20": 9.45,
-   "rel_spy20": 13.18,
+   "rel_spy20": 13.17,
    "rel_sector20": 9.52,
    "hv20": 42.52,
    "bar_date": "2026-11-10",
@@ -2083,7 +2118,7 @@
   },
   {
    "score": 55,
-   "bull": 40.8,
+   "bull": 40.7,
    "bear": 30.0,
    "checks": [
     {
@@ -2112,7 +2147,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 2.1,
+     "bull": 2.0,
      "bear": 0.0,
      "max": 15
     },
@@ -2149,8 +2184,8 @@
    "atr14": 5.33,
    "stretch_atr": -2.34,
    "ret20": -2.91,
-   "rel_spy20": 0.82,
-   "rel_sector20": 4.37,
+   "rel_spy20": 0.81,
+   "rel_sector20": 4.34,
    "hv20": 27.78,
    "bar_date": "2026-11-10",
    "symbol": "CVX",
@@ -2228,8 +2263,8 @@
    "atr14": 11.46,
    "stretch_atr": -0.41,
    "ret20": 6.5,
-   "rel_spy20": 10.23,
-   "rel_sector20": -4.62,
+   "rel_spy20": 10.21,
+   "rel_sector20": -4.6,
    "hv20": 30.58,
    "bar_date": "2026-11-10",
    "symbol": "UNH",
@@ -2242,7 +2277,7 @@
   {
    "score": 46,
    "bull": 35.0,
-   "bear": 43.4,
+   "bear": 43.6,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -2271,7 +2306,7 @@
     {
      "name": "20日相对 SPY",
      "bull": 0.0,
-     "bear": 8.4,
+     "bear": 8.6,
      "max": 15
     },
     {
@@ -2299,17 +2334,17 @@
      "max": 15
     }
    ],
-   "price": 331.99,
-   "sma20": 329.1,
+   "price": 331.72,
+   "sma20": 329.08,
    "sma50": 346.13,
    "sma200": 367.12,
-   "rsi14": 49.4,
+   "rsi14": 49.3,
    "atr14": 15.95,
-   "stretch_atr": 0.18,
-   "ret20": -7.09,
-   "rel_spy20": -3.36,
-   "rel_sector20": 7.18,
-   "hv20": 67.02,
+   "stretch_atr": 0.17,
+   "ret20": -7.16,
+   "rel_spy20": -3.45,
+   "rel_sector20": 7.1,
+   "hv20": 66.95,
    "bar_date": "2026-11-10",
    "symbol": "AVGO",
    "sector_etf": "XLK",
@@ -2386,7 +2421,7 @@
    "atr14": 2.75,
    "stretch_atr": 0.76,
    "ret20": -2.76,
-   "rel_spy20": 0.97,
+   "rel_spy20": 0.96,
    "rel_sector20": -9.41,
    "hv20": 25.27,
    "bar_date": "2026-11-10",
@@ -2457,17 +2492,17 @@
      "max": 15
     }
    ],
-   "price": 50.76,
+   "price": 50.77,
    "sma20": 50.62,
    "sma50": 54.78,
    "sma200": 54.88,
-   "rsi14": 43.5,
+   "rsi14": 43.6,
    "atr14": 1.3,
    "stretch_atr": 0.11,
-   "ret20": -5.94,
+   "ret20": -5.92,
    "rel_spy20": -2.21,
-   "rel_sector20": -12.52,
-   "hv20": 30.12,
+   "rel_sector20": -12.46,
+   "hv20": 30.13,
    "bar_date": "2026-11-10",
    "symbol": "BAC",
    "sector_etf": "XLF",
@@ -2478,7 +2513,7 @@
   },
   {
    "score": 40,
-   "bull": 23.7,
+   "bull": 23.6,
    "bear": 44.3,
    "checks": [
     {
@@ -2513,7 +2548,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 3.7,
+     "bull": 3.6,
      "bear": 0.0,
      "max": 10
     },
@@ -2544,8 +2579,8 @@
    "atr14": 4.62,
    "stretch_atr": -2.58,
    "ret20": -5.44,
-   "rel_spy20": -1.71,
-   "rel_sector20": 1.84,
+   "rel_spy20": -1.73,
+   "rel_sector20": 1.81,
    "hv20": 32.01,
    "bar_date": "2026-11-10",
    "symbol": "XOM",
@@ -2557,7 +2592,7 @@
   },
   {
    "score": 31,
-   "bull": 21.3,
+   "bull": 21.5,
    "bear": 60.0,
    "checks": [
     {
@@ -2586,7 +2621,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 11.3,
+     "bull": 11.5,
      "bear": 0.0,
      "max": 15
     },
@@ -2615,16 +2650,16 @@
      "max": 15
     }
    ],
-   "price": 378.2,
-   "sma20": 380.57,
-   "sma50": 372.93,
-   "sma200": 383.22,
-   "rsi14": 50.0,
+   "price": 378.62,
+   "sma20": 380.59,
+   "sma50": 372.94,
+   "sma200": 383.23,
+   "rsi14": 50.1,
    "atr14": 16.64,
-   "stretch_atr": -0.14,
-   "ret20": 0.79,
-   "rel_spy20": 4.52,
-   "rel_sector20": -6.87,
+   "stretch_atr": -0.12,
+   "ret20": 0.9,
+   "rel_spy20": 4.62,
+   "rel_sector20": -6.76,
    "hv20": 61.14,
    "bar_date": "2026-11-10",
    "symbol": "TSLA",
@@ -2702,7 +2737,7 @@
    "atr14": 8.84,
    "stretch_atr": -2.57,
    "ret20": -11.28,
-   "rel_spy20": -7.55,
+   "rel_spy20": -7.56,
    "rel_sector20": 2.99,
    "hv20": 35.95,
    "bar_date": "2026-11-10",
@@ -2775,17 +2810,17 @@
      "max": 15
     }
    ],
-   "price": 642.87,
-   "sma20": 651.61,
-   "sma50": 677.6,
-   "sma200": 631.7,
-   "rsi14": 46.9,
+   "price": 643.47,
+   "sma20": 651.64,
+   "sma50": 677.61,
+   "sma200": 631.71,
+   "rsi14": 47.1,
    "atr14": 24.12,
-   "stretch_atr": -0.36,
-   "ret20": -15.69,
-   "rel_spy20": -11.96,
-   "rel_sector20": -11.43,
-   "hv20": 41.92,
+   "stretch_atr": -0.34,
+   "ret20": -15.61,
+   "rel_spy20": -11.9,
+   "rel_sector20": -11.35,
+   "hv20": 41.96,
    "bar_date": "2026-11-10",
    "symbol": "META",
    "sector_etf": "XLC",
@@ -2800,16 +2835,16 @@
      "strike": 660.0,
      "expiration": "2026-12-18",
      "dte": 38,
-     "delta": -0.55,
-     "bid": 40.75,
-     "ask": 41.3,
-     "mid": 41.02,
-     "spread_pct": 1.3,
-     "iv": 39.5,
+     "delta": -0.54,
+     "bid": 40.05,
+     "ask": 41.05,
+     "mid": 40.55,
+     "spread_pct": 2.5,
+     "iv": 39.4,
      "open_interest": 4273,
      "volume": 38,
-     "cost_per_contract": 4102.5,
-     "breakeven": 618.98
+     "cost_per_contract": 4055.0,
+     "breakeven": 619.45
     },
     "spread": {
      "buy": {
@@ -2818,39 +2853,39 @@
       "strike": 660.0,
       "expiration": "2026-12-18",
       "dte": 38,
-      "delta": -0.55,
-      "bid": 40.75,
-      "ask": 41.3,
-      "mid": 41.02,
-      "spread_pct": 1.3,
-      "iv": 39.5,
+      "delta": -0.54,
+      "bid": 40.05,
+      "ask": 41.05,
+      "mid": 40.55,
+      "spread_pct": 2.5,
+      "iv": 39.4,
       "open_interest": 4273,
       "volume": 38
      },
      "sell": {
-      "contract": "META261218P00600000",
+      "contract": "META261218P00605000",
       "type": "put",
-      "strike": 600.0,
+      "strike": 605.0,
       "expiration": "2026-12-18",
       "dte": 38,
-      "delta": -0.27,
-      "bid": 15.2,
-      "ask": 15.5,
-      "mid": 15.35,
-      "spread_pct": 2.0,
-      "iv": 41.4,
-      "open_interest": 9727,
-      "volume": 293
+      "delta": -0.29,
+      "bid": 16.4,
+      "ask": 16.7,
+      "mid": 16.55,
+      "spread_pct": 1.8,
+      "iv": 41.1,
+      "open_interest": 978,
+      "volume": 108
      },
-     "debit": 25.67,
-     "max_loss_per_contract": 2567.5,
-     "max_gain_per_contract": 3432.5,
-     "breakeven": 634.33
+     "debit": 24.0,
+     "max_loss_per_contract": 2400.0,
+     "max_gain_per_contract": 3100.0,
+     "breakeven": 636.0
     },
     "iv_vs_hv20": 0.94,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $4102，超过每张上限 $1000"
+   "entry_block": "最便宜的方案每张约 $4055，超过每张上限 $1000"
   },
   {
    "score": 18,
@@ -2912,17 +2947,17 @@
      "max": 15
     }
    ],
-   "price": 167.12,
-   "sma20": 206.09,
+   "price": 166.9,
+   "sma20": 206.08,
    "sma50": 217.96,
    "sma200": 204.53,
-   "rsi14": 23.4,
+   "rsi14": 23.3,
    "atr14": 8.67,
-   "stretch_atr": -4.49,
-   "ret20": -26.87,
-   "rel_spy20": -23.14,
-   "rel_sector20": -12.6,
-   "hv20": 52.2,
+   "stretch_atr": -4.52,
+   "ret20": -26.97,
+   "rel_spy20": -23.25,
+   "rel_sector20": -12.7,
+   "hv20": 52.38,
    "bar_date": "2026-11-10",
    "symbol": "NVDA",
    "sector_etf": "XLK",
@@ -3001,7 +3036,7 @@
    "atr14": 2.94,
    "stretch_atr": -1.72,
    "ret20": -17.23,
-   "rel_spy20": -13.5,
+   "rel_spy20": -13.52,
    "rel_sector20": -23.49,
    "hv20": 50.23,
    "bar_date": "2026-11-10",
@@ -3068,15 +3103,15 @@
      "max": 15
     }
    ],
-   "price": 141.21,
+   "price": 141.29,
    "sma20": 143.41,
-   "sma50": 149.14,
+   "sma50": 149.15,
    "sma200": null,
    "rsi14": 47.8,
    "atr14": 8.27,
-   "stretch_atr": -0.27,
-   "ret20": -9.79,
-   "rel_spy20": -6.06,
+   "stretch_atr": -0.26,
+   "ret20": -9.74,
+   "rel_spy20": -6.03,
    "rel_sector20": null,
    "hv20": 76.0,
    "bar_date": "2026-11-10",
@@ -3157,7 +3192,7 @@
    "atr14": 30.52,
    "stretch_atr": -2.7,
    "ret20": -24.53,
-   "rel_spy20": -20.8,
+   "rel_spy20": -20.82,
    "rel_sector20": -24.47,
    "hv20": 58.94,
    "bar_date": "2026-11-10",
@@ -3230,15 +3265,15 @@
      "max": 15
     }
    ],
-   "price": 287.22,
+   "price": 287.21,
    "sma20": 310.88,
    "sma50": 330.72,
    "sma200": 339.08,
    "rsi14": 32.5,
    "atr14": 10.43,
    "stretch_atr": -2.27,
-   "ret20": -18.81,
-   "rel_spy20": -15.08,
+   "ret20": -18.82,
+   "rel_spy20": -15.1,
    "rel_sector20": -14.56,
    "hv20": 52.86,
    "bar_date": "2026-11-10",
@@ -3253,17 +3288,17 @@
   }
  ],
  "benchmark_prices": {
-  "SPY": 748.99,
+  "SPY": 749.11,
   "XLB": 52.83,
   "XLC": 107.5,
-  "XLE": 62.305,
-  "XLF": 58.425,
+  "XLE": 62.3301,
+  "XLF": 58.405,
   "XLI": 168.56,
   "XLK": 168.28,
-  "XLP": 91.22,
+  "XLP": 91.135,
   "XLRE": 44.615,
   "XLU": 43.67,
-  "XLV": 188.52,
+  "XLV": 188.5,
   "XLY": 120.97
  }
 }
