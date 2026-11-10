@@ -81,7 +81,7 @@ def sync_branch(branch: str, now: datetime) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--every", type=int, default=5, help="minutes between scans")
+    ap.add_argument("--every", type=int, default=3, help="minutes between scans")
     ap.add_argument("--max-minutes", type=int, default=110)
     ap.add_argument("--start", default="08:25", help="CT time to begin scanning")
     ap.add_argument("--until", default="15:05", help="CT time to stop scanning")

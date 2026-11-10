@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v1.1",
- "generated_at": "2026-11-10T17:56:44.034643+00:00",
- "generated_at_ct": "2026-11-10 11:56 CT",
+ "generated_at": "2026-11-10T17:57:20.339497+00:00",
+ "generated_at_ct": "2026-11-10 11:57 CT",
  "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
  "coverage": {
   "scored": 32,
@@ -9,14 +9,14 @@
  },
  "risk_rules": [
   "只买入开仓（买看涨/看跌期权或借方价差），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
-  "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $500。",
+  "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
   "亏 50% 止损；单腿赚 80%、价差赚 60% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
   "评分是技术面排序，不是赚钱概率。报价为 Cboe 免费数据（延迟约 15 分钟），下单前请在券商核对实时买卖价，用限价单。"
  ],
  "thresholds": {
   "call_entry": 70,
   "put_entry": 30,
-  "max_cost_per_contract": 500.0,
+  "max_cost_per_contract": 1000.0,
   "take_profit_pct": 80.0,
   "take_profit_spread_pct": 60.0,
   "stop_loss_pct": -50.0,
@@ -235,13 +235,13 @@
    "symbol": "RTX",
    "score": 90,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $725，超过每张上限 $500"
+   "reason": "已达同时持仓上限 5 笔"
   },
   {
    "symbol": "V",
    "score": 90,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1182，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $1182，超过每张上限 $1000"
   },
   {
    "symbol": "AAPL",
@@ -253,19 +253,19 @@
    "symbol": "AMZN",
    "score": 88,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1255，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $1255，超过每张上限 $1000"
   },
   {
    "symbol": "DE",
    "score": 86,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $3380，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $3380，超过每张上限 $1000"
   },
   {
    "symbol": "ABBV",
    "score": 84,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1285，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $1285，超过每张上限 $1000"
   },
   {
    "symbol": "WMT",
@@ -295,7 +295,7 @@
    "symbol": "LIN",
    "score": 79,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1635，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $1635，超过每张上限 $1000"
   },
   {
    "symbol": "COST",
@@ -307,7 +307,7 @@
    "symbol": "JPM",
    "score": 77,
    "direction": "看涨",
-   "reason": "最便宜的方案每张约 $1168，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $1168，超过每张上限 $1000"
   },
   {
    "symbol": "GE",
@@ -319,7 +319,7 @@
    "symbol": "TSLA",
    "score": 30,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $2448，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $2448，超过每张上限 $1000"
   },
   {
    "symbol": "CRM",
@@ -331,13 +331,13 @@
    "symbol": "AVGO",
    "score": 19,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $2985，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $2985，超过每张上限 $1000"
   },
   {
    "symbol": "META",
    "score": 18,
    "direction": "看跌",
-   "reason": "最便宜的方案每张约 $4010，超过每张上限 $500"
+   "reason": "最便宜的方案每张约 $4010，超过每张上限 $1000"
   },
   {
    "symbol": "NVDA",
@@ -749,7 +749,7 @@
     "iv_vs_hv20": 0.87,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $725，超过每张上限 $500"
+   "entry_block": "已达同时持仓上限 5 笔"
   },
   {
    "score": 90,
@@ -851,7 +851,7 @@
     "iv_vs_hv20": 0.85,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1182，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $1182，超过每张上限 $1000"
   },
   {
    "score": 88,
@@ -1034,7 +1034,7 @@
     "iv_vs_hv20": 0.8,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1255，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $1255，超过每张上限 $1000"
   },
   {
    "score": 86,
@@ -1171,7 +1171,7 @@
     "iv_vs_hv20": 1.75,
     "prefer": "spread"
    },
-   "entry_block": "最便宜的方案每张约 $3380，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $3380，超过每张上限 $1000"
   },
   {
    "score": 84,
@@ -1308,7 +1308,7 @@
     "iv_vs_hv20": 1.11,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1285，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $1285，超过每张上限 $1000"
   },
   {
    "score": 83,
@@ -1734,7 +1734,7 @@
     "iv_vs_hv20": 1.26,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1635，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $1635，超过每张上限 $1000"
   },
   {
    "score": 78,
@@ -1917,7 +1917,7 @@
     "iv_vs_hv20": 0.86,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $1168，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $1168，超过每张上限 $1000"
   },
   {
    "score": 72,
@@ -2609,7 +2609,7 @@
     "iv_vs_hv20": 0.72,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $2448，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $2448，超过每张上限 $1000"
   },
   {
    "score": 26,
@@ -2827,7 +2827,7 @@
     "iv_vs_hv20": 0.86,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $2985，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $2985，超过每张上限 $1000"
   },
   {
    "score": 18,
@@ -2964,7 +2964,7 @@
     "iv_vs_hv20": 0.95,
     "prefer": "single"
    },
-   "entry_block": "最便宜的方案每张约 $4010，超过每张上限 $500"
+   "entry_block": "最便宜的方案每张约 $4010，超过每张上限 $1000"
   },
   {
    "score": 18,

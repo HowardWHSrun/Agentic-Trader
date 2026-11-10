@@ -60,7 +60,7 @@ BENCHMARKS = ["SPY"] + sorted({s for s in SECTOR.values() if s})
 CALL_ENTRY = 70
 PUT_ENTRY = 30
 MAX_NEW_PER_SIDE = 3
-MAX_OPEN = 5
+MAX_OPEN = 10  # tracked paper signals; the user's real positions are capped at 5 separately
 # Contract selection
 DTE_MIN, DTE_MAX = 21, 45
 LONG_DELTA = (0.45, 0.65)
@@ -69,7 +69,7 @@ MAX_SPREAD_PCT = 0.10
 # Exit rules (premium-based, on the long single-leg idea)
 TAKE_PROFIT = 0.80   # +80% of entry mid (single option)
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
-MAX_COST_DEFAULT = 500.0   # USD per contract (100 shares)
+MAX_COST_DEFAULT = 1000.0  # USD per contract (100 shares)
 SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
 STOP_LOSS = -0.50    # -50% of entry mid
 TIME_EXIT_DTE = 10
@@ -81,7 +81,7 @@ EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would 
 
 RISK_RULES = [
     "只买入开仓（买看涨/看跌期权或借方价差），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
-    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $500。",
+    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
     "亏 50% 止损；单腿赚 80%、价差赚 60% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
     "评分是技术面排序，不是赚钱概率。报价为 Cboe 免费数据（延迟约 15 分钟），下单前请在券商核对实时买卖价，用限价单。",
 ]
@@ -760,7 +760,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run", "check"])
     ap.add_argument("--earnings", type=Path, help='JSON {"dates": {"AAPL": "2027-01-29"}} of verified next earnings dates (default docs/data/options/earnings.json)')
-    ap.add_argument("--max-cost", type=float, default=MAX_COST_DEFAULT, help="max USD per contract (default 500)")
+    ap.add_argument("--max-cost", type=float, default=MAX_COST_DEFAULT, help="max USD per contract (default 1000)")
     ap.add_argument("--signal-file", type=Path, help="write {title, body} JSON here when there are entries/exits")
     ap.add_argument("--dry-run", action="store_true", help="print report, do not write files")
     args = ap.parse_args(argv)
