@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v1.2"
+RULES_VERSION = "options-score-v2.0"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -67,24 +67,28 @@ LONG_DELTA = (0.45, 0.65)
 SHORT_DELTA = (0.20, 0.35)
 MAX_SPREAD_PCT = 0.10
 # Exit rules (premium-based, on the long single-leg idea)
-TAKE_PROFIT = 0.50   # +50% of entry mid (1-7 day holds)
+TAKE_PROFIT = 0.80   # +80% of entry mid
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
 MAX_COST_DEFAULT = 1000.0  # USD per contract (100 shares)
 SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
-STOP_LOSS = -0.35    # -35% of entry mid
+STOP_LOSS = -0.50    # -50% of entry mid (tight stops cut rebounds short in the backtest)
 MAX_HOLD_DAYS = 7     # calendar days; the user holds each option 1-7 days
 TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
+# v2 entry: a sharp short-term dip inside a long-term uptrend (calls only).
+RSI2_ENTRY = 5       # RSI(2) below this = sharply oversold
+RSI2_EXIT = 65       # RSI(2) above this = the rebound has happened
+RSI2_WATCH = 15      # shown as "close to a signal"
 COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
 MAX_NEW_PER_DAY = 2  # cap new signals per day (all sides)
 MAX_STRETCH_ATR = 2.0  # don't chase: skip entries this many ATRs past the 20-day average
 EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
 
 RISK_RULES = [
-    "只买入开仓（单买看涨或看跌期权），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
+    "只买看涨期权（Call），最大亏损 = 付出的权利金；不买看跌、不裸卖期权、不用保证金、不借钱。进场条件：长期趋势向上（股价和 50 日均线都在 200 日均线上方）且短期急跌（RSI(2) < 5）。",
     "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
-    "每笔持有 1–7 天：亏 35% 止损；赚 50% 止盈；满 7 天无论盈亏都退场；财报前 2 天退场。合约仍选 3–6 周后到期的，时间损耗更小。",
-    "评分是技术面排序，不是赚钱概率。下单前请在券商核对实时买卖价，用限价单。",
+    "每笔持有 1–7 天：亏 50% 止损；赚 80% 止盈；反弹到位（RSI(2) > 65）退场；满 7 天无论盈亏都退场；财报前 2 天退场。合约选 3–6 周后到期的，时间损耗更小。",
+    "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套回调规则每笔平均约 +4%（估算，未达统计显著），不保证盈利。下单前请在券商核对实时买卖价，用限价单。",
 ]
 
 OCC_RE = re.compile(r"^([A-Z.]+)(\d{6})([CP])(\d{8})$")
@@ -358,6 +362,8 @@ def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -
         "stretch_atr": round(stretch, 2),
         "ret20": _pct(r20), "rel_spy20": _pct(rel_spy), "rel_sector20": _pct(rel_sec),
         "hv20": _pct(hist_vol(closes)),
+        "rsi2": round(rsi(closes[-40:], 2), 1),
+        "uptrend": bool(s200 and px > s200 and s50 > s200),
         "bar_date": bars[-1]["t"][:10],
     }
 
@@ -502,9 +508,11 @@ def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earn
             reason = f"时间退场：只剩 {dte} 天到期"
         elif earnings_soon(earnings, sig["symbol"], today, EARNINGS_EXIT_DAYS):
             reason = f"财报前退场（财报日 {earnings[sig['symbol']]}）"
-        elif score is not None and sig["type"] == "call" and score < 50:
+        elif sig.get("setup") == "dip" and (scores.get(sig["symbol"], {}).get("rsi2") or 0) > RSI2_EXIT:
+            reason = f"反弹到位：RSI(2) 升到 {scores[sig['symbol']]['rsi2']:.0f}"
+        elif sig.get("setup") != "dip" and score is not None and sig["type"] == "call" and score < 50:
             reason = f"趋势失效：评分降到 {score}"
-        elif score is not None and sig["type"] == "put" and score > 50:
+        elif sig.get("setup") != "dip" and score is not None and sig["type"] == "put" and score > 50:
             reason = f"趋势失效：评分升到 {score}"
         if reason:
             exits.append({**sig, "exit_reason": reason, "exit_date": today.isoformat()})
@@ -600,8 +608,14 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
     cooling = {s["symbol"]: s["exit_date"] for s in state.get("closed", []) + exits
                if (today - date.fromisoformat(s["exit_date"])).days < COOLDOWN_DAYS}
     entries, watch = [], []
-    for side, pool in (("call", [r for r in rows if r["direction"] == "看涨"]),
-                       ("put", [r for r in reversed(rows) if r["direction"] == "看跌"])):
+    dips = sorted((r for r in rows if r.get("uptrend") and r.get("rsi2") is not None and r["rsi2"] < RSI2_ENTRY),
+                  key=lambda r: r["rsi2"])
+    for r in rows:  # tell the reader how far each name is from a signal
+        if r.get("score") is None:
+            continue
+        r["setup"] = ("回调信号" if r in dips else "接近信号" if r.get("uptrend") and r["rsi2"] < RSI2_WATCH
+                      else "趋势向上，等回调" if r.get("uptrend") else "长期趋势不向上，不做")
+    for side, pool in (("call", dips),):
         added = 0
         for r in pool:
             if added >= MAX_NEW_PER_SIDE:
@@ -612,10 +626,6 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                 continue
             if r["symbol"] in cooling:
                 r["entry_block"] = f"{cooling[r['symbol']]} 刚退场，冷却 {COOLDOWN_DAYS} 天"
-                continue
-            stretch = r.get("stretch_atr") or 0
-            if (side == "call" and stretch > MAX_STRETCH_ATR) or (side == "put" and stretch < -MAX_STRETCH_ATR):
-                r["entry_block"] = f"离20日均线 {abs(stretch):.1f} 倍ATR，涨/跌太多了，不追"
                 continue
             if r["earnings_soon"]:
                 r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
@@ -646,7 +656,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if new_today + len(entries) >= MAX_NEW_PER_DAY:
                 r["entry_block"] = f"今天已有 {MAX_NEW_PER_DAY} 个新信号，明天再看"
                 continue
-            entries.append(make_entry(r, side, pick, structure, today))
+            entries.append({**make_entry(r, side, pick, structure, today), "setup": "dip", "rsi2_at_entry": r["rsi2"]})
             added += 1
 
     scored = [r for r in rows if r["score"] is not None]
@@ -657,7 +667,9 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
-        "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY,
+        "watchlist": [{"symbol": r["symbol"], "rsi2": r["rsi2"], "price": r["price"], "setup": r["setup"]}
+                      for r in sorted((x for x in rows if x.get("uptrend") and x.get("rsi2") is not None), key=lambda x: x["rsi2"])[:8]],
+        "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY, "rsi2_entry": RSI2_ENTRY, "rsi2_exit": RSI2_EXIT,
                        "max_cost_per_contract": max_cost,
                        "take_profit_pct": TAKE_PROFIT * 100, "take_profit_spread_pct": TAKE_PROFIT_SPREAD * 100, "stop_loss_pct": STOP_LOSS * 100,
                        "time_exit_dte": TIME_EXIT_DTE, "max_hold_days": MAX_HOLD_DAYS},
@@ -684,7 +696,7 @@ def legs_text(sig: dict) -> str:
 
 def report(result: dict) -> str:
     lines = [f"# 期权评分播报 {result['generated_at_ct']}",
-             f"覆盖 {result['coverage']['scored']}/{result['coverage']['total']} 只。50 分中性，越高越看涨，越低越看跌。", ""]
+             f"覆盖 {result['coverage']['scored']}/{result['coverage']['total']} 只。买入信号：上升趋势中 RSI(2)<5 买 Call。趋势评分仅作参考。", ""]
     if result["exits"]:
         lines.append("## 🔴 退场")
         for s in result["exits"]:

@@ -1,122 +1,125 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#132c2b"><title>策略说明 · Agentic Trader</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="options.css?v=20261111d">
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#132c2b"><title>策略说明 · Agentic Trader</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="options.css?v=20261111e">
 <style>
-.doc{max-width:900px}.doc p{margin:8px 0}.doc h2{margin-top:6px}.doc h3{font-size:16px;margin:22px 0 6px}
-.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:6px 18px;padding:0;list-style:none;font-size:14px}.toc a{color:var(--green);text-decoration:none}.toc a:hover{text-decoration:underline}
+.doc{max-width:920px}.doc p{margin:8px 0}.doc h2{margin-top:6px}.doc h3{font-size:16px;margin:22px 0 6px}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:6px 18px;padding:0;list-style:none;font-size:14px}.toc a,.doc p a{color:var(--green)}.toc a{text-decoration:none}
 .doc table{font-size:13.5px}.doc td{white-space:normal;vertical-align:top}.doc th{white-space:nowrap}.doc td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
 .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0}.step{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px}.step b{display:block;font-size:14px;margin-bottom:2px}.step span{color:var(--muted)}
 .formula{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ink);border-radius:0 8px 8px 0;padding:10px 14px;font:15px/1.6 Georgia,serif;margin:10px 0}
-.box{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 16px;margin:10px 0}.box.caution{background:#fff6e0;border-color:#ecd9a8}
+.box{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 16px;margin:10px 0}.box.caution{background:#fff6e0;border-color:#ecd9a8}.box.key{border-left:5px solid var(--green)}
 .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:10px 0}.kv div{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:10px 12px}.kv small{display:block;color:var(--muted);font-size:12px}.kv b{display:block;font:600 19px Georgia,serif}
-code{background:#e9ede6;border-radius:4px;padding:1px 5px;font-size:12.5px}
+tr.hl td{background:#e9f3ec;font-weight:600}
 </style></head>
 <body>
-<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>STRATEGY</small></span></a><nav aria-label="Primary navigation"><a href="index.html">← 每日评分</a><a href="#score">怎么打分</a><a href="#entry">什么时候买</a><a href="#exit">什么时候卖</a><a href="#limits">局限</a></nav></header>
+<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>STRATEGY</small></span></a><nav aria-label="Primary navigation"><a href="index.html">← 每日评分</a><a href="#backtest">回测结果</a><a href="#entry">什么时候买</a><a href="#exit">什么时候卖</a><a href="#limits">局限</a></nav></header>
 <main class="doc">
-<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v1.2 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
-<p class="lead">一句话：<b>顺着趋势买期权，只拿几天。</b>每天给 32 只大盘股打分，找出趋势最强的买看涨期权（Call）、趋势最弱的买看跌期权（Put），严格止损、止盈和限时退场，并且每天检验自己准不准。</p>
-<ul class="toc"><li><a href="#idea">1. 核心想法</a></li><li><a href="#universe">2. 看哪些股票</a></li><li><a href="#score">3. 怎么打分（9 项检查）</a></li><li><a href="#example">4. 打分实例：RTX</a></li><li><a href="#entry">5. 什么时候买（7 道门槛）</a></li><li><a href="#contract">6. 买哪张合约</a></li><li><a href="#exit">7. 什么时候卖（6 条规则）</a></li><li><a href="#size">8. 买多少、风险多大</a></li><li><a href="#schedule">9. 每天的时间表</a></li><li><a href="#review">10. 怎么检验和改进</a></li><li><a href="#limits">11. 局限和风险</a></li><li><a href="#log">12. 改动记录</a></li></ul></section>
+<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v2.0 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
+<p class="lead">一句话：<b>在长期上涨的股票短期急跌时买看涨期权（Call），等它反弹，最多拿 7 天。</b>不买看跌期权。这条规则是用过去 5 年的数据回测后选出来的，取代了之前"追高分"的做法。</p>
+<ul class="toc"><li><a href="#backtest">1. 回测告诉我们什么</a></li><li><a href="#idea">2. 核心想法</a></li><li><a href="#universe">3. 看哪些股票</a></li><li><a href="#entry">4. 什么时候买</a></li><li><a href="#contract">5. 买哪张合约</a></li><li><a href="#exit">6. 什么时候卖</a></li><li><a href="#size">7. 买多少、风险多大</a></li><li><a href="#score">8. 趋势评分（背景参考）</a></li><li><a href="#schedule">9. 每天的时间表</a></li><li><a href="#review">10. 怎么检验和改进</a></li><li><a href="#limits">11. 局限和风险</a></li><li><a href="#log">12. 改动记录</a></li></ul></section>
 
-<section id="idea"><h2>1. 核心想法</h2>
-<p>这是一套<b>趋势跟随 + 相对强弱</b>的策略，依据的是两个长期被观察到的市场现象：</p>
-<ul><li><b>动量</b>：过去几周比大盘强的股票，接下来几天到几周继续强的概率略高；弱的同理。</li><li><b>趋势</b>：股价在均线上方、均线向上排列时，上涨更容易延续。</li></ul>
-<p>期权是放大器：方向对了赚得多，方向错了或者走得太慢都会亏。所以系统只在"趋势明确、没有涨过头、期权容易成交、没有财报"四个条件同时满足时才建议买，并且亏了快跑、赚了就走、最多拿 7 天。</p>
-<div class="flow"><div class="step"><b>① 取数据</b><span>32 只股票日线 + 实时价</span></div><div class="step"><b>② 打分</b><span>9 项检查 → 0–100 分</span></div><div class="step"><b>③ 筛选</b><span>≥70 或 ≤30，再过 7 道门槛</span></div><div class="step"><b>④ 挑合约</b><span>3–6 周到期、接近平值</span></div><div class="step"><b>⑤ 盯退场</b><span>止损 / 止盈 / 7 天 / 反转</span></div><div class="step"><b>⑥ 复盘</b><span>每天检验，10 天一评</span></div></div>
-<div class="box caution"><b>它不做什么：</b>不看基本面和估值，不预测财报，不读新闻情绪（新闻只在人工复核时参考），不卖出期权，不用保证金，不做价差组合。它给的是技术面排序，不是盈利保证。</div></section>
-
-<section id="universe"><h2>2. 看哪些股票</h2>
-<p>固定 32 只流动性好的大盘股，分属 11 个板块。每只都和大盘（SPY）以及自己的板块 ETF 比较强弱。</p>
-<div class="table-wrap"><table><thead><tr><th>板块（对比的 ETF）</th><th>股票</th></tr></thead><tbody>
-<tr><td class="n">科技（XLK）</td><td>AAPL、AVGO、CRM、MSFT、NVDA</td></tr><tr><td class="n">通信（XLC）</td><td>GOOGL、META</td></tr><tr><td class="n">可选消费（XLY）</td><td>AMZN、HD、TSLA</td></tr><tr><td class="n">必需消费（XLP）</td><td>COST、KO、PG、WMT</td></tr><tr><td class="n">医疗（XLV）</td><td>ABBV、LLY、UNH</td></tr><tr><td class="n">金融（XLF）</td><td>BAC、JPM、V</td></tr><tr><td class="n">能源（XLE）</td><td>CVX、XOM</td></tr><tr><td class="n">工业（XLI）</td><td>CAT、DE、GE、RTX</td></tr><tr><td class="n">公用事业（XLU）</td><td>DUK、NEE</td></tr><tr><td class="n">材料（XLB）</td><td>FCX、LIN</td></tr><tr><td class="n">地产（XLRE）</td><td>PLD</td></tr><tr><td class="n">无板块对比</td><td>SPCX（2026 年 6 月才上市，历史不足 200 天）</td></tr></tbody></table></div>
-<p class="muted">只选大盘股的原因：期权成交活跃、买卖价差小，不容易买贵卖便宜。</p></section>
-
-<section id="score"><h2>3. 怎么打分（9 项检查）</h2>
-<p>每项检查都有"看涨"和"看跌"两个方向，条件完全对称。满足看涨条件，分数记到看涨一边；满足看跌条件，记到看跌一边。满分合计 100。</p>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>检查</th><th>满分</th><th>看涨得分的条件</th><th>看跌得分的条件</th></tr></thead><tbody>
-<tr><td>1</td><td>股价 vs 20 日均线</td><td class="n">10</td><td>股价在 20 日均线上方</td><td>股价在下方</td></tr>
-<tr><td>2</td><td>20 日 vs 50 日均线</td><td class="n">10</td><td>20 日均线在 50 日上方（短期趋势向上）</td><td>在下方</td></tr>
-<tr><td>3</td><td>50 日 vs 200 日均线</td><td class="n">10</td><td>50 日均线在 200 日上方（中期趋势向上）</td><td>在下方。上市不足 200 天的股票跳过这项</td></tr>
-<tr><td>4</td><td>20 日均线方向</td><td class="n">10</td><td>20 日均线比 5 个交易日前高</td><td>比 5 个交易日前低</td></tr>
-<tr><td>5</td><td>相对大盘（20 天）</td><td class="n">15</td><td>近 20 天涨幅超过 SPY。每超 1 个百分点得 2.5 分，超 6 个点拿满</td><td>落后 SPY，同样比例</td></tr>
-<tr><td>6</td><td>相对板块（20 天）</td><td class="n">10</td><td>近 20 天涨幅超过板块 ETF。每超 1 个点得 2 分，超 5 个点拿满</td><td>落后板块，同样比例</td></tr>
-<tr><td>7</td><td>RSI(14) 动能</td><td class="n">10</td><td>RSI 55–80 得 10 分；≥80（严重超买）只得 4 分</td><td>RSI 20–45 得 10 分；≤20（严重超卖）只得 4 分。45–55 两边都不得分</td></tr>
-<tr><td>8</td><td>MACD 柱（12/26/9）</td><td class="n">10</td><td>柱为正且在放大得 10 分；为正但在缩小得 5 分</td><td>柱为负且在放大得 10 分；为负但在缩小得 5 分</td></tr>
-<tr><td>9</td><td>离 20 日均线的距离</td><td class="n">15</td><td>在均线上方 1 倍 ATR 以内得 15 分；1–2 倍得 8 分；超过 2 倍得 0 分</td><td>在均线下方，同样标准</td></tr>
+<section id="backtest"><h2>1. 回测告诉我们什么</h2>
+<p>参考 GitHub 上主流量化项目的做法（<a href="https://github.com/quantopian/alphalens">alphalens</a> 的因子检验、<a href="https://github.com/microsoft/qlib">qlib</a> 的样本内/样本外划分、<a href="https://github.com/goldspanlabs/optopsy">optopsy</a> 的期权规则回测），我们把每条规则放到 <b>2021-10 到 2026-11 这 5 年、32 只股票、约 3.9 万个"股票×交易日"</b>上检验：每一天只用当天能看到的数据，然后看之后 5 个交易日发生了什么。</p>
+<div class="table-wrap"><table><thead><tr><th>规则</th><th>时期</th><th class="r">次数</th><th class="r">每笔平均盈亏</th><th class="r">胜率</th><th class="r">t 值</th></tr></thead><tbody>
+<tr class="hl"><td rowspan="3">现在用的（v2）：上升趋势中急跌买 Call</td><td>2021–2024</td><td class="n r">669</td><td class="n r pos">+3.7%</td><td class="n r">56.5%</td><td class="n r">+1.1</td></tr>
+<tr class="hl"><td>2025–2026</td><td class="n r">377</td><td class="n r pos">+5.2%</td><td class="n r">56.5%</td><td class="n r">+1.5</td></tr>
+<tr class="hl"><td>全部 5 年</td><td class="n r">1046</td><td class="n r pos">+4.2%</td><td class="n r">56.5%</td><td class="n r">+1.8</td></tr>
+<tr><td>旧做法（v1）：趋势评分 ≥70 买 Call</td><td>全部 5 年</td><td class="n r">10424</td><td class="n r neg">−3.5%</td><td class="n r">40.4%</td><td class="n r">−2.3</td></tr>
+<tr><td>旧做法（v1）：趋势评分 ≤30 买 Put</td><td>全部 5 年</td><td class="n r">7267</td><td class="n r neg">−6.9%</td><td class="n r">35.2%</td><td class="n r">−4.4</td></tr>
+<tr><td>对照：随便哪天随便哪只买 Call</td><td>全部 5 年</td><td class="n r">39099</td><td class="n r neg">−1.9%</td><td class="n r">41.7%</td><td class="n r">−1.2</td></tr>
+<tr><td>对照：随便哪天随便哪只买 Put</td><td>全部 5 年</td><td class="n r">39099</td><td class="n r neg">−7.3%</td><td class="n r">34.8%</td><td class="n r">−4.7</td></tr>
 </tbody></table></div>
-<div class="formula">最终评分 = 50 +（看涨总分 − 看跌总分）÷ 2　　范围 0–100</div>
-<div class="kv"><div><small>≥ 70 分</small><b>看涨</b>考虑买 Call</div><div><small>31–69 分</small><b>观望</b>方向不明，不做</div><div><small>≤ 30 分</small><b>看跌</b>考虑买 Put</div></div>
-<h3>几个名词</h3>
-<ul><li><b>均线</b>：过去 N 个交易日收盘价的平均值。20 日代表约一个月，50 日约一个季度，200 日约一年。</li><li><b>RSI</b>：0–100 的动能指标，衡量最近 14 天涨的力度相对跌的力度。高于 55 说明买方占优。</li><li><b>MACD 柱</b>：短期和长期均线差距的变化，用来看动能在加强还是减弱。</li><li><b>ATR（日均波幅）</b>：这只股票最近 14 天平均每天的波动幅度。用它衡量"涨得离均线多远"，比用百分比更公平，因为每只股票波动大小不一样。</li></ul>
-<p class="muted">盘中用 Nasdaq 实时成交价计算当天的分数，盘前和盘后用上一个交易日的官方收盘价。所以同一天内分数会随股价变化。</p></section>
+<p class="muted">"每笔平均盈亏"是相对权利金的百分比，已扣 4% 来回成本。t 值的绝对值大于 2 才算统计上站得住。</p>
+<h3>四个结论</h3>
+<div class="box key"><ol style="margin:0;padding-left:20px">
+<li><b>随便买期权是亏的。</b>不加选择地买 Call 每笔平均亏 1.9%，买 Put 亏 7.3%。时间损耗和买卖价差是固定成本。</li>
+<li><b>旧的"追高分"做法比随便买还差。</b>趋势评分和之后 5 天涨跌的相关性是 −0.013（约等于零，略偏负）。这些大盘股短期内更倾向于"涨多了歇一歇"。</li>
+<li><b>买 Put 明显亏钱</b>（t = −4.4），而且越弱的股票反弹越猛。所以 v2 不再买 Put。</li>
+<li><b>"上升趋势中急跌买 Call"是测试过的规则里唯一两段时期都为正的</b>：每笔约 +4%，胜率约 56%。但 t 值 1.8，<b>没有达到统计显著</b>，可能是真的小优势，也可能部分是运气。</li></ol></div>
+<div class="box caution"><b>请这样理解这个结果：</b>它说明 v2 比旧做法好得多，但<b>不能证明它会赚钱</b>。回测用的是估算的期权价格而不是真实成交价；如果实际买卖成本到 8%，这点优势就没了。每笔 +4% 也意味着 100 笔里大约 44 笔是亏的。请不要把它当成稳定收入来源。</div>
+<p class="muted">估算方法：平值期权、30 天到期、隐含波动率 = 20 日实际波动率 × 1.1、按当天收盘价进出、来回成本 4%。回测程序是仓库里的 <code>scripts/options_backtest.py</code>，结果数据在 <code>data/options/backtest.json</code>，可以重跑核对。</p></section>
 
-<section id="example"><h2>4. 打分实例：RTX（2026-11-10）</h2>
-<p>当时股价 200.13，20 日均线 195.01，50 日均线 192.99，200 日均线 195.31，RSI 56.6，ATR 5.37。</p>
-<div class="table-wrap"><table><thead><tr><th>检查</th><th>实际情况</th><th>看涨</th><th>看跌</th></tr></thead><tbody>
-<tr><td>股价 vs 20 日均线</td><td>200.13 &gt; 195.01</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>20 日 vs 50 日</td><td>195.01 &gt; 192.99</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>50 日 vs 200 日</td><td>192.99 &lt; 195.31（中期趋势还没转好）</td><td class="n">0</td><td class="n">10</td></tr>
-<tr><td>20 日均线方向</td><td>在上行</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>相对大盘</td><td>跑赢 SPY 13.5 个点（超过 6 个点，拿满）</td><td class="n">15</td><td class="n">0</td></tr>
-<tr><td>相对板块</td><td>跑赢工业板块 9.9 个点（拿满）</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>RSI</td><td>56.6（在 55–80 之间）</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>MACD 柱</td><td>为正且在放大</td><td class="n">10</td><td class="n">0</td></tr>
-<tr><td>离均线距离</td><td>（200.13 − 195.01）÷ 5.37 = 0.95 倍 ATR</td><td class="n">15</td><td class="n">0</td></tr>
-<tr><td class="b">合计</td><td></td><td class="n b">90</td><td class="n b">10</td></tr></tbody></table></div>
-<div class="formula">评分 = 50 +（90 − 10）÷ 2 = <b>90</b> → 看涨</div>
-<p>接着过门槛：没有涨过头（0.95 倍 &lt; 2 倍）、14 天内没有财报、200 Call 的买卖价差约 5%、未平仓量 1513、一张约 $725（在 $1000 上限内）、连续两轮扫描都合格 → 发出进场信号。</p></section>
+<section id="idea"><h2>2. 核心想法</h2>
+<p>这是一套<b>"顺大势、逆小势"</b>的均值回归策略：</p>
+<ul><li><b>顺大势</b>：只做长期趋势向上的股票（股价和 50 日均线都在 200 日均线上方）。</li><li><b>逆小势</b>：等它连续急跌两三天、短期严重超卖时买入，赌它反弹回正常水平。</li><li><b>快进快出</b>：反弹到位就走，最多拿 7 天。</li></ul>
+<div class="flow"><div class="step"><b>① 取数据</b><span>32 只股票日线 + 实时价</span></div><div class="step"><b>② 找信号</b><span>上升趋势 且 RSI(2) &lt; 5</span></div><div class="step"><b>③ 过门槛</b><span>财报、流动性、价格、确认</span></div><div class="step"><b>④ 挑合约</b><span>3–6 周到期、接近平值 Call</span></div><div class="step"><b>⑤ 盯退场</b><span>反弹 / 止损 / 止盈 / 7 天</span></div><div class="step"><b>⑥ 复盘</b><span>每天记录，定期重跑回测</span></div></div>
+<div class="box caution"><b>它不做什么：</b>不买 Put，不追涨，不看基本面和估值，不预测财报，不卖出期权，不用保证金，不做价差组合。</div></section>
 
-<section id="entry"><h2>5. 什么时候买（7 道门槛）</h2>
-<p>分数达到 ≥70 或 ≤30 只是第一步。下面 7 条必须<b>全部通过</b>，系统才会发"进场"信号。每天的评分页会写明每只股票被哪一条挡住。</p>
+<section id="universe"><h2>3. 看哪些股票</h2>
+<p>固定 32 只流动性好的大盘股。只选大盘股是因为期权成交活跃、买卖价差小。</p>
+<div class="table-wrap"><table><thead><tr><th>板块（对比的 ETF）</th><th>股票</th></tr></thead><tbody>
+<tr><td class="n">科技（XLK）</td><td>AAPL、AVGO、CRM、MSFT、NVDA</td></tr><tr><td class="n">通信（XLC）</td><td>GOOGL、META</td></tr><tr><td class="n">可选消费（XLY）</td><td>AMZN、HD、TSLA</td></tr><tr><td class="n">必需消费（XLP）</td><td>COST、KO、PG、WMT</td></tr><tr><td class="n">医疗（XLV）</td><td>ABBV、LLY、UNH</td></tr><tr><td class="n">金融（XLF）</td><td>BAC、JPM、V</td></tr><tr><td class="n">能源（XLE）</td><td>CVX、XOM</td></tr><tr><td class="n">工业（XLI）</td><td>CAT、DE、GE、RTX</td></tr><tr><td class="n">公用事业（XLU）</td><td>DUK、NEE</td></tr><tr><td class="n">材料（XLB）</td><td>FCX、LIN</td></tr><tr><td class="n">地产（XLRE）</td><td>PLD</td></tr><tr><td class="n">无板块对比</td><td>SPCX（2026 年 6 月才上市，没有 200 日均线，暂时不会有信号）</td></tr></tbody></table></div></section>
+
+<section id="entry"><h2>4. 什么时候买</h2>
+<h3>信号：两个条件同时满足</h3>
+<div class="table-wrap"><table><thead><tr><th>条件</th><th>具体标准</th><th>含义</th></tr></thead><tbody>
+<tr><td>长期趋势向上</td><td>股价 &gt; 200 日均线，<b>并且</b> 50 日均线 &gt; 200 日均线</td><td>这只股票过去一年整体在涨，下跌更可能是暂时的回调</td></tr>
+<tr><td>短期急跌</td><td><b>RSI(2) &lt; 5</b></td><td>最近两天几乎一直在跌，短期严重超卖。通常是连跌 2–3 天之后</td></tr></tbody></table></div>
+<p><b>RSI(2) 是什么？</b>和常见的 RSI(14) 是同一个指标，只是只看最近 2 天，所以非常灵敏。0 表示这两天全是下跌，100 表示全是上涨。上升趋势中 RSI(2) 低于 5 的情况，平均每只股票大约每两个月出现 1 次。同时有多只触发时，先看 RSI(2) 最低的。</p>
+<h3>门槛：全部通过才发信号</h3>
 <div class="table-wrap"><table><thead><tr><th>#</th><th>门槛</th><th>具体标准</th><th>为什么</th></tr></thead><tbody>
-<tr><td>1</td><td>不追高、不追跌</td><td>股价离 20 日均线不超过 <b>2 倍 ATR</b></td><td>涨过头的股票容易回调，买在高点的期权很容易先亏</td></tr>
-<tr><td>2</td><td>避开财报</td><td>未来 <b>14 天</b>内没有财报</td><td>财报前期权偏贵，财报后隐含波动率骤降，方向对了也可能亏</td></tr>
-<tr><td>3</td><td>期权要好成交</td><td>买卖价差 ≤ <b>10%</b>，未平仓量 ≥ <b>100</b> 张</td><td>价差太宽等于一买入就先亏一截</td></tr>
-<tr><td>4</td><td>价格上限</td><td>一张合约 ≤ <b>$1000</b></td><td>控制单笔最大亏损</td></tr>
-<tr><td>5</td><td>两轮确认</td><td>连续 <b>两次扫描</b>（间隔 3 分钟）都合格</td><td>过滤开盘时报价跳动造成的假信号</td></tr>
-<tr><td>6</td><td>每天限量</td><td>每天最多 <b>2 个</b>新信号</td><td>避免一天内开太多仓</td></tr>
-<tr><td>7</td><td>不重复、有冷却</td><td>同一只股票已有信号时不再发；退场后 <b>3 天</b>内不重新进场</td><td>避免在同一只股票上反复进出</td></tr></tbody></table></div>
-<p>每轮扫描从分数最高的看涨股票和分数最低的看跌股票开始依次检查。</p></section>
+<tr><td>1</td><td>避开财报</td><td>未来 <b>14 天</b>内没有财报</td><td>财报前的下跌可能有原因；财报后期权价格会骤降</td></tr>
+<tr><td>2</td><td>期权要好成交</td><td>买卖价差 ≤ <b>10%</b>，未平仓量 ≥ <b>100</b> 张</td><td>回测显示成本一高优势就没了，价差宽的坚决不做</td></tr>
+<tr><td>3</td><td>价格上限</td><td>一张合约 ≤ <b>$1000</b></td><td>控制单笔最大亏损</td></tr>
+<tr><td>4</td><td>两轮确认</td><td>连续 <b>两次扫描</b>（间隔 3 分钟）都合格</td><td>过滤报价跳动造成的假信号</td></tr>
+<tr><td>5</td><td>每天限量</td><td>每天最多 <b>2 个</b>新信号</td><td>大盘大跌那天会有很多只同时触发，它们会一起涨跌，不能全买</td></tr>
+<tr><td>6</td><td>不重复、有冷却</td><td>已有信号的不再发；退场后 <b>3 天</b>内不重新进场</td><td>避免在同一只股票上反复进出</td></tr></tbody></table></div>
+<p><b>信号多久出现一次？</b>过去 5 年平均每个交易日约 0.8 个，但分布很不均匀：约 6 成的日子一个都没有，大盘急跌的日子会一次出现好几个。<b>连续几天没有信号是正常的，不要因为没信号就硬找机会。</b></p></section>
 
-<section id="contract"><h2>6. 买哪张合约</h2>
-<div class="kv"><div><small>类型</small><b>单买 Call 或 Put</b>不做价差、不卖出</div><div><small>到期日</small><b>21–45 天后</b>优先接近 30 天</div><div><small>Delta</small><b>0.45–0.65</b>优先接近 0.55</div><div><small>买卖价差</small><b>≤ 10%</b>未平仓量 ≥ 100</div></div>
-<ul><li><b>为什么只拿 1–7 天，却买 3–6 周后到期的？</b>期权每天都在损失时间价值，越接近到期掉得越快。买本周到期的合约便宜，但只要股票横盘两天就可能亏掉一大半。买 3–6 周的，几天内的时间损耗小得多，赚的主要是方向的钱。</li><li><b>Delta 0.55 是什么意思？</b>股票每涨 $1，这张 Call 大约涨 $0.55。0.55 接近"平值"（行权价接近现价），成交最活跃，对方向的反应也够灵敏。</li><li><b>下单价格</b>：用买价和卖价的中间价挂限价单，不用市价单。</li></ul></section>
+<section id="contract"><h2>5. 买哪张合约</h2>
+<div class="kv"><div><small>类型</small><b>只买 Call</b>不买 Put、不做价差</div><div><small>到期日</small><b>21–45 天后</b>优先接近 30 天</div><div><small>Delta</small><b>0.45–0.65</b>优先接近 0.55</div><div><small>买卖价差</small><b>≤ 10%</b>未平仓量 ≥ 100</div></div>
+<ul><li><b>为什么只拿几天，却买 3–6 周后到期的？</b>期权每天都在损失时间价值，越接近到期掉得越快。回测里 14 天、30 天、45 天到期的结果差别不大，30 天的时间损耗和价格比较均衡。</li><li><b>Delta 0.55</b>：股票每涨 $1，这张 Call 大约涨 $0.55。接近平值，成交最活跃。</li><li><b>下单</b>：用买价和卖价的中间价挂限价单，不用市价单。成交不了宁可放弃，不要追价。</li></ul></section>
 
-<section id="exit"><h2>7. 什么时候卖（6 条规则）</h2>
+<section id="exit"><h2>6. 什么时候卖</h2>
 <p>任何一条先触发就退场。</p>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>规则</th><th>具体标准</th><th>举例（买入价 2.80）</th></tr></thead><tbody>
-<tr><td>1</td><td>止损</td><td>期权价格比成本低 <b>35%</b></td><td>跌到 1.82 卖</td></tr>
-<tr><td>2</td><td>止盈</td><td>期权价格比成本高 <b>50%</b></td><td>涨到 4.20 卖</td></tr>
-<tr><td>3</td><td>限时</td><td>持有满 <b>7 天</b>，不管盈亏</td><td>11/9 买，最晚 11/16 卖</td></tr>
-<tr><td>4</td><td>趋势反转</td><td>Call：评分跌破 50；Put：评分升破 50</td><td>当初买入的理由不成立了</td></tr>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>规则</th><th>具体标准</th><th>说明</th></tr></thead><tbody>
+<tr><td>1</td><td>反弹到位</td><td><b>RSI(2) &gt; 65</b></td><td>最常见的退场方式。股票已经弹回来了，买入的理由兑现，不贪</td></tr>
+<tr><td>2</td><td>止盈</td><td>期权价格比成本高 <b>80%</b></td><td>例：3.00 买入，涨到 5.40 卖</td></tr>
+<tr><td>3</td><td>止损</td><td>期权价格比成本低 <b>50%</b></td><td>例：3.00 买入，跌到 1.50 卖</td></tr>
+<tr><td>4</td><td>限时</td><td>持有满 <b>7 天</b>（约 5 个交易日）</td><td>没反弹就认了，不死扛</td></tr>
 <tr><td>5</td><td>财报前</td><td>离财报只剩 <b>2 天</b></td><td>不带仓过财报</td></tr>
-<tr><td>6</td><td>临近到期</td><td>离到期只剩 <b>10 天</b></td><td>正常情况下第 3 条会先触发</td></tr></tbody></table></div>
-<p><b>为什么止盈（+50%）比止损（−35%）大？</b>期权买方的胜率通常不到一半。要长期不亏，每次赚的必须比每次亏的多。按 +50% / −35% 算，胜率大约要到 41% 以上才能打平（没算手续费和买卖价差）。</p></section>
+<tr><td>6</td><td>临近到期</td><td>离到期只剩 <b>10 天</b></td><td>正常情况下第 4 条会先触发</td></tr></tbody></table></div>
+<p><b>为什么止损放宽到 −50%？</b>这类交易是在下跌中买入，买完之后常常会再跌一点才反弹。回测里用 −35% 的窄止损会把很多本来能反弹的交易提前砍掉，平均结果更差（约 +2.6% 对 +4.4%）。代价是单笔亏损更大，所以每笔的金额要相应更小。</p>
+<p><b>为什么加"反弹到位就走"？</b>加上这条后回测胜率从约 44% 提高到约 57%，平均盈亏差不多，但更稳定。</p></section>
 
-<section id="size"><h2>8. 买多少、风险多大</h2>
-<ul><li><b>每笔 1 张</b>起步。一张合约的成本就是这笔最多能亏的钱。</li><li><b>单笔风险</b>不超过你专门用来做期权的钱的 <b>5%</b>。例如这笔钱是 $10,000，单笔最多 $500。</li><li><b>同时持仓</b>不超过 <b>5 笔</b>。</li><li><b>只用亏光也不影响生活的钱</b>，不借钱、不用保证金。</li></ul>
-<div class="box caution">如果手头的钱有急用，不适合拿来做期权。期权最常见的结局是亏掉部分或全部权利金。</div></section>
+<section id="size"><h2>7. 买多少、风险多大</h2>
+<ul><li><b>每笔 1 张</b>。一张合约的成本就是这笔最多能亏的钱。</li><li><b>单笔风险</b>不超过你专门用来做期权的钱的 <b>5%</b>。</li><li><b>同时持仓</b>不超过 <b>5 笔</b>。大盘急跌时出现的多个信号高度相关，按一笔大仓位来看待。</li><li><b>只用亏光也不影响生活的钱</b>，不借钱、不用保证金。</li></ul>
+<div class="box caution">回测的优势很薄（每笔约 +4%，且未达统计显著）。按这个水平，即使规则真的有效，也需要很多笔交易才能体现出来，中间会有连续亏损的阶段。如果手头的钱有急用，不适合拿来做期权。</div></section>
+
+<section id="score"><h2>8. 趋势评分（背景参考）</h2>
+<p>网站上每只股票的 0–100 趋势评分仍然保留，用来一眼看出哪些股票强、哪些弱。但回测显示它<b>不能预测之后几天的涨跌</b>，所以<b>不再用它决定买卖</b>。</p>
+<p>算法：9 项对称检查，看涨和看跌两边各自累计，最后换算。</p>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>检查</th><th>满分</th><th>偏强的条件（偏弱相反）</th><th class="r">5 天预测力（IC）</th></tr></thead><tbody>
+<tr><td>1</td><td>股价 vs 20 日均线</td><td class="n">10</td><td>股价在 20 日均线上方</td><td class="n r">−0.011</td></tr>
+<tr><td>2</td><td>20 日 vs 50 日均线</td><td class="n">10</td><td>20 日均线在 50 日上方</td><td class="n r">−0.009</td></tr>
+<tr><td>3</td><td>50 日 vs 200 日均线</td><td class="n">10</td><td>50 日均线在 200 日上方</td><td class="n r">−0.022</td></tr>
+<tr><td>4</td><td>20 日均线方向</td><td class="n">10</td><td>比 5 个交易日前高</td><td class="n r">−0.004</td></tr>
+<tr><td>5</td><td>相对大盘（20 天）</td><td class="n">15</td><td>每跑赢 SPY 1 个点得 2.5 分，6 个点拿满</td><td class="n r">−0.007</td></tr>
+<tr><td>6</td><td>相对板块（20 天）</td><td class="n">10</td><td>每跑赢板块 ETF 1 个点得 2 分，5 个点拿满</td><td class="n r">−0.001</td></tr>
+<tr><td>7</td><td>RSI(14) 动能</td><td class="n">10</td><td>RSI 55–80 得 10 分；≥80 只得 4 分</td><td class="n r">−0.008</td></tr>
+<tr><td>8</td><td>MACD 柱（12/26/9）</td><td class="n">10</td><td>为正且放大 10 分；为正但缩小 5 分</td><td class="n r">−0.001</td></tr>
+<tr><td>9</td><td>离 20 日均线的距离</td><td class="n">15</td><td>1 倍 ATR 内 15 分；1–2 倍 8 分；超过 2 倍 0 分</td><td class="n r">−0.013</td></tr></tbody></table></div>
+<div class="formula">趋势评分 = 50 +（偏强总分 − 偏弱总分）÷ 2　　≥70 趋势强，≤30 趋势弱</div>
+<p class="muted">IC 是分数排名和之后 5 天超额涨跌排名的相关性。9 项全部接近零且略偏负，这就是 v2 不再靠它选股的原因。</p></section>
 
 <section id="schedule"><h2>9. 每天的时间表（芝加哥时间，周一到周五）</h2>
 <div class="table-wrap"><table><thead><tr><th>时间</th><th>做什么</th></tr></thead><tbody>
-<tr><td class="n">7:41</td><td>盘前检查：核对财报日期，用上一交易日收盘价打一次分，播报最高/最低分和持仓情况</td></tr>
-<tr><td class="n">8:25 – 15:05</td><td>盘中每 <b>3 分钟</b>扫描一次。有进场、退场信号，或真实持仓碰到止损/止盈/限时，立刻提醒；提醒前会用券商实时报价再核对一遍</td></tr>
-<tr><td class="n">15:47</td><td>收盘复盘：检验评分准不准，生成 PDF 日报，更新网站</td></tr></tbody></table></div>
-<p><b>数据来源</b>：日线历史和期权链（含 Delta、隐含波动率、未平仓量）来自 Cboe，延迟约 15 分钟；盘中股价来自 Nasdaq 实时成交价；下单前的核对用券商实时报价。</p></section>
+<tr><td class="n">7:41</td><td>盘前检查：核对财报日期，播报最接近信号的股票和持仓情况</td></tr>
+<tr><td class="n">8:25 – 15:05</td><td>盘中每 <b>3 分钟</b>扫描一次。有进场、退场信号，或真实持仓碰到退场线，立刻提醒；提醒前用券商实时报价再核对一遍</td></tr>
+<tr><td class="n">15:47</td><td>收盘复盘：记录当天结果，生成 PDF 日报，更新网站</td></tr></tbody></table></div>
+<p><b>数据来源</b>：日线历史和期权链来自 Cboe（延迟约 15 分钟）；盘中股价来自 Nasdaq 实时成交价；下单前的核对用券商实时报价。盘中的 RSI(2) 用实时价计算，所以信号可能在盘中出现，也可能在收盘前消失。</p></section>
 
 <section id="review"><h2>10. 怎么检验和改进</h2>
-<p>每天收盘把股票分成"看涨组（≥70 分）"和"看跌组（≤30 分）"，看三个周期（当天、1 天、5 天）的实际表现：</p>
-<ul><li><b>看涨组 − 看跌组</b>：两组平均涨跌幅之差。为正说明高分股票确实跑赢了低分股票。</li><li><b>命中率</b>：看涨组里真的涨了的比例、看跌组里真的跌了的比例。</li><li><b>相关性</b>：分数排名和实际涨跌排名的相关程度，−1 到 +1，越接近 +1 越准。</li></ul>
-<h3>改方法的规则</h3>
-<ul><li>至少累计 <b>10 个交易日</b>才下结论，单日好坏不算数（一天的结果主要是运气）。</li><li>最近 10 天平均"看涨 − 看跌"为负，或平均相关性为负 → <b>表现差，必须改</b>。</li><li>平均相关性在 0 到 0.05 之间 → 效果不明显，继续观察。</li><li>更高 → 有效，保持不变。</li><li>每次<b>只改一处</b>，升级版本号，写明原因和数据，新旧版本成绩分开统计，不回改历史记录。</li></ul></section>
+<ul><li><b>每笔信号都记录</b>进场价、退场价和原因，网站上可以看到累计战绩。</li><li><b>实盘和回测对比</b>：累计满 30 笔已平仓信号后，比较实际平均盈亏和回测的 +4%。明显更差（比如平均为负）就暂停并重新检查。</li><li><b>定期重跑回测</b>：每月用最新数据重跑 <code>options_backtest.py</code>，看结论有没有变。</li><li><b>改规则的纪律</b>：任何改动先在回测里看前后两段时期是否都更好，只在一段时期好的不采用（那多半是凑出来的）。每次只改一处，升级版本号，写明依据。</li></ul></section>
 
 <section id="limits"><h2>11. 局限和风险</h2>
-<ul><li><b>战绩很短</b>：系统 2026-11-09 才开始实盘记录，目前还不能证明它有效。</li><li><b>只看技术面</b>：突发新闻、财报预告、宏观数据都可能让趋势瞬间反转，分数反应不过来。</li><li><b>普涨普跌的日子会失灵</b>：大盘强力反弹时，之前最弱的股票往往弹得最猛，看跌信号容易全错（11/9 就是这样）。</li><li><b>看跌一侧更难</b>：股市长期向上，买 Put 的胜率天然更低。</li><li><b>方向对了也可能亏</b>：股票涨得太慢，或隐含波动率下降，期权都可能不涨反跌。</li><li><b>期权报价有延迟</b>：系统看到的期权价格比实际晚约 15 分钟，实际成交价可能不同。</li><li><b>隔夜跳空</b>：止损是按价格提醒的，开盘直接跳空时实际亏损可能超过 35%。</li></ul></section>
+<ul><li><b>优势没有达到统计显著</b>（t = 1.8）。真实优势可能比 +4% 小，甚至为零。</li><li><b>回测用的是估算的期权价格</b>，不是真实成交价。急跌时期权的隐含波动率通常会上升（买得更贵），反弹时会回落（卖得更便宜），这一点估算没有完全反映，实际结果可能比回测差。</li><li><b>成本敏感</b>：来回成本 2% 时每笔约 +6%，4% 时约 +4%，8% 时接近零或为负。</li><li><b>幸存者偏差</b>：这 32 只是今天看起来成功的大公司，过去 5 年它们"跌了会涨回来"的概率本来就偏高。</li><li><b>接飞刀的风险</b>：急跌有时是因为真正的坏消息，会继续跌。止损 −50% 意味着这种时候会亏掉一半权利金。</li><li><b>信号扎堆</b>：大盘急跌日多只股票同时触发，会一起赚或一起亏。</li><li><b>2022 年那样的熊市里表现差</b>：当年类似规则每笔平均为负。长期趋势过滤能挡掉一部分，但挡不掉全部。</li><li><b>隔夜跳空</b>：实际亏损可能超过止损线。</li></ul></section>
 
 <section id="log"><h2>12. 改动记录</h2>
-<div class="table-wrap"><table><thead><tr><th>版本</th><th>日期</th><th>改了什么</th></tr></thead><tbody>
-<tr><td class="n">v1</td><td class="n">2026-11-09</td><td>初版：9 项打分、合约筛选、止损 −50% / 止盈 +80% / 到期前 10 天退场。</td></tr>
-<tr><td class="n">v1.1</td><td class="n">2026-11-09</td><td>开盘后 10 分钟内连发两个信号，其中 NEE 已高出均线 2.7 倍 ATR。新增：两轮确认、每天最多 2 个新信号、超过 2 倍 ATR 不追。打分不变。</td></tr>
-<tr><td class="n">—</td><td class="n">2026-11-10</td><td>每张上限从 $500 提到 $1000；只做单腿期权（账户权限不支持价差）；扫描间隔改为 3 分钟。</td></tr>
-<tr><td class="n">v1.2</td><td class="n">2026-11-11</td><td>改为每笔只持有 1–7 天：止损 −35%、止盈 +50%、满 7 天退场。打分不变。</td></tr></tbody></table></div>
-<p class="muted">仅供个人研究参考，不构成投资建议。</p></section>
+<div class="table-wrap"><table><thead><tr><th>版本</th><th>日期</th><th>改了什么、为什么</th></tr></thead><tbody>
+<tr><td class="n">v1</td><td class="n">2026-11-09</td><td>初版：9 项趋势评分，≥70 买 Call、≤30 买 Put；止损 −50% / 止盈 +80%。</td></tr>
+<tr><td class="n">v1.1</td><td class="n">2026-11-09</td><td>新增两轮确认、每天最多 2 个新信号、超过 2 倍 ATR 不追。</td></tr>
+<tr><td class="n">—</td><td class="n">2026-11-10</td><td>每张上限提到 $1000；只做单腿期权；扫描间隔 3 分钟。</td></tr>
+<tr><td class="n">v1.2</td><td class="n">2026-11-11</td><td>改为每笔持有 1–7 天：止损 −35%、止盈 +50%、满 7 天退场。</td></tr>
+<tr class="hl"><td class="n">v2.0</td><td class="n">2026-11-11</td><td>做了 5 年回测。发现趋势评分没有预测力、追高分买 Call 每笔平均 −3.5%、买 Put 每笔 −6.9%。改为：只在"长期上升趋势 + RSI(2) &lt; 5"时买 Call；不再买 Put；退场改为 RSI(2) &gt; 65 / 止损 −50% / 止盈 +80% / 满 7 天。趋势评分保留为背景参考。</td></tr></tbody></table></div>
+<p class="muted">仅供个人研究参考，不构成投资建议。期权可能损失全部权利金。</p></section>
 </main></body></html>

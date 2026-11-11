@@ -34,6 +34,7 @@ def check_positions(path: Path, now: datetime) -> list[str]:
     data = json.loads(path.read_text())
     latest = json.loads((ROOT / "docs" / "data" / "options" / "latest.json").read_text())
     scores = {r["symbol"]: r["score"] for r in latest["rankings"]}
+    rsi2 = {r["symbol"]: r.get("rsi2") for r in latest["rankings"]}
     client, live = o.CboeClient(), o.NasdaqClient()
     alerts = []
     for p in data["positions"]:
@@ -53,10 +54,12 @@ def check_positions(path: Path, now: datetime) -> list[str]:
             "target": mid >= p["target"],
             "stop": mid <= p["stop"],
             "time": now.date().isoformat() >= p["exit_by"],
-            "trend": score is not None and ((p["type"] == "call" and score < 50) or (p["type"] == "put" and score > 50)),
+            "trend": p.get("setup") != "dip" and score is not None
+            and ((p["type"] == "call" and score < 50) or (p["type"] == "put" and score > 50)),
+            "rebound": p.get("setup") == "dip" and (rsi2.get(p["symbol"]) or 0) > o.RSI2_EXIT,
         }
         label = {"target": "🟢 止盈到了", "stop": "🔴 止损到了", "time": "⏰ 时间退场",
-                 "trend": "⚠️ 趋势反转"}
+                 "trend": "⚠️ 趋势反转", "rebound": "🟢 反弹到位，可以卖了"}
         for key, hit in checks.items():
             if hit and key not in p["alerted"]:
                 p["alerted"].append(key)

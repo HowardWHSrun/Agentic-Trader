@@ -119,7 +119,7 @@ def build_html(latest: dict, review: dict | None, positions: list[dict], comment
     one = (review or {}).get("one_day") or (review or {}).get("same_day") or {}
     tiles = [
         ("大盘 SPY 当日", pct(spy, 2), cls(spy)),
-        ("看涨 / 观望 / 看跌", f"{len(bulls)} / {len(rows) - len(bulls) - len(bears)} / {len(bears)}", ""),
+        ("趋势强 / 中性 / 趋势弱", f"{len(bulls)} / {len(rows) - len(bulls) - len(bears)} / {len(bears)}", ""),
         ("看涨组 − 看跌组（1 天）", pct(one.get("bull_minus_bear"), 2), cls(one.get("bull_minus_bear"))),
     ]
     if positions:
@@ -149,7 +149,7 @@ def build_html(latest: dict, review: dict | None, positions: list[dict], comment
 <th class="r">现价</th><th class="r">盈亏 $</th><th class="r">盈亏 %</th><th class="r">止损</th><th class="r">止盈</th><th>最晚退场</th><th class="r">评分</th><th>状态</th></tr></thead>
 <tbody>{trs}</tbody><tfoot><tr><td colspan="5" class="b">合计（投入 ${cost_total:,.0f}）</td><td class="r b {cls(pnl_total)}">{pnl_total:+,.0f}</td>
 <td class="r b {cls(pnl_total)}">{pct(pnl_total / cost_total * 100 if cost_total else None)}</td><td colspan="5"></td></tr></tfoot></table>
-<p class="fine">现价为期权买卖中间价。止损 = 成本 −35%，止盈 = 成本 +50%，最晚退场 = 买入后第 7 天。</p>'''
+<p class="fine">现价为期权买卖中间价。止损、止盈按每笔买入时的规则设定；最晚退场 = 买入后第 7 天。</p>'''
 
     # --- signals
     def sig_line(s: dict, kind: str) -> str:
@@ -233,14 +233,14 @@ table.grid{{width:100%;border-collapse:collapse;font-size:8.3pt}}.grid th{{backg
 {pos_html}
 <h2>今日信号</h2>{sig_html}
 {comm_block}
-<h2 class="pb">重点看涨：评分最高的 6 只</h2><div class="cardgrid">{cards(bulls)}</div>
-<h2 class="pb">重点看跌：评分最低的 6 只</h2><div class="cardgrid">{cards(bears)}</div>
+<h2 class="pb">趋势最强的 6 只（背景参考，不是买入建议）</h2><div class="cardgrid">{cards(bulls)}</div>
+<h2 class="pb">趋势最弱的 6 只（背景参考，系统不买 Put）</h2><div class="cardgrid">{cards(bears)}</div>
 <h2 class="pb">全部 32 只评分排名</h2>
 <table class="grid"><thead><tr><th class="r">#</th><th>股票</th><th>板块</th><th>评分</th><th>方向</th><th class="r">股价</th><th class="r">当日</th><th class="r">20日</th><th class="r">比大盘</th><th class="r">RSI</th><th>主要理由</th></tr></thead><tbody>{body}</tbody></table>
 <p class="fine">评分 0–100：50 为中性，≥70 看涨（考虑买 Call），≤30 看跌（考虑买 Put），中间观望。"比大盘"为近 20 天相对 SPY 的超额涨跌。</p>
 <h2>准确度复盘：分析得准不准</h2>{rev_html}
 <h2>评分方法与交易规则</h2>
-<p>每只股票做 9 项对称检查并加权：均线排列（股价/20日/50日/200日，共 40 分）、相对大盘与行业强弱（25 分）、RSI 与 MACD 动能（20 分）、是否离均线过远（15 分）。看涨分与看跌分相抵后换算成 0–100。</p>
+<p><b>买入信号（v2）：</b>长期趋势向上（股价和 50 日均线都在 200 日均线上方）且 RSI(2) &lt; 5 时买 Call；不买 Put。趋势评分只作背景：5 年回测显示它不能预测之后几天的涨跌。</p><p>趋势评分的算法：每只股票做 9 项对称检查并加权：均线排列（股价/20日/50日/200日，共 40 分）、相对大盘与行业强弱（25 分）、RSI 与 MACD 动能（20 分）、是否离均线过远（15 分）。看涨分与看跌分相抵后换算成 0–100。</p>
 <ul>{rules}</ul>
 <div class="disc">本报告由自动化程序根据公开行情生成，仅供个人研究参考，不构成投资建议。期权可能损失全部权利金。评分是技术面排序，不是盈利概率。{esc(latest["data_source"])}</div>
 </body></html>'''

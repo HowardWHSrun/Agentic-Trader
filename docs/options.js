@@ -14,7 +14,8 @@
   const weekday = (d) => WEEK[new Date(d + "T12:00:00Z").getUTCDay()];
   const legs = (s) =>
     s.legs.map((l) => (l.qty > 0 ? "买 " : "卖 ") + l.strike + (s.type === "call" ? " Call" : " Put")).join(" / ") + " · " + s.expiration + " 到期";
-  const dirTag = (d) => el("span", "tag " + (d === "看涨" ? "call" : d === "看跌" ? "put" : "wait"), d);
+  const DIR = { 看涨: "趋势强", 看跌: "趋势弱", 观望: "中性" };
+  const dirTag = (d) => el("span", "tag " + (d === "看涨" ? "call" : d === "看跌" ? "put" : "wait"), DIR[d] || d);
   const clear = (...ids) => ids.forEach((id) => ($(id).textContent = ""));
 
   function tile(label, value, cls, sub) {
@@ -64,26 +65,43 @@
     px.appendChild(el("span", sign(r.day_pct), pct(r.day_pct)));
     h.appendChild(px);
     const status = blocked[r.symbol];
-    h.appendChild(el("span", "pick-st" + (status ? "" : " ok"), shortStatus(status)));
+    const setup = r.setup || "";
+    const label = setup === "回调信号" ? "回调信号" : setup === "接近信号" ? "接近信号" : r.uptrend ? "等回调" : "不做";
+    h.appendChild(el("span", "pick-st" + (setup === "回调信号" ? " ok" : ""), label));
     c.appendChild(h);
     const main = up ? r.why_bull : r.why_bear;
     const other = up ? r.why_bear : r.why_bull;
-    c.appendChild(el("h4", null, "为什么" + r.direction));
+    c.appendChild(el("h4", null, up ? "趋势强在哪" : "趋势弱在哪"));
     const ul = el("ul");
     (main || []).slice(0, 6).forEach((x) => ul.appendChild(el("li", null, x)));
     c.appendChild(ul);
-    c.appendChild(el("h4", null, "风险"));
+    c.appendChild(el("h4", null, "反向信号"));
     const ul2 = el("ul");
     ((other || []).length ? other.slice(0, 3) : ["暂无明显反向信号"]).forEach((x) => ul2.appendChild(el("li", null, x)));
     c.appendChild(ul2);
     const single = r.contracts && r.contracts.single;
     if (single) c.appendChild(el("p", "note", `参考合约：${single.strike} ${single.type === "call" ? "Call" : "Put"}，${single.expiration} 到期，约 $${Math.round(single.cost_per_contract)}/张`));
-    if (status) c.appendChild(el("p", "note", "为什么没建议买：" + status));
+    c.appendChild(el("p", "note", "状态：" + (setup || "—") + (status ? "。" + status : "")));
     return c;
   }
 
   function render(d) {
-    clear("tiles", "exits", "entries", "open", "bulls", "bears", "rows", "rule-list");
+    clear("tiles", "exits", "entries", "open", "bulls", "bears", "rows", "rule-list", "watchrows");
+    (d.watchlist || []).forEach((w) => {
+      const tr = el("tr");
+      tr.appendChild(el("td", "b", w.symbol));
+      tr.appendChild(el("td", "r " + (w.rsi2 < 5 ? "pos" : ""), num(w.rsi2, 0)));
+      tr.appendChild(el("td", "r", num(w.price)));
+      tr.appendChild(el("td", null, w.setup));
+      $("watchrows").appendChild(tr);
+    });
+    if (!(d.watchlist || []).length) {
+      const tr = el("tr");
+      const td = el("td", "note", "这一天的数据没有这项（v2 之前）。");
+      td.colSpan = 4;
+      tr.appendChild(td);
+      $("watchrows").appendChild(tr);
+    }
     const day = d.session_date || d.generated_at_ct.slice(0, 10);
     const rows = d.rankings.filter((r) => r.score != null);
     const bulls = rows.filter((r) => r.direction === "看涨");
@@ -98,7 +116,7 @@
     const upM = movers.slice().sort((a, b) => b.d - a.d)[0];
     const dnM = movers.slice().sort((a, b) => a.d - b.d)[0];
     $("tiles").appendChild(tile("大盘 SPY 当日", pct(d.spy_day_pct, 2), sign(d.spy_day_pct)));
-    $("tiles").appendChild(tile("看涨 / 观望 / 看跌", `${bulls.length} / ${rows.length - bulls.length - bears.length} / ${bears.length}`));
+    $("tiles").appendChild(tile("趋势强 / 中性 / 趋势弱", `${bulls.length} / ${rows.length - bulls.length - bears.length} / ${bears.length}`));
     $("tiles").appendChild(tile("评分上升最多", upM && upM.d > 0 ? `${upM.s} +${upM.d}` : "—", "pos", "较上一交易日收盘"));
     $("tiles").appendChild(tile("评分下降最多", dnM && dnM.d < 0 ? `${dnM.s} ${dnM.d}` : "—", "neg", "较上一交易日收盘"));
 
@@ -155,10 +173,11 @@
       tr.appendChild(el("td", "r " + sign(r.ret20), pct(r.ret20)));
       tr.appendChild(el("td", "r " + sign(r.rel_spy20), pct(r.rel_spy20)));
       tr.appendChild(el("td", "r", num(r.rsi14, 0)));
+      tr.appendChild(el("td", "r", r.rsi2 == null ? "—" : num(r.rsi2, 0)));
       const side = r.direction === "看涨" ? r.why_bull : r.direction === "看跌" ? r.why_bear : [].concat((r.why_bull || []).slice(0, 1), (r.why_bear || []).slice(0, 1));
       const key = (side || []).filter((x) => /跑|RSI|过多/.test(x)).slice(0, 2);
       tr.appendChild(el("td", "note", (key.length ? key : (side || []).slice(0, 2)).join("；")));
-      let note = entered.has(r.symbol) ? "✅ 当天进场" : blocked[r.symbol] || "";
+      let note = entered.has(r.symbol) ? "✅ 当天进场" : [r.setup, blocked[r.symbol]].filter(Boolean).join("：");
       if (r.earnings) note += (note ? " · " : "") + "财报 " + r.earnings;
       tr.appendChild(el("td", "note", note));
       $("rows").appendChild(tr);
