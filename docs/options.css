@@ -30,3 +30,10 @@ td.note{white-space:normal;min-width:220px;font-size:12px;color:var(--muted)}
 .note{font-size:12px;color:var(--muted)}p.note{margin:8px 0 0}
 .r{text-align:right}th.r{text-align:right}.b{font-weight:700}.nw{white-space:nowrap}.bar.mid i{background:#8a9792}
 td.note{min-width:180px}.muted a{color:var(--green)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px 28px}
+details.pick{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:8px;margin:0 0 8px;padding:0 14px}details.pick.put{border-left-color:var(--red)}
+details.pick summary{display:flex;align-items:center;gap:10px;padding:11px 0;cursor:pointer;list-style:none}details.pick summary::-webkit-details-marker{display:none}details.pick[open]{padding-bottom:12px}
+.pick-sym{font-weight:700;font-size:16px;min-width:54px}.pick-score{font:600 20px Georgia,serif;min-width:30px}.pick-px{margin-left:auto;font-size:13px;color:var(--muted)}
+.pick-st{font-size:11px;font-weight:700;border-radius:20px;padding:1px 9px;background:#eceee8;color:var(--muted);white-space:nowrap}.pick-st.ok{background:var(--mint);color:var(--green)}
+details.pick ul{margin:0;padding-left:18px}details.pick li{margin:2px 0;font-size:13px}
+#more>details{background:var(--card);border:1px solid var(--line);border-radius:9px;margin:0 0 10px;padding:0 16px}#more>details>summary{padding:14px 0;font-weight:700;cursor:pointer}#more>details[open]{padding-bottom:16px}

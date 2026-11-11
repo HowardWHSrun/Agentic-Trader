@@ -40,34 +40,45 @@
     return c;
   }
 
+  function shortStatus(status) {
+    if (!status) return "可进场";
+    if (/上限/.test(status)) return "太贵";
+    if (/财报/.test(status)) return "财报临近";
+    if (/太多/.test(status)) return "涨跌过头";
+    if (/持仓/.test(status)) return "已有信号";
+    if (/价差/.test(status)) return "期权难成交";
+    return "暂不进";
+  }
+
   function focusCard(r, blocked) {
     const up = r.direction === "看涨";
-    const c = el("div", "card " + (up ? "call" : "put"));
-    const h = el("h3", null, r.symbol + " ");
-    h.appendChild(dirTag(r.direction));
-    const sc = el("span", "card-score", `评分 ${r.score}`);
+    const c = el("details", "pick " + (up ? "call" : "put"));
+    const h = el("summary");
+    h.appendChild(el("span", "pick-sym", r.symbol));
+    h.appendChild(el("span", "pick-score", String(r.score)));
     if (r.score_prev_close != null && r.score !== r.score_prev_close) {
       const d = r.score - r.score_prev_close;
-      sc.appendChild(el("span", "delta " + sign(d), ` ${d > 0 ? "▲" : "▼"}${Math.abs(d)}`));
+      h.appendChild(el("span", "delta " + sign(d), `${d > 0 ? "▲" : "▼"}${Math.abs(d)}`));
     }
-    h.appendChild(sc);
+    const px = el("span", "pick-px", `${num(r.price)} `);
+    px.appendChild(el("span", sign(r.day_pct), pct(r.day_pct)));
+    h.appendChild(px);
+    const status = blocked[r.symbol];
+    h.appendChild(el("span", "pick-st" + (status ? "" : " ok"), shortStatus(status)));
     c.appendChild(h);
-    const px = el("p", "px", `股价 ${num(r.price)} `);
-    px.appendChild(el("span", sign(r.day_pct), `当日 ${pct(r.day_pct)}`));
-    c.appendChild(px);
     const main = up ? r.why_bull : r.why_bear;
     const other = up ? r.why_bear : r.why_bull;
     c.appendChild(el("h4", null, "为什么" + r.direction));
     const ul = el("ul");
     (main || []).slice(0, 6).forEach((x) => ul.appendChild(el("li", null, x)));
     c.appendChild(ul);
-    c.appendChild(el("h4", null, "风险 / 反向信号"));
+    c.appendChild(el("h4", null, "风险"));
     const ul2 = el("ul");
     ((other || []).length ? other.slice(0, 3) : ["暂无明显反向信号"]).forEach((x) => ul2.appendChild(el("li", null, x)));
     c.appendChild(ul2);
     const single = r.contracts && r.contracts.single;
     if (single) c.appendChild(el("p", "note", `参考合约：${single.strike} ${single.type === "call" ? "Call" : "Put"}，${single.expiration} 到期，约 $${Math.round(single.cost_per_contract)}/张`));
-    c.appendChild(el("p", "note", "系统处理：" + (blocked[r.symbol] || "符合进场条件")));
+    if (status) c.appendChild(el("p", "note", "为什么没建议买：" + status));
     return c;
   }
 
