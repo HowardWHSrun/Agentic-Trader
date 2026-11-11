@@ -13,9 +13,9 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <body>
 <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>STRATEGY</small></span></a><nav aria-label="Primary navigation"><a href="index.html">← 每日评分</a><a href="#backtest">回测结果</a><a href="#entry">什么时候买</a><a href="#exit">什么时候卖</a><a href="#limits">局限</a></nav></header>
 <main class="doc">
-<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v2.1 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
+<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v2.2 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
 <p class="lead">一句话：<b>长期上涨的股票连续下跌 4 天时买看涨期权（Call），等它反弹，最多拿 7 天。</b>不买看跌期权。这条规则是把 GitHub 上常见的十几种短线策略放到过去 5 年的数据上回测后选出来的。</p>
-<ul class="toc"><li><a href="#backtest">1. 回测告诉我们什么</a></li><li><a href="#idea">2. 核心想法</a></li><li><a href="#universe">3. 看哪些股票</a></li><li><a href="#entry">4. 什么时候买</a></li><li><a href="#contract">5. 买哪张合约</a></li><li><a href="#exit">6. 什么时候卖</a></li><li><a href="#size">7. 买多少、风险多大</a></li><li><a href="#score">8. 趋势评分（背景参考）</a></li><li><a href="#schedule">9. 每天的时间表</a></li><li><a href="#review">10. 怎么检验和改进</a></li><li><a href="#limits">11. 局限和风险</a></li><li><a href="#log">12. 改动记录</a></li></ul></section>
+<ul class="toc"><li><a href="#backtest">1. 回测告诉我们什么</a></li><li><a href="#idea">2. 核心想法</a></li><li><a href="#universe">3. 看哪些股票</a></li><li><a href="#entry">4. 什么时候买</a></li><li><a href="#contract">5. 买哪张合约</a></li><li><a href="#exit">6. 什么时候卖</a></li><li><a href="#size">7. 动态管理：看行情、看账户</a></li><li><a href="#score">8. 趋势评分（背景参考）</a></li><li><a href="#schedule">9. 每天的时间表</a></li><li><a href="#review">10. 怎么检验和改进</a></li><li><a href="#limits">11. 局限和风险</a></li><li><a href="#log">12. 改动记录</a></li></ul></section>
 
 <section id="backtest"><h2>1. 回测告诉我们什么</h2>
 <p>方法参考 GitHub 上主流量化项目：<a href="https://github.com/quantopian/alphalens">alphalens</a> 的因子检验、<a href="https://github.com/microsoft/qlib">qlib</a> 的分段验证、<a href="https://github.com/goldspanlabs/optopsy">optopsy</a> 的期权规则回测。候选策略来自 <a href="https://github.com/paperswithbacktest/awesome-systematic-trading">awesome-systematic-trading</a> 和各种公开实现：Connors 的 RSI(2) 和累计 RSI、连跌天数、IBS（收盘在当日区间的位置）、<a href="https://github.com/idousse/mean-reversion-strategy">Quantitativo 均值回归</a>、布林带、月初效应、周二反转等。</p>
@@ -99,9 +99,43 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <p><b>为什么止损是 −50% 而不是更窄？</b>这类交易是在下跌中买入，买完之后常常会再跌一点才反弹。回测里 −35% 的窄止损会把一部分本来能反弹的交易提前砍掉（每笔 +6.9% 对 +8.5%）。代价是单笔亏损更大，所以每笔的金额要相应更小。</p>
 <p><b>回测里实际是怎么退场的？</b>平均持有 2.7 个交易日：19% 第 1 天就走，29% 第 2 天，25% 第 3 天，15% 第 4 天，11% 拿满 5 天。</p></section>
 
-<section id="size"><h2>7. 买多少、风险多大</h2>
-<ul><li><b>每笔 1 张</b>。一张合约的成本就是这笔最多能亏的钱。</li><li><b>单笔风险</b>不超过你专门用来做期权的钱的 <b>5%</b>。</li><li><b>同时持仓</b>不超过 <b>5 笔</b>。大盘急跌时出现的多个信号高度相关，按一笔大仓位来看待。</li><li><b>只用亏光也不影响生活的钱</b>，不借钱、不用保证金。</li></ul>
-<div class="box caution">回测每笔平均 +8.8%，但单笔结果从 −93% 到 +439% 都有。即使规则真的有效，也需要几十笔交易才能体现出来，中间会有连续亏损的阶段。如果手头的钱有急用，不适合拿来做期权。</div></section>
+<section id="size"><h2>7. 动态管理：看行情、看账户</h2>
+<p>进出场不是只看一个数。系统每次扫描都会看三层：<b>大盘环境 → 这笔交易本身 → 你的整个账户</b>，据此决定买不买、买多少。下面每条规则都先在 5 年数据上测过；测了没用的也列出来了。</p>
+<h3>第一层：看大盘环境，决定仓位大小</h3>
+<div class="table-wrap"><table><thead><tr><th>入场时的大盘状态</th><th class="r">次数</th><th class="r">每笔平均</th><th class="r">胜率</th></tr></thead><tbody>
+<tr class="hl"><td>大盘普跌（SPY 5 天跌超 2%）</td><td class="n r">286</td><td class="n r pos">+12.6%</td><td class="n r">65%</td></tr>
+<tr class="hl"><td>SPY 跌破 50 日线</td><td class="n r">346</td><td class="n r pos">+10.2%</td><td class="n r">66%</td></tr>
+<tr class="hl"><td>同一天有 2–3 只同时触发</td><td class="n r">387</td><td class="n r pos">+12.6%</td><td class="n r">63%</td></tr>
+<tr><td>SPY 在 50 日线上方</td><td class="n r">574</td><td class="n r pos">+7.6%</td><td class="n r">57%</td></tr>
+<tr><td>大盘平稳、只有这一只独自连跌</td><td class="n r">290</td><td class="n r pos">+2.1%</td><td class="n r">56%</td></tr></tbody></table></div>
+<p><b>结论：</b>大盘一起回调时，好股票被"错杀"，反弹最强；大盘好好的、只有一只自己在跌，往往是它自己有问题，反弹弱很多。所以：</p>
+<div class="kv"><div><small>大盘普跌回调时</small><b>每笔 3%</b>期权资金的 3%</div><div><small>大盘平稳、个股独跌时</small><b>每笔 1.5%</b>半仓</div><div><small>判断标准</small><b>SPY 5 日跌 &gt;2%</b>或跌破 50 日线，或当天 ≥2 只触发</div></div>
+<p class="muted">另外发现跌得越深反弹越强（连跌期间跌幅最大的三分之一每笔 +11.9%，最小的三分之一 +4.0%）。同一天有多只触发时，优先跌得最深的。</p>
+<h3>第二层：这笔交易本身的退场</h3>
+<p>退场规则见第 6 节。我们专门测了几种"更动态"的退场方法，<b>都没有比现在更好</b>，所以没有加：</p>
+<div class="table-wrap"><table><thead><tr><th>测试的动态退场</th><th class="r">每笔平均</th><th>结论</th></tr></thead><tbody>
+<tr class="hl"><td>现行：站上 5 日线 / −50% / +80% / 5 个交易日</td><td class="n r">+8.6%</td><td>保留</td></tr>
+<tr><td>追踪止损（赚 20–50% 后回吐 15–30% 就走）</td><td class="n r">+8.4% ~ +8.6%</td><td>没有改善：反弹到位的退场已经会及时落袋</td></tr>
+<tr><td>第 2 天还没涨就走</td><td class="n r">+4.7%</td><td>更差：很多交易要第 3、4 天才反弹</td></tr>
+<tr><td>第 3 天还没涨就走</td><td class="n r">+6.8%</td><td>更差</td></tr>
+<tr><td>股价跌破入场价 1–2 倍 ATR 就走</td><td class="n r">+8.0% ~ +8.6%</td><td>没有改善</td></tr>
+<tr><td>止损收紧到 −35%</td><td class="n r">+6.7%</td><td>更差：会砍掉还没反弹的交易</td></tr></tbody></table></div>
+<p>"站上 5 日线就走"本身就是动态的：它不看期权涨了多少，而是看股票是否已经反弹到位，反弹快就早走，反弹慢就多拿几天。</p>
+<h3>第三层：看你的整个账户</h3>
+<div class="table-wrap"><table><thead><tr><th>账户规则</th><th>具体标准</th></tr></thead><tbody>
+<tr><td>账户回撤减仓</td><td>期权账户比历史最高点低 <b>10%</b>：之后每笔仓位全部减半</td></tr>
+<tr><td>账户回撤暂停</td><td>低 <b>20%</b>：暂停所有新开仓，先复盘，再决定是否继续</td></tr>
+<tr><td>同时持仓</td><td>最多 <b>5 笔</b></td></tr>
+<tr><td>同板块</td><td>最多 <b>2 笔</b>（同板块股票会一起涨跌，等于同一笔）</td></tr>
+<tr><td>每天新开仓</td><td>最多 <b>2 笔</b>，优先跌得最深的</td></tr></tbody></table></div>
+<p><b>为什么每笔只用 3%？</b>用 2021–2026 的信号模拟一个 $10,000 的期权账户（结果偏乐观，见下方说明）：</p>
+<div class="table-wrap"><table><thead><tr><th>每笔仓位</th><th class="r">期间最大回撤</th><th class="r">最差的一个月</th></tr></thead><tbody>
+<tr><td>固定 10%（激进）</td><td class="n r neg">−60%</td><td class="n r neg">−$22,979</td></tr>
+<tr><td>固定 5%</td><td class="n r neg">−33%</td><td class="n r neg">−$4,412</td></tr>
+<tr><td>看大盘 5% / 2.5% + 回撤减半</td><td class="n r neg">−26%</td><td class="n r neg">−$3,007</td></tr>
+<tr class="hl"><td>看大盘 3% / 1.5% + 回撤减半（现行）</td><td class="n r neg">−18%</td><td class="n r neg">−$1,473</td></tr></tbody></table></div>
+<p>仓位越大，账户跌得越深。即使规则是对的，每笔 10% 也会在某段时间亏掉 60%，这时候人往往撑不住、会乱操作。3% 的回撤大约在 15–18%，是能扛得住的水平。</p>
+<div class="box caution">这个模拟用的是估算的期权价格，加上规则本身是从多条里挑出来的，收益数字会明显偏高，这里只用来比较不同仓位的<b>风险大小</b>，不要把它当成收益预期。<b>需要你告诉我"期权资金"是多少</b>（专门拿来做期权、亏光也不影响生活的钱），系统才能把百分比换成具体买几张。</div></section>
 
 <section id="score"><h2>8. 趋势评分（背景参考）</h2>
 <p>网站上每只股票的 0–100 趋势评分仍然保留，用来一眼看出哪些股票强、哪些弱。但回测显示它<b>不能预测之后几天的涨跌</b>，所以<b>不再用它决定买卖</b>。</p>
@@ -138,7 +172,7 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <tr><td class="n">v1.1</td><td class="n">2026-11-09</td><td>新增两轮确认、每天最多 2 个新信号、超过 2 倍 ATR 不追。</td></tr>
 <tr><td class="n">—</td><td class="n">2026-11-10</td><td>每张上限提到 $1000；只做单腿期权；扫描间隔 3 分钟。</td></tr>
 <tr><td class="n">v1.2</td><td class="n">2026-11-11</td><td>改为每笔持有 1–7 天：止损 −35%、止盈 +50%、满 7 天退场。</td></tr>
-<tr><td class="n">v2.0</td><td class="n">2026-11-11</td><td>做了 5 年回测。发现趋势评分没有预测力、追高分买 Call 每笔平均 −3.5%、买 Put 每笔 −6.9%。改为：只在"长期上升趋势 + RSI(2) &lt; 5"时买 Call；不再买 Put；退场改为 RSI(2) &gt; 65 / 止损 −50% / 止盈 +80% / 满 7 天。趋势评分保留为背景参考。</td></tr><tr class="hl"><td class="n">v2.1</td><td class="n">2026-11-11</td><td>把 GitHub 上常见的十几种短线策略逐一回测。"上升趋势中连跌 ≥4 天买 Call"最好且最稳定（每笔 +8.8%，6 年每年为正），取代 RSI(2) &lt;5。回测发现 RSI(2) &lt;5 但没连跌 4 天的那部分其实没有优势。退场改为收盘站上 5 日均线。信号只在收盘前半小时确认。测了 22 种 Put 规则，全部为负，不加。</td></tr></tbody></table></div>
+<tr><td class="n">v2.0</td><td class="n">2026-11-11</td><td>做了 5 年回测。发现趋势评分没有预测力、追高分买 Call 每笔平均 −3.5%、买 Put 每笔 −6.9%。改为：只在"长期上升趋势 + RSI(2) &lt; 5"时买 Call；不再买 Put；退场改为 RSI(2) &gt; 65 / 止损 −50% / 止盈 +80% / 满 7 天。趋势评分保留为背景参考。</td></tr><tr><td class="n">v2.1</td><td class="n">2026-11-11</td><td>把 GitHub 上常见的十几种短线策略逐一回测。"上升趋势中连跌 ≥4 天买 Call"最好且最稳定（每笔 +8.8%，6 年每年为正），取代 RSI(2) &lt;5。回测发现 RSI(2) &lt;5 但没连跌 4 天的那部分其实没有优势。退场改为收盘站上 5 日均线。信号只在收盘前半小时确认。测了 22 种 Put 规则，全部为负，不加。</td></tr><tr class="hl"><td class="n">v2.2</td><td class="n">2026-11-11</td><td>加入动态管理。按大盘环境分仓位：普跌回调时每笔 3%，大盘平稳、个股独跌时 1.5%（回测里前者每笔 +10% 到 +13%，后者 +2.1%）。账户回撤 10% 减半、20% 暂停；同板块最多 2 笔。测了追踪止损、"没涨就提前走"、ATR 止损，都没有改善，不采用。</td></tr></tbody></table></div>
 
 <p class="muted">仅供个人研究参考，不构成投资建议。期权可能损失全部权利金。</p></section>
 </main></body></html>

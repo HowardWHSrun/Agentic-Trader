@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.1"
+RULES_VERSION = "options-score-v2.2"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -80,12 +80,19 @@ DOWN_STREAK_ENTRY = 4   # consecutive lower closes that trigger a call signal
 ENTRY_WINDOW_CT = ("14:30", "15:05")  # signals and rebound exits are judged near the close, as in the backtest
 COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
 MAX_NEW_PER_DAY = 2  # cap new signals per day (all sides)
+MAX_PER_SECTOR = 2   # open signals in one sector (they move together)
+# Position size as a share of the options budget, set by market context (backtested 2021-2026):
+# dips during a broad pullback rebounded far better than a single stock falling on its own.
+RISK_FULL = 0.03     # broad pullback: SPY down >2% over 5 days, below its 50-day, or 2+ signals that day
+RISK_HALF = 0.015    # a single stock falling alone in a calm market
+DRAWDOWN_HALVE = 0.10  # account more than 10% below its peak -> halve every size
+DRAWDOWN_PAUSE = 0.20  # more than 20% below its peak -> no new entries until reviewed
 MAX_STRETCH_ATR = 2.0  # don't chase: skip entries this many ATRs past the 20-day average
 EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
 
 RISK_RULES = [
     "只买看涨期权（Call），最大亏损 = 付出的权利金；不买看跌、不裸卖期权、不用保证金、不借钱。进场条件：长期趋势向上（股价和 50 日均线都在 200 日均线上方）且已连续 4 个交易日收盘下跌，在收盘前半小时确认后买入。",
-    "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
+    "仓位随行情和账户变：大盘普跌回调时每笔用期权资金的 3%，大盘平稳、个股独跌时 1.5%；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
     "每笔持有 1–7 天：亏 50% 止损；赚 80% 止盈；反弹到位（收盘站上 5 日均线）退场；满 7 天无论盈亏都退场；财报前 2 天退场。合约选 3–6 周后到期的，时间损耗更小。",
     "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套「连跌 4 天」规则每笔平均约 +8.5%、胜率约 61%（估算的期权价格，且是从十几条规则里挑出来的，实际会打折扣），不保证盈利。下单前请在券商核对实时买卖价，用限价单。",
 ]
@@ -544,6 +551,29 @@ def choose_structure(pick: dict, max_cost: float) -> tuple[str | None, str | Non
     return None, f"最便宜的方案每张约 ${cheapest:.0f}，超过每张上限 ${max_cost:.0f}"
 
 
+def market_context(spy: list[dict]) -> dict:
+    """SPY state used to size positions: 5-day change, position versus its 50/200-day averages."""
+    c = [b["c"] for b in spy]
+    if len(c) < 200:
+        return {}
+    s50, s200 = sma(c, 50), sma(c, 200)
+    r5 = (c[-1] / c[-6] - 1) * 100
+    above50, above200 = c[-1] > s50, c[-1] > s200
+    state = ("普跌回调" if r5 < -2 or not above50 else "平稳上涨")
+    return {"spy": round(c[-1], 2), "spy_r5": round(r5, 2), "spy_above50": above50, "spy_above200": above200,
+            "state": state, "broad_pullback": r5 < -2 or not above50,
+            "note": (f"大盘 5 日 {r5:+.1f}%，{'在' if above50 else '跌破'} 50 日线、{'在' if above200 else '跌破'} 200 日线。"
+                     + ("属于普跌回调：回测里这时的连跌信号反弹最好，按标准仓位。" if r5 < -2 or not above50
+                        else "大盘平稳：此时单只股票独自连跌，回测反弹较弱，信号按半仓。"))}
+
+
+def size_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
+    broad = market.get("broad_pullback") or n_signals_today >= 2
+    if broad:
+        return RISK_FULL, "标准仓位（普跌中的回调）"
+    return RISK_HALF, "半仓（大盘平稳、个股独跌）"
+
+
 def make_entry(r: dict, side: str, pick: dict, structure: str, today: date) -> dict:
     single = pick["single"]
     if structure == "single":
@@ -583,6 +613,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if err:
                 errors[sym] = err
     spy = bars.get("SPY", [])
+    market = market_context(spy)
     bench_prices = {b: bars[b][-1]["c"] for b in BENCHMARKS if bars.get(b)}
     rows = []
     for sym in UNIVERSE:
@@ -644,6 +675,10 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if r["symbol"] in cooling:
                 r["entry_block"] = f"{cooling[r['symbol']]} 刚退场，冷却 {COOLDOWN_DAYS} 天"
                 continue
+            sector_open = sum(1 for s in still_open + entries if SECTOR.get(s["symbol"]) == SECTOR[r["symbol"]])
+            if SECTOR[r["symbol"]] and sector_open >= MAX_PER_SECTOR:
+                r["entry_block"] = f"同板块已有 {sector_open} 笔，最多 {MAX_PER_SECTOR} 笔"
+                continue
             if r["earnings_soon"]:
                 r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
                 watch.append(r["symbol"])
@@ -673,7 +708,9 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if new_today + len(entries) >= MAX_NEW_PER_DAY:
                 r["entry_block"] = f"今天已有 {MAX_NEW_PER_DAY} 个新信号，明天再看"
                 continue
-            entries.append({**make_entry(r, side, pick, structure, today), "setup": "dip", "down_streak_at_entry": r["down_streak"]})
+            entries.append({**make_entry(r, side, pick, structure, today), "setup": "dip", "down_streak_at_entry": r["down_streak"],
+                            "risk_pct": size_tier(r, market, len(cands))[0] * 100,
+                            "size_note": size_tier(r, market, len(cands))[1], "market_state": market.get("state")})
             added += 1
 
     scored = [r for r in rows if r["score"] is not None]
@@ -684,6 +721,10 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
+        "market": market,
+        "sizing": {"risk_full_pct": RISK_FULL * 100, "risk_half_pct": RISK_HALF * 100,
+                   "drawdown_halve_pct": DRAWDOWN_HALVE * 100, "drawdown_pause_pct": DRAWDOWN_PAUSE * 100,
+                   "max_per_sector": MAX_PER_SECTOR},
         "watchlist": [{"symbol": r["symbol"], "dip_score": r["dip_score"], "down_streak": r["down_streak"], "rsi2": r["rsi2"],
                        "price": r["price"], "setup": r["setup"]}
                       for r in sorted((x for x in rows if x.get("uptrend")), key=lambda x: (-x["down_streak"], x["rsi2"]))[:8]],
