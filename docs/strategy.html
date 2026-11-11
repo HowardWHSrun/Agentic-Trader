@@ -36,6 +36,16 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <li><b>买 Put 明显亏钱</b>（t = −4.4），而且越弱的股票反弹越猛。所以 v2 不再买 Put。</li>
 <li><b>"上升趋势中急跌买 Call"是测试过的规则里唯一两段时期都为正的</b>：每笔约 +4%，胜率约 56%。但 t 值 1.8，<b>没有达到统计显著</b>，可能是真的小优势，也可能部分是运气。</li></ol></div>
 <div class="box caution"><b>请这样理解这个结果：</b>它说明 v2 比旧做法好得多，但<b>不能证明它会赚钱</b>。回测用的是估算的期权价格而不是真实成交价；如果实际买卖成本到 8%，这点优势就没了。每笔 +4% 也意味着 100 笔里大约 44 笔是亏的。请不要把它当成稳定收入来源。</div>
+<h3>为什么没有买 Put 的规则</h3>
+<p>我们专门找过。在同样的 5 年数据上测了 22 种买 Put 的思路，<b>没有一种是正的</b>，大多数明显为负：</p>
+<div class="table-wrap"><table><thead><tr><th>买 Put 的思路</th><th class="r">次数</th><th class="r">每笔平均</th><th class="r">胜率</th></tr></thead><tbody>
+<tr><td>下降趋势中反弹过头（RSI(2) &gt; 95）</td><td class="n r">569</td><td class="n r neg">−5.5%</td><td class="n r">36%</td></tr>
+<tr><td>任何股票短期严重超买（RSI(2) &gt; 98）</td><td class="n r">1539</td><td class="n r neg">−8.8%</td><td class="n r">32%</td></tr>
+<tr><td>涨过头（高于 20 日均线 3 倍 ATR）</td><td class="n r">2093</td><td class="n r neg">−13.2%</td><td class="n r">30%</td></tr>
+<tr><td>破位（下降趋势中创 20 日新低）</td><td class="n r">1409</td><td class="n r neg">−8.6%</td><td class="n r">34%</td></tr>
+<tr><td>追跌（下降趋势中单日跌超 3%）</td><td class="n r">690</td><td class="n r neg">−7.9%</td><td class="n r">35%</td></tr>
+<tr><td>大盘在 200 日均线下方时买弱势股</td><td class="n r">4277</td><td class="n r neg">−9.7%</td><td class="n r">33%</td></tr></tbody></table></div>
+<p>原因有三个：这 5 年大盘整体上涨；这些大公司跌了之后反弹很快；Put 和 Call 一样每天损耗时间价值。唯一赚钱的时段是 2022 年熊市（"下降趋势中反弹过头"当年每笔约 +4%），其他年份每笔亏 11%–21%。<b>所以系统不发买 Put 的信号。</b>每月重跑回测时会一并重测，如果将来进入熊市、某条 Put 规则在前后两段时期都转正，再加进来。</p>
 <p class="muted">估算方法：平值期权、30 天到期、隐含波动率 = 20 日实际波动率 × 1.1、按当天收盘价进出、来回成本 4%。回测程序是仓库里的 <code>scripts/options_backtest.py</code>，结果数据在 <code>data/options/backtest.json</code>，可以重跑核对。</p></section>
 
 <section id="idea"><h2>2. 核心想法</h2>
