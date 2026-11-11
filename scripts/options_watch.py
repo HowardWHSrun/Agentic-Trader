@@ -34,7 +34,7 @@ def check_positions(path: Path, now: datetime) -> list[str]:
     data = json.loads(path.read_text())
     latest = json.loads((ROOT / "docs" / "data" / "options" / "latest.json").read_text())
     scores = {r["symbol"]: r["score"] for r in latest["rankings"]}
-    rsi2 = {r["symbol"]: r.get("rsi2") for r in latest["rankings"]}
+    above5 = {r["symbol"]: r.get("above_sma5") for r in latest["rankings"]}
     client, live = o.CboeClient(), o.NasdaqClient()
     alerts = []
     for p in data["positions"]:
@@ -56,7 +56,7 @@ def check_positions(path: Path, now: datetime) -> list[str]:
             "time": now.date().isoformat() >= p["exit_by"],
             "trend": p.get("setup") != "dip" and score is not None
             and ((p["type"] == "call" and score < 50) or (p["type"] == "put" and score > 50)),
-            "rebound": p.get("setup") == "dip" and (rsi2.get(p["symbol"]) or 0) > o.RSI2_EXIT,
+            "rebound": p.get("setup") == "dip" and now.strftime("%H:%M") >= o.ENTRY_WINDOW_CT[0] and bool(above5.get(p["symbol"])),
         }
         label = {"target": "🟢 止盈到了", "stop": "🔴 止损到了", "time": "⏰ 时间退场",
                  "trend": "⚠️ 趋势反转", "rebound": "🟢 反弹到位，可以卖了"}

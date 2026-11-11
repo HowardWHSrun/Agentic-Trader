@@ -115,9 +115,12 @@ class ExitTests(unittest.TestCase):
         # v2 dip signals leave on the rebound, not on the trend score.
         snaps = {"C1": {"bid": 2.05, "ask": 2.15}}
         dip = self.sig(setup="dip")
-        _, exits = o.review_open([dip], snaps, {"X": {"score": 40, "rsi2": 80.0}}, {}, TODAY)
+        _, exits = o.review_open([dip], snaps, {"X": {"score": 40, "above_sma5": True}}, {}, TODAY)
         self.assertIn("反弹到位", exits[0]["exit_reason"])
-        still, exits = o.review_open([dip], snaps, {"X": {"score": 40, "rsi2": 30.0}}, {}, TODAY)
+        still, exits = o.review_open([dip], snaps, {"X": {"score": 40, "above_sma5": False}}, {}, TODAY)
+        self.assertEqual((len(still), len(exits)), (1, 0))
+        # The rebound exit is only judged near the close.
+        still, exits = o.review_open([dip], snaps, {"X": {"score": 40, "above_sma5": True}}, {}, TODAY, near_close=False)
         self.assertEqual((len(still), len(exits)), (1, 0))
         still, exits = self.check(2.2)
         self.assertEqual((len(still), len(exits)), (1, 0))
@@ -128,21 +131,27 @@ class RunTests(unittest.TestCase):
     def test_end_to_end_with_fake_data(self):
         bars = {s: series(260, 100, 0.05) for s in o.UNIVERSE + o.BENCHMARKS}
         bars["KO"] = series(260, 50, 0.2, 0.1)    # strong uptrend ...
-        for k, drop in zip((-3, -2, -1), (1.5, 3.0, 4.5)):  # ... then a sharp three-day dip
+        for k, drop in zip((-4, -3, -2, -1), (1.5, 3.0, 4.5, 6.0)):  # ... then four lower closes in a row
             b = bars["KO"][k]
             bars["KO"][k] = {**b, "c": b["c"] - drop, "l": b["l"] - drop}
         bars["BAC"] = series(260, 120, -0.3, 0.1)  # strong downtrend
         exp = TODAY + timedelta(days=30)
         chains = {"KO": chain("KO", bars["KO"][-1]["c"], exp, "C"),
                   "BAC": chain("BAC", bars["BAC"][-1]["c"], exp, "P")}
-        now = datetime(2026, 11, 9, 15, tzinfo=timezone.utc)
+        now = datetime(2026, 11, 9, 20, 45, tzinfo=timezone.utc)  # 14:45 CT, inside the entry window
         first = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": []}, max_cost=5000)
         self.assertEqual(first["entries"], [])  # must be confirmed on a second scan
         self.assertEqual(set(first["qualified"]), {"KO"})  # calls on dips only; no puts
         res = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": [], "qualified": first["qualified"]}, max_cost=5000)
         self.assertEqual(res["coverage"]["scored"], 32)
         ko = next(r for r in res["rankings"] if r["symbol"] == "KO")
-        self.assertTrue(ko["uptrend"] and ko["rsi2"] < o.RSI2_ENTRY)
+        self.assertTrue(ko["uptrend"] and ko["down_streak"] >= o.DOWN_STREAK_ENTRY)
+        self.assertEqual(ko["dip_score"], 100)
+        # Outside the closing window the same data only produces a "confirm near the close" note.
+        early = o.run(FakeClient(bars, chains), TODAY, datetime(2026, 11, 9, 16, tzinfo=timezone.utc), {},
+                      {"open": [], "qualified": ["KO"]}, max_cost=5000)
+        self.assertEqual(early["entries"], [])
+        self.assertIn("收盘前", next(r for r in early["rankings"] if r["symbol"] == "KO")["setup"])
         self.assertEqual(res["rankings"][-1]["symbol"], "BAC")
         self.assertEqual({(e["symbol"], e["type"], e["setup"]) for e in res["entries"]}, {("KO", "call", "dip")})
         self.assertIn("进场", o.report(res))

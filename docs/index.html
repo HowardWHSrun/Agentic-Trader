@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#132c2b"><title>Agentic Trader · 每日期权评分</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="options.css?v=20261111f"><script src="options.js?v=20261111f" defer></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#132c2b"><title>Agentic Trader · 每日期权评分</title><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="options.css?v=20261111g"><script src="options.js?v=20261111g" defer></script></head>
 <body>
 <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>DAILY OPTIONS SCORECARD</small></span></a><nav aria-label="Primary navigation"><a href="#signals">今天的信号</a><a href="#watch">接近信号</a><a href="#top">趋势排名</a><a href="#more">更多细节</a><a href="strategy.html">策略说明</a></nav></header>
 <main>
@@ -9,10 +9,10 @@
 <div class="stamp"><span id="stamp-text"></span><label class="daypick">查看其他日期 <select id="day-select" aria-label="选择日期"></select></label></div>
 <div class="tiles" id="tiles"></div>
 <p class="lead" id="lead"></p>
-<p class="warn"><b>买入信号只有一种：</b>长期趋势向上的股票短期急跌时买 Call（回调买入），持有 1–7 天。不买 Put。趋势评分只是背景参考。5 年回测里这条规则每笔平均约 +4%，但没到统计显著，不保证赚钱。<a href="strategy.html">看完整策略和回测 →</a></p>
+<p class="warn"><b>买入信号只有一种：</b>长期趋势向上的股票连续下跌 4 天时，在收盘前买 Call，等它反弹，持有 1–7 天。不买 Put。5 年回测里这条规则每笔期权平均约 +8.8%、胜率约 61%，但用的是估算的期权价格，不保证赚钱。<a href="strategy.html">看完整策略和回测 →</a></p>
 </section>
 <section id="signals"><h2>今天的信号</h2><p class="muted">系统当天建议的买入和卖出。没有信号是常态：平均每天不到 1 个，经常好几天没有。这是系统记录，不代表你实际买了。</p><div id="exits"></div><div id="entries"></div><p id="none" class="muted" hidden>当天没有新的进场或退场信号。</p><h3 id="open-title" hidden>跟踪中的信号</h3><div class="table-wrap" id="open-wrap" hidden><table><thead><tr><th>股票</th><th>方向</th><th>合约</th><th>进场日</th><th class="r">成本</th><th class="r">现价</th><th class="r">盈亏</th><th>最晚退场</th></tr></thead><tbody id="open"></tbody></table></div></section>
-<section id="watch"><h2>最接近信号的股票</h2><p class="muted">长期趋势向上的股票，按短期超卖程度排序。机会分 = 100 − RSI(2)，越高越接近买入信号，<b>95 分以上触发</b>；长期趋势不向上的股票记 0 分，不做。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th class="r">机会分</th><th class="r">RSI(2)</th><th class="r">股价</th><th>状态</th></tr></thead><tbody id="watchrows"></tbody></table></div></section>
+<section id="watch"><h2>最接近信号的股票</h2><p class="muted">长期趋势向上的股票，按短期超卖程度排序。机会分 = 连跌天数 × 25（连跌 4 天 = 100 分，<b>100 分触发</b>，在收盘前半小时确认）；长期趋势不向上的股票记 0 分，不做。</p><div class="table-wrap"><table><thead><tr><th>股票</th><th class="r">机会分</th><th class="r">连跌天数</th><th class="r">RSI(2)</th><th class="r">股价</th><th>状态</th></tr></thead><tbody id="watchrows"></tbody></table></div></section>
 <section id="top"><h2>趋势排名（背景参考）</h2><p class="muted">趋势评分 0–100，越高趋势越强。回测显示这个分数本身不能预测之后几天的涨跌，所以它不再决定买卖，只用来了解每只股票的状态。点开可以看理由。</p><div class="two"><div><h3>趋势最强 5 只</h3><div id="bulls"></div></div><div><h3>趋势最弱 5 只</h3><div id="bears"></div></div></div></section>
 <section id="more"><h2>更多细节</h2>
 <details><summary>全部 32 只排名</summary><p class="muted">50 分中性；≥70 趋势强，≤30 趋势弱。"较昨日"是和上一个交易日收盘分数相比；"今早"是当天第一次扫描的分数。</p><div class="table-wrap"><table><thead><tr><th>#</th><th>股票</th><th>评分</th><th class="r">较昨日</th><th class="r">今早</th><th>方向</th><th class="r">股价</th><th class="r">当日</th><th class="r">20日</th><th class="r">比大盘</th><th class="r">RSI</th><th class="r">RSI(2)</th><th>主要理由</th><th>状态</th></tr></thead><tbody id="rows"></tbody></table></div></details>

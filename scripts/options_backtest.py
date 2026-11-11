@@ -79,6 +79,22 @@ def extra_factors(bars: list[dict]) -> dict[str, float | None]:
     }
 
 
+def gh_features(win: list[dict]) -> dict:
+    """Inputs for rules taken from public GitHub strategy repos (Connors, Quantitativo)."""
+    c = [b["c"] for b in win]
+    b = win[-1]
+    rng = b["h"] - b["l"]
+    s200 = o.sma(c, 200)
+    s50 = o.sma(c, 50)
+    return {
+        "above200": bool(s200 and c[-1] > s200),
+        "downtrend": bool(s200 and c[-1] < s200 and s50 < s200),
+        "cum2": o.rsi(c[-40:], 2) + o.rsi(c[-41:-1], 2),
+        "ibs": (b["c"] - b["l"]) / rng if rng else 0.5,
+        "qband": c[-1] < max(x["h"] for x in win[-10:]) - 2.5 * sum(x["h"] - x["l"] for x in win[-25:]) / 25,
+    }
+
+
 def build_panel(hist: dict[str, list[dict]], years: float) -> list[dict]:
     spy = hist["SPY"]
     spy_idx = {b["t"]: i for i, b in enumerate(spy)}
@@ -107,7 +123,7 @@ def build_panel(hist: dict[str, list[dict]], years: float) -> list[dict]:
             if res.get("score") is None:
                 continue
             row = {"date": d, "symbol": sym, "i": i, "score": res["score"], "regime": regime,
-                   "uptrend": res["uptrend"], "rsi2": res["rsi2"],
+                   "uptrend": res["uptrend"], "rsi2": res["rsi2"], "streak": res["down_streak"], **gh_features(win),
                    "stretch": res["stretch_atr"],
                    "checks": {c["name"]: c["bull"] - c["bear"] for c in res["checks"]},
                    "extra": extra_factors(win)}
@@ -179,7 +195,7 @@ def bs_price(S: float, K: float, T: float, sig: float, call: bool = True, r: flo
 
 
 def option_trade(bars: list[dict], i: int, call: bool, stop: float, tp: float, days: int = 5,
-                 rsi_exit: float | None = None, dte: int = 30, cost: float = 0.04) -> float:
+                 rsi_exit: float | None = None, sma5_exit: bool = False, dte: int = 30, cost: float = 0.04) -> float:
     """Approximate % P&L of one at-the-money option bought at bar i's close."""
     from datetime import date as _d
     s0 = bars[i]["c"]
@@ -194,12 +210,23 @@ def option_trade(bars: list[dict], i: int, call: bool, stop: float, tp: float, d
             break
         if rsi_exit is not None and o.rsi([b["c"] for b in bars[i + k - 39:i + k + 1]], 2) > rsi_exit:
             break
+        if sma5_exit and bars[i + k]["c"] > sum(b["c"] for b in bars[i + k - 4:i + k + 1]) / 5:
+            break
     return (pnl - cost) * 100
 
 
 RULES = [
-    ("v2 回调买Call：上升趋势 且 RSI(2)<5", lambda r: r["uptrend"] and r["rsi2"] < o.RSI2_ENTRY, True,
-     dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, rsi_exit=o.RSI2_EXIT)),
+    ("v2.1 现行：上升趋势 且 连跌≥4天 买Call", lambda r: r["uptrend"] and r["streak"] >= o.DOWN_STREAK_ENTRY, True,
+     dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, sma5_exit=True)),
+    ("上升趋势 且 正好连跌3天 买Call", lambda r: r["uptrend"] and r["streak"] == 3, True, dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, sma5_exit=True)),
+    ("非上升趋势 且 连跌≥4天 买Call", lambda r: not r["uptrend"] and r["streak"] >= 4, True, dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, sma5_exit=True)),
+    ("v2.0 旧：上升趋势 且 RSI(2)<5 买Call", lambda r: r["uptrend"] and r["rsi2"] < 5, True,
+     dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, rsi_exit=65)),
+    ("GitHub/Connors：>200日线 且 两日RSI(2)之和<10", lambda r: r["above200"] and r["cum2"] < 10, True,
+     dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, rsi_exit=65)),
+    ("GitHub/Quantitativo：跌破10日高−2.5×波幅 且 IBS<0.3", lambda r: r["qband"] and r["ibs"] < 0.3, True,
+     dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT, sma5_exit=True)),
+    ("Put：下降趋势 且 RSI(2)>95", lambda r: r["downtrend"] and r["rsi2"] > 95, False, dict(stop=o.STOP_LOSS, tp=o.TAKE_PROFIT)),
     ("旧 v1 追高分买Call：评分≥70 且不追高", lambda r: r["score"] >= 70 and r["stretch"] <= 2, True, dict(stop=-0.35, tp=0.5)),
     ("旧 v1 低分买Put：评分≤30 且不追跌", lambda r: r["score"] <= 30 and r["stretch"] >= -2, False, dict(stop=-0.35, tp=0.5)),
     ("基准：任何股票任何一天买Call", lambda r: True, True, dict(stop=-0.35, tp=0.5)),

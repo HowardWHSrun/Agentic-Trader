@@ -13,45 +13,52 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <body>
 <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>Agentic Trader<small>STRATEGY</small></span></a><nav aria-label="Primary navigation"><a href="index.html">← 每日评分</a><a href="#backtest">回测结果</a><a href="#entry">什么时候买</a><a href="#exit">什么时候卖</a><a href="#limits">局限</a></nav></header>
 <main class="doc">
-<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v2.0 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
-<p class="lead">一句话：<b>在长期上涨的股票短期急跌时买看涨期权（Call），等它反弹，最多拿 7 天。</b>不买看跌期权。这条规则是用过去 5 年的数据回测后选出来的，取代了之前"追高分"的做法。</p>
+<section class="hero"><p class="eyebrow">策略说明 · 规则版本 options-score-v2.1 · 更新于 2026-11-11</p><h1>这套系统<em>到底怎么做决定</em></h1>
+<p class="lead">一句话：<b>长期上涨的股票连续下跌 4 天时买看涨期权（Call），等它反弹，最多拿 7 天。</b>不买看跌期权。这条规则是把 GitHub 上常见的十几种短线策略放到过去 5 年的数据上回测后选出来的。</p>
 <ul class="toc"><li><a href="#backtest">1. 回测告诉我们什么</a></li><li><a href="#idea">2. 核心想法</a></li><li><a href="#universe">3. 看哪些股票</a></li><li><a href="#entry">4. 什么时候买</a></li><li><a href="#contract">5. 买哪张合约</a></li><li><a href="#exit">6. 什么时候卖</a></li><li><a href="#size">7. 买多少、风险多大</a></li><li><a href="#score">8. 趋势评分（背景参考）</a></li><li><a href="#schedule">9. 每天的时间表</a></li><li><a href="#review">10. 怎么检验和改进</a></li><li><a href="#limits">11. 局限和风险</a></li><li><a href="#log">12. 改动记录</a></li></ul></section>
 
 <section id="backtest"><h2>1. 回测告诉我们什么</h2>
-<p>参考 GitHub 上主流量化项目的做法（<a href="https://github.com/quantopian/alphalens">alphalens</a> 的因子检验、<a href="https://github.com/microsoft/qlib">qlib</a> 的样本内/样本外划分、<a href="https://github.com/goldspanlabs/optopsy">optopsy</a> 的期权规则回测），我们把每条规则放到 <b>2021-10 到 2026-11 这 5 年、32 只股票、约 3.9 万个"股票×交易日"</b>上检验：每一天只用当天能看到的数据，然后看之后 5 个交易日发生了什么。</p>
-<div class="table-wrap"><table><thead><tr><th>规则</th><th>时期</th><th class="r">次数</th><th class="r">每笔平均盈亏</th><th class="r">胜率</th><th class="r">t 值</th></tr></thead><tbody>
-<tr class="hl"><td rowspan="3">现在用的（v2）：上升趋势中急跌买 Call</td><td>2021–2024</td><td class="n r">669</td><td class="n r pos">+3.7%</td><td class="n r">56.5%</td><td class="n r">+1.1</td></tr>
-<tr class="hl"><td>2025–2026</td><td class="n r">377</td><td class="n r pos">+5.2%</td><td class="n r">56.5%</td><td class="n r">+1.5</td></tr>
-<tr class="hl"><td>全部 5 年</td><td class="n r">1046</td><td class="n r pos">+4.2%</td><td class="n r">56.5%</td><td class="n r">+1.8</td></tr>
-<tr><td>旧做法（v1）：趋势评分 ≥70 买 Call</td><td>全部 5 年</td><td class="n r">10424</td><td class="n r neg">−3.5%</td><td class="n r">40.4%</td><td class="n r">−2.3</td></tr>
-<tr><td>旧做法（v1）：趋势评分 ≤30 买 Put</td><td>全部 5 年</td><td class="n r">7267</td><td class="n r neg">−6.9%</td><td class="n r">35.2%</td><td class="n r">−4.4</td></tr>
-<tr><td>对照：随便哪天随便哪只买 Call</td><td>全部 5 年</td><td class="n r">39099</td><td class="n r neg">−1.9%</td><td class="n r">41.7%</td><td class="n r">−1.2</td></tr>
-<tr><td>对照：随便哪天随便哪只买 Put</td><td>全部 5 年</td><td class="n r">39099</td><td class="n r neg">−7.3%</td><td class="n r">34.8%</td><td class="n r">−4.7</td></tr>
+<p>方法参考 GitHub 上主流量化项目：<a href="https://github.com/quantopian/alphalens">alphalens</a> 的因子检验、<a href="https://github.com/microsoft/qlib">qlib</a> 的分段验证、<a href="https://github.com/goldspanlabs/optopsy">optopsy</a> 的期权规则回测。候选策略来自 <a href="https://github.com/paperswithbacktest/awesome-systematic-trading">awesome-systematic-trading</a> 和各种公开实现：Connors 的 RSI(2) 和累计 RSI、连跌天数、IBS（收盘在当日区间的位置）、<a href="https://github.com/idousse/mean-reversion-strategy">Quantitativo 均值回归</a>、布林带、月初效应、周二反转等。</p>
+<p>每条规则都放到 <b>2021-10 到 2026-11 这 5 年、32 只股票、约 3.9 万个"股票×交易日"</b>上检验：每一天只用当天能看到的数据，按当天收盘价买入一张期权，然后按规则退场。</p>
+<h3>这个百分比是什么意思</h3>
+<div class="box key"><ul style="margin:0;padding-left:20px">
+<li><b>是期权的盈亏，不是股票的。</b>"+8.8%"指这张期权比买入价涨了 8.8%。花 $500 买一张，平均赚约 $44。</li>
+<li><b>是"每一笔交易"的平均，不是每天、每月或每年。</b>一笔交易最多持有 5 个交易日（约 7 天），平均实际持有 <b>2.7 个交易日</b>。</li>
+<li><b>已经扣了 4% 的买卖成本</b>（买卖价差和滑点）。</li>
+<li><b>平均值掩盖了很大的波动</b>：赚的那 61% 平均每笔 +38%，亏的那 39% 平均每笔 −37%。约 19% 的交易亏 40% 以上，约 14% 的交易赚 50% 以上。最差一笔 −93%。</li>
+<li><b>期权价格是估算的</b>（用公式推算，不是历史真实成交价），所以实际结果会有出入，多半更差一些。</li></ul></div>
+<h3>各条规则的结果</h3>
+<div class="table-wrap"><table><thead><tr><th>规则</th><th class="r">次数</th><th class="r">2021–24</th><th class="r">2025–26</th><th class="r">5 年每笔平均</th><th class="r">胜率</th><th class="r">t 值</th></tr></thead><tbody>
+<tr class="hl"><td>现在用的（v2.1）：上升趋势中连跌 ≥4 天买 Call</td><td class="n r">922</td><td class="n r pos">+8.4%</td><td class="n r pos">+9.4%</td><td class="n r pos">+8.8%</td><td class="n r">60.7%</td><td class="n r">+3.6</td></tr>
+<tr><td>Connors 累计 RSI：200 日线上方且两日 RSI(2) 之和 &lt;10</td><td class="n r">629</td><td class="n r pos">+7.3%</td><td class="n r pos">+7.7%</td><td class="n r pos">+7.5%</td><td class="n r">59.1%</td><td class="n r">+2.5</td></tr>
+<tr><td>上一版（v2.0）：上升趋势中 RSI(2) &lt;5</td><td class="n r">1046</td><td class="n r pos">+3.7%</td><td class="n r pos">+5.2%</td><td class="n r pos">+4.2%</td><td class="n r">56.5%</td><td class="n r">+1.8</td></tr>
+<tr><td>非上升趋势中连跌 ≥4 天买 Call</td><td class="n r">1110</td><td class="n r pos">+2.7%</td><td class="n r pos">+3.1%</td><td class="n r pos">+2.8%</td><td class="n r">58.9%</td><td class="n r">+1.4</td></tr>
+<tr><td>Quantitativo 均值回归（跌破 10 日高点 − 2.5 倍波幅且 IBS &lt;0.3）</td><td class="n r">4172</td><td class="n r neg">−0.6%</td><td class="n r pos">+3.9%</td><td class="n r pos">+1.0%</td><td class="n r">55.2%</td><td class="n r">+0.7</td></tr>
+<tr><td>上升趋势中正好连跌 3 天买 Call</td><td class="n r">1220</td><td class="n r neg">−0.5%</td><td class="n r neg">−0.6%</td><td class="n r neg">−0.5%</td><td class="n r">54.6%</td><td class="n r">−0.3</td></tr>
+<tr><td>对照：随便哪天随便哪只买 Call</td><td class="n r">39099</td><td class="n r neg">−1.9%</td><td class="n r neg">−1.9%</td><td class="n r neg">−1.9%</td><td class="n r">41.7%</td><td class="n r">−1.2</td></tr>
+<tr><td>最初的做法（v1）：趋势评分 ≥70 买 Call</td><td class="n r">10424</td><td class="n r neg">−3.3%</td><td class="n r neg">−3.8%</td><td class="n r neg">−3.5%</td><td class="n r">40.4%</td><td class="n r">−2.3</td></tr>
+<tr><td>Put：下降趋势中反弹过头（RSI(2) &gt;95）</td><td class="n r">562</td><td class="n r neg">−2.7%</td><td class="n r neg">−12.9%</td><td class="n r neg">−6.1%</td><td class="n r">35.1%</td><td class="n r">−1.8</td></tr>
+<tr><td>最初的做法（v1）：趋势评分 ≤30 买 Put</td><td class="n r">7267</td><td class="n r neg">−6.7%</td><td class="n r neg">−7.2%</td><td class="n r neg">−6.9%</td><td class="n r">35.2%</td><td class="n r">−4.4</td></tr>
+<tr><td>对照：随便哪天随便哪只买 Put</td><td class="n r">39099</td><td class="n r neg">−7.4%</td><td class="n r neg">−7.0%</td><td class="n r neg">−7.3%</td><td class="n r">34.8%</td><td class="n r">−4.7</td></tr>
 </tbody></table></div>
-<p class="muted">"每笔平均盈亏"是相对权利金的百分比，已扣 4% 来回成本。t 值的绝对值大于 2 才算统计上站得住。</p>
-<h3>四个结论</h3>
+<p class="muted">t 值的绝对值大于 2 才算统计上站得住。另外还测了 IBS、布林带、创 7 日新低、月初效应、周二反转，以及把同样的规则用在指数 ETF（SPY、QQQ、IWM、DIA）和板块 ETF 上，结果都不稳定，没有采用。</p>
+<h3>为什么选"连跌 4 天"</h3>
 <div class="box key"><ol style="margin:0;padding-left:20px">
-<li><b>随便买期权是亏的。</b>不加选择地买 Call 每笔平均亏 1.9%，买 Put 亏 7.3%。时间损耗和买卖价差是固定成本。</li>
-<li><b>旧的"追高分"做法比随便买还差。</b>趋势评分和之后 5 天涨跌的相关性是 −0.013（约等于零，略偏负）。这些大盘股短期内更倾向于"涨多了歇一歇"。</li>
-<li><b>买 Put 明显亏钱</b>（t = −4.4），而且越弱的股票反弹越猛。所以 v2 不再买 Put。</li>
-<li><b>"上升趋势中急跌买 Call"是测试过的规则里唯一两段时期都为正的</b>：每笔约 +4%，胜率约 56%。但 t 值 1.8，<b>没有达到统计显著</b>，可能是真的小优势，也可能部分是运气。</li></ol></div>
-<div class="box caution"><b>请这样理解这个结果：</b>它说明 v2 比旧做法好得多，但<b>不能证明它会赚钱</b>。回测用的是估算的期权价格而不是真实成交价；如果实际买卖成本到 8%，这点优势就没了。每笔 +4% 也意味着 100 笔里大约 44 笔是亏的。请不要把它当成稳定收入来源。</div>
+<li><b>前后两段时期都为正，而且 6 年里每年都为正</b>（2021 +19.6%、2022 +5.6%、2023 +15.1%、2024 +4.6%、2025 +3.5%、2026 +14.2%）。连 2022 年熊市都是正的。</li>
+<li><b>跌得越久，反弹越强</b>：上升趋势中连跌 2 天 −2.4%，3 天 −0.5%，4 天 +5.5%，5 天 +8.8%。这种"剂量越大效果越强"的关系说明它不像是巧合。</li>
+<li><b>长期趋势很重要</b>：同样是连跌 4 天，上升趋势中 +8.8%，非上升趋势中只有 +2.8%。</li>
+<li><b>对参数不敏感</b>：换退场方式（站上 5 日线、RSI(2) 回升、收盘高于前一天最高价）、换止损（−35% 到不设）、换到期日（14/30/45 天），结果都在 +6% 到 +11% 之间。</li>
+<li><b>扛得住成本</b>：来回成本 2% 时每笔 +10.5%，4% 时 +8.5%，8% 时 +4.5%，到 12% 才归零。</li></ol></div>
+<div class="box caution"><b>请这样理解这个结果：</b>它是从十几条规则里挑出来的最好的一条，<b>挑出来的结果天然偏乐观</b>，实盘大概率达不到 +8.8%。期权价格是估算的，急跌时期权通常更贵（隐含波动率上升），反弹后又会回落，这会吃掉一部分利润。把它当作"比别的做法有依据"，而不是"保证赚钱"。</div>
 <h3>为什么没有买 Put 的规则</h3>
-<p>我们专门找过。在同样的 5 年数据上测了 22 种买 Put 的思路，<b>没有一种是正的</b>，大多数明显为负：</p>
-<div class="table-wrap"><table><thead><tr><th>买 Put 的思路</th><th class="r">次数</th><th class="r">每笔平均</th><th class="r">胜率</th></tr></thead><tbody>
-<tr><td>下降趋势中反弹过头（RSI(2) &gt; 95）</td><td class="n r">569</td><td class="n r neg">−5.5%</td><td class="n r">36%</td></tr>
-<tr><td>任何股票短期严重超买（RSI(2) &gt; 98）</td><td class="n r">1539</td><td class="n r neg">−8.8%</td><td class="n r">32%</td></tr>
-<tr><td>涨过头（高于 20 日均线 3 倍 ATR）</td><td class="n r">2093</td><td class="n r neg">−13.2%</td><td class="n r">30%</td></tr>
-<tr><td>破位（下降趋势中创 20 日新低）</td><td class="n r">1409</td><td class="n r neg">−8.6%</td><td class="n r">34%</td></tr>
-<tr><td>追跌（下降趋势中单日跌超 3%）</td><td class="n r">690</td><td class="n r neg">−7.9%</td><td class="n r">35%</td></tr>
-<tr><td>大盘在 200 日均线下方时买弱势股</td><td class="n r">4277</td><td class="n r neg">−9.7%</td><td class="n r">33%</td></tr></tbody></table></div>
-<p>原因有三个：这 5 年大盘整体上涨；这些大公司跌了之后反弹很快；Put 和 Call 一样每天损耗时间价值。唯一赚钱的时段是 2022 年熊市（"下降趋势中反弹过头"当年每笔约 +4%），其他年份每笔亏 11%–21%。<b>所以系统不发买 Put 的信号。</b>每月重跑回测时会一并重测，如果将来进入熊市、某条 Put 规则在前后两段时期都转正，再加进来。</p>
-<p class="muted">估算方法：平值期权、30 天到期、隐含波动率 = 20 日实际波动率 × 1.1、按当天收盘价进出、来回成本 4%。回测程序是仓库里的 <code>scripts/options_backtest.py</code>，结果数据在 <code>data/options/backtest.json</code>，可以重跑核对。</p></section>
+<p>专门找过。测了 22 种买 Put 的思路（下降趋势中反弹过头、短期严重超买、涨过头、破位、追跌、大盘转弱等），<b>没有一种是正的</b>，每笔平均 −5% 到 −13%。原因：这 5 年大盘整体上涨；这些大公司跌了之后反弹很快；Put 每天也在损耗时间价值。唯一赚钱的时段是 2022 年熊市。<b>所以系统不发买 Put 的信号。</b>每月重跑回测时会一并重测，如果将来某条 Put 规则在前后两段时期都转正，再加进来。</p>
+<p class="muted">估算方法：平值期权、30 天到期、隐含波动率 = 20 日实际波动率 × 1.1、按当天收盘价进出、来回成本 4%。回测程序是仓库里的 <code>scripts/options_backtest.py</code>，结果在 <code>data/options/backtest.json</code>，可以重跑核对。</p></section>
 
 <section id="idea"><h2>2. 核心想法</h2>
 <p>这是一套<b>"顺大势、逆小势"</b>的均值回归策略：</p>
-<ul><li><b>顺大势</b>：只做长期趋势向上的股票（股价和 50 日均线都在 200 日均线上方）。</li><li><b>逆小势</b>：等它连续急跌两三天、短期严重超卖时买入，赌它反弹回正常水平。</li><li><b>快进快出</b>：反弹到位就走，最多拿 7 天。</li></ul>
-<div class="flow"><div class="step"><b>① 取数据</b><span>32 只股票日线 + 实时价</span></div><div class="step"><b>② 找信号</b><span>上升趋势 且 RSI(2) &lt; 5</span></div><div class="step"><b>③ 过门槛</b><span>财报、流动性、价格、确认</span></div><div class="step"><b>④ 挑合约</b><span>3–6 周到期、接近平值 Call</span></div><div class="step"><b>⑤ 盯退场</b><span>反弹 / 止损 / 止盈 / 7 天</span></div><div class="step"><b>⑥ 复盘</b><span>每天记录，定期重跑回测</span></div></div>
+<ul><li><b>顺大势</b>：只做长期趋势向上的股票（股价和 50 日均线都在 200 日均线上方）。</li><li><b>逆小势</b>：等它连续下跌 4 天，短期卖过头的时候买入，赌它反弹。</li><li><b>快进快出</b>：反弹站上 5 日均线就走，平均持有不到 3 个交易日，最多 7 天。</li></ul>
+<p><b>为什么会有效？</b>好公司的股票连跌 4 天，往往是短线资金止损、获利了结造成的，不是公司出了问题。卖压释放完之后，买盘回来，价格容易弹回去。这是很多短线研究里反复出现的现象。</p>
+<div class="flow"><div class="step"><b>① 取数据</b><span>32 只股票日线 + 实时价</span></div><div class="step"><b>② 找信号</b><span>上升趋势 且 连跌 4 天</span></div><div class="step"><b>③ 过门槛</b><span>财报、流动性、价格、确认</span></div><div class="step"><b>④ 挑合约</b><span>3–6 周到期、接近平值 Call</span></div><div class="step"><b>⑤ 盯退场</b><span>反弹 / 止损 / 止盈 / 7 天</span></div><div class="step"><b>⑥ 复盘</b><span>每天记录，定期重跑回测</span></div></div>
 <div class="box caution"><b>它不做什么：</b>不买 Put，不追涨，不看基本面和估值，不预测财报，不卖出期权，不用保证金，不做价差组合。</div></section>
 
 <section id="universe"><h2>3. 看哪些股票</h2>
@@ -63,17 +70,18 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <h3>信号：两个条件同时满足</h3>
 <div class="table-wrap"><table><thead><tr><th>条件</th><th>具体标准</th><th>含义</th></tr></thead><tbody>
 <tr><td>长期趋势向上</td><td>股价 &gt; 200 日均线，<b>并且</b> 50 日均线 &gt; 200 日均线</td><td>这只股票过去一年整体在涨，下跌更可能是暂时的回调</td></tr>
-<tr><td>短期急跌</td><td><b>RSI(2) &lt; 5</b></td><td>最近两天几乎一直在跌，短期严重超卖。通常是连跌 2–3 天之后</td></tr></tbody></table></div>
-<p><b>RSI(2) 是什么？</b>和常见的 RSI(14) 是同一个指标，只是只看最近 2 天，所以非常灵敏。0 表示这两天全是下跌，100 表示全是上涨。上升趋势中 RSI(2) 低于 5 的情况，平均每只股票大约每两个月出现 1 次。同时有多只触发时，先看 RSI(2) 最低的。</p>
+<tr><td>连续下跌</td><td><b>连续 4 个或更多交易日收盘价低于前一天</b></td><td>短线卖过头了。只跌 3 天不算，回测里 3 天没有优势</td></tr></tbody></table></div>
+<p><b>什么时候确认？</b>第 4 天要到收盘才算数，所以系统只在<b>收盘前半小时（芝加哥时间 14:30–15:00）</b>确认信号并提醒你下单。白天如果一只股票已连跌 3 天、当天又在跌，网站会显示"已连跌 4 天，收盘前确认"，提前告诉你可能有机会。同时有多只触发时，优先连跌天数多的。</p>
+<p><b>机会分</b>：网站上每只股票有一个 0–100 的机会分 = 连跌天数 × 25，100 分触发。长期趋势不向上的记 0 分。</p>
 <h3>门槛：全部通过才发信号</h3>
 <div class="table-wrap"><table><thead><tr><th>#</th><th>门槛</th><th>具体标准</th><th>为什么</th></tr></thead><tbody>
 <tr><td>1</td><td>避开财报</td><td>未来 <b>14 天</b>内没有财报</td><td>财报前的下跌可能有原因；财报后期权价格会骤降</td></tr>
-<tr><td>2</td><td>期权要好成交</td><td>买卖价差 ≤ <b>10%</b>，未平仓量 ≥ <b>100</b> 张</td><td>回测显示成本一高优势就没了，价差宽的坚决不做</td></tr>
+<tr><td>2</td><td>期权要好成交</td><td>买卖价差 ≤ <b>10%</b>，未平仓量 ≥ <b>100</b> 张</td><td>回测显示成本到 12% 优势就没了，价差宽的坚决不做</td></tr>
 <tr><td>3</td><td>价格上限</td><td>一张合约 ≤ <b>$1000</b></td><td>控制单笔最大亏损</td></tr>
 <tr><td>4</td><td>两轮确认</td><td>连续 <b>两次扫描</b>（间隔 3 分钟）都合格</td><td>过滤报价跳动造成的假信号</td></tr>
 <tr><td>5</td><td>每天限量</td><td>每天最多 <b>2 个</b>新信号</td><td>大盘大跌那天会有很多只同时触发，它们会一起涨跌，不能全买</td></tr>
 <tr><td>6</td><td>不重复、有冷却</td><td>已有信号的不再发；退场后 <b>3 天</b>内不重新进场</td><td>避免在同一只股票上反复进出</td></tr></tbody></table></div>
-<p><b>信号多久出现一次？</b>过去 5 年平均每个交易日约 0.8 个，但分布很不均匀：约 6 成的日子一个都没有，大盘急跌的日子会一次出现好几个。<b>连续几天没有信号是正常的，不要因为没信号就硬找机会。</b></p></section>
+<p><b>信号多久出现一次？</b>过去 5 年平均每个交易日约 0.7 个，但很不均匀：<b>约 6 成的日子一个都没有</b>，大盘连跌的时候会一次出现好几个。连续几天没有信号是正常的，不要因为没信号就硬找机会。</p></section>
 
 <section id="contract"><h2>5. 买哪张合约</h2>
 <div class="kv"><div><small>类型</small><b>只买 Call</b>不买 Put、不做价差</div><div><small>到期日</small><b>21–45 天后</b>优先接近 30 天</div><div><small>Delta</small><b>0.45–0.65</b>优先接近 0.55</div><div><small>买卖价差</small><b>≤ 10%</b>未平仓量 ≥ 100</div></div>
@@ -82,18 +90,18 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <section id="exit"><h2>6. 什么时候卖</h2>
 <p>任何一条先触发就退场。</p>
 <div class="table-wrap"><table><thead><tr><th>#</th><th>规则</th><th>具体标准</th><th>说明</th></tr></thead><tbody>
-<tr><td>1</td><td>反弹到位</td><td><b>RSI(2) &gt; 65</b></td><td>最常见的退场方式。股票已经弹回来了，买入的理由兑现，不贪</td></tr>
+<tr><td>1</td><td>反弹到位</td><td><b>收盘价站上 5 日均线</b>（收盘前半小时判断）</td><td>最常见的退场方式。股票已经弹回来了，买入的理由兑现，不贪</td></tr>
 <tr><td>2</td><td>止盈</td><td>期权价格比成本高 <b>80%</b></td><td>例：3.00 买入，涨到 5.40 卖</td></tr>
 <tr><td>3</td><td>止损</td><td>期权价格比成本低 <b>50%</b></td><td>例：3.00 买入，跌到 1.50 卖</td></tr>
 <tr><td>4</td><td>限时</td><td>持有满 <b>7 天</b>（约 5 个交易日）</td><td>没反弹就认了，不死扛</td></tr>
 <tr><td>5</td><td>财报前</td><td>离财报只剩 <b>2 天</b></td><td>不带仓过财报</td></tr>
 <tr><td>6</td><td>临近到期</td><td>离到期只剩 <b>10 天</b></td><td>正常情况下第 4 条会先触发</td></tr></tbody></table></div>
-<p><b>为什么止损放宽到 −50%？</b>这类交易是在下跌中买入，买完之后常常会再跌一点才反弹。回测里用 −35% 的窄止损会把很多本来能反弹的交易提前砍掉，平均结果更差（约 +2.6% 对 +4.4%）。代价是单笔亏损更大，所以每笔的金额要相应更小。</p>
-<p><b>为什么加"反弹到位就走"？</b>加上这条后回测胜率从约 44% 提高到约 57%，平均盈亏差不多，但更稳定。</p></section>
+<p><b>为什么止损是 −50% 而不是更窄？</b>这类交易是在下跌中买入，买完之后常常会再跌一点才反弹。回测里 −35% 的窄止损会把一部分本来能反弹的交易提前砍掉（每笔 +6.9% 对 +8.5%）。代价是单笔亏损更大，所以每笔的金额要相应更小。</p>
+<p><b>回测里实际是怎么退场的？</b>平均持有 2.7 个交易日：19% 第 1 天就走，29% 第 2 天，25% 第 3 天，15% 第 4 天，11% 拿满 5 天。</p></section>
 
 <section id="size"><h2>7. 买多少、风险多大</h2>
 <ul><li><b>每笔 1 张</b>。一张合约的成本就是这笔最多能亏的钱。</li><li><b>单笔风险</b>不超过你专门用来做期权的钱的 <b>5%</b>。</li><li><b>同时持仓</b>不超过 <b>5 笔</b>。大盘急跌时出现的多个信号高度相关，按一笔大仓位来看待。</li><li><b>只用亏光也不影响生活的钱</b>，不借钱、不用保证金。</li></ul>
-<div class="box caution">回测的优势很薄（每笔约 +4%，且未达统计显著）。按这个水平，即使规则真的有效，也需要很多笔交易才能体现出来，中间会有连续亏损的阶段。如果手头的钱有急用，不适合拿来做期权。</div></section>
+<div class="box caution">回测每笔平均 +8.8%，但单笔结果从 −93% 到 +439% 都有。即使规则真的有效，也需要几十笔交易才能体现出来，中间会有连续亏损的阶段。如果手头的钱有急用，不适合拿来做期权。</div></section>
 
 <section id="score"><h2>8. 趋势评分（背景参考）</h2>
 <p>网站上每只股票的 0–100 趋势评分仍然保留，用来一眼看出哪些股票强、哪些弱。但回测显示它<b>不能预测之后几天的涨跌</b>，所以<b>不再用它决定买卖</b>。</p>
@@ -116,13 +124,13 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <tr><td class="n">7:41</td><td>盘前检查：核对财报日期，播报最接近信号的股票和持仓情况</td></tr>
 <tr><td class="n">8:25 – 15:05</td><td>盘中每 <b>3 分钟</b>扫描一次。有进场、退场信号，或真实持仓碰到退场线，立刻提醒；提醒前用券商实时报价再核对一遍</td></tr>
 <tr><td class="n">15:47</td><td>收盘复盘：记录当天结果，生成 PDF 日报，更新网站</td></tr></tbody></table></div>
-<p><b>数据来源</b>：日线历史和期权链来自 Cboe（延迟约 15 分钟）；盘中股价来自 Nasdaq 实时成交价；下单前的核对用券商实时报价。盘中的 RSI(2) 用实时价计算，所以信号可能在盘中出现，也可能在收盘前消失。</p></section>
+<p><b>数据来源</b>：日线历史和期权链来自 Cboe（延迟约 15 分钟）；盘中股价来自 Nasdaq 实时成交价；下单前的核对用券商实时报价。连跌天数在盘中用实时价临时计算，所以信号只在收盘前半小时确认。</p></section>
 
 <section id="review"><h2>10. 怎么检验和改进</h2>
-<ul><li><b>每笔信号都记录</b>进场价、退场价和原因，网站上可以看到累计战绩。</li><li><b>实盘和回测对比</b>：累计满 30 笔已平仓信号后，比较实际平均盈亏和回测的 +4%。明显更差（比如平均为负）就暂停并重新检查。</li><li><b>定期重跑回测</b>：每月用最新数据重跑 <code>options_backtest.py</code>，看结论有没有变。</li><li><b>改规则的纪律</b>：任何改动先在回测里看前后两段时期是否都更好，只在一段时期好的不采用（那多半是凑出来的）。每次只改一处，升级版本号，写明依据。</li></ul></section>
+<ul><li><b>每笔信号都记录</b>进场价、退场价和原因，网站上可以看到累计战绩。</li><li><b>实盘和回测对比</b>：累计满 30 笔已平仓信号后，比较实际平均盈亏和回测的 +8.8%。明显更差（比如平均为负）就暂停并重新检查。</li><li><b>定期重跑回测</b>：每月用最新数据重跑 <code>options_backtest.py</code>，看结论有没有变。</li><li><b>改规则的纪律</b>：任何改动先在回测里看前后两段时期是否都更好，只在一段时期好的不采用（那多半是凑出来的）。每次只改一处，升级版本号，写明依据。</li></ul></section>
 
 <section id="limits"><h2>11. 局限和风险</h2>
-<ul><li><b>优势没有达到统计显著</b>（t = 1.8）。真实优势可能比 +4% 小，甚至为零。</li><li><b>回测用的是估算的期权价格</b>，不是真实成交价。急跌时期权的隐含波动率通常会上升（买得更贵），反弹时会回落（卖得更便宜），这一点估算没有完全反映，实际结果可能比回测差。</li><li><b>成本敏感</b>：来回成本 2% 时每笔约 +6%，4% 时约 +4%，8% 时接近零或为负。</li><li><b>幸存者偏差</b>：这 32 只是今天看起来成功的大公司，过去 5 年它们"跌了会涨回来"的概率本来就偏高。</li><li><b>接飞刀的风险</b>：急跌有时是因为真正的坏消息，会继续跌。止损 −50% 意味着这种时候会亏掉一半权利金。</li><li><b>信号扎堆</b>：大盘急跌日多只股票同时触发，会一起赚或一起亏。</li><li><b>2022 年那样的熊市里表现差</b>：当年类似规则每笔平均为负。长期趋势过滤能挡掉一部分，但挡不掉全部。</li><li><b>隔夜跳空</b>：实际亏损可能超过止损线。</li></ul></section>
+<ul><li><b>结果是挑出来的</b>：从十几条规则里选了最好的一条，这样选出来的数字天然偏高。实盘优势大概率比 +8.8% 小。</li><li><b>回测用的是估算的期权价格</b>，不是真实成交价。急跌时期权的隐含波动率通常会上升（买得更贵），反弹时会回落（卖得更便宜），这一点估算没有完全反映，实际结果可能比回测差。</li><li><b>成本敏感</b>：来回成本 4% 时每笔约 +8.5%，8% 时约 +4.5%，12% 时归零。</li><li><b>幸存者偏差</b>：这 32 只是今天看起来成功的大公司，过去 5 年它们"跌了会涨回来"的概率本来就偏高。</li><li><b>接飞刀的风险</b>：急跌有时是因为真正的坏消息，会继续跌。止损 −50% 意味着这种时候会亏掉一半权利金。</li><li><b>信号扎堆</b>：大盘急跌日多只股票同时触发，会一起赚或一起亏。</li><li><b>单笔波动很大</b>：约 4 成的交易是亏的，亏的时候平均亏 37%，连续亏几笔很常见。</li><li><b>每只股票差别很大</b>：回测里 META、NVDA、UNH、GOOGL 贡献了大部分利润，PG、FCX、DUK、AMZN 是亏的。少数几笔大赚拉高了平均值。</li><li><b>隔夜跳空</b>：实际亏损可能超过止损线。</li></ul></section>
 
 <section id="log"><h2>12. 改动记录</h2>
 <div class="table-wrap"><table><thead><tr><th>版本</th><th>日期</th><th>改了什么、为什么</th></tr></thead><tbody>
@@ -130,6 +138,7 @@ tr.hl td{background:#e9f3ec;font-weight:600}
 <tr><td class="n">v1.1</td><td class="n">2026-11-09</td><td>新增两轮确认、每天最多 2 个新信号、超过 2 倍 ATR 不追。</td></tr>
 <tr><td class="n">—</td><td class="n">2026-11-10</td><td>每张上限提到 $1000；只做单腿期权；扫描间隔 3 分钟。</td></tr>
 <tr><td class="n">v1.2</td><td class="n">2026-11-11</td><td>改为每笔持有 1–7 天：止损 −35%、止盈 +50%、满 7 天退场。</td></tr>
-<tr class="hl"><td class="n">v2.0</td><td class="n">2026-11-11</td><td>做了 5 年回测。发现趋势评分没有预测力、追高分买 Call 每笔平均 −3.5%、买 Put 每笔 −6.9%。改为：只在"长期上升趋势 + RSI(2) &lt; 5"时买 Call；不再买 Put；退场改为 RSI(2) &gt; 65 / 止损 −50% / 止盈 +80% / 满 7 天。趋势评分保留为背景参考。</td></tr></tbody></table></div>
+<tr><td class="n">v2.0</td><td class="n">2026-11-11</td><td>做了 5 年回测。发现趋势评分没有预测力、追高分买 Call 每笔平均 −3.5%、买 Put 每笔 −6.9%。改为：只在"长期上升趋势 + RSI(2) &lt; 5"时买 Call；不再买 Put；退场改为 RSI(2) &gt; 65 / 止损 −50% / 止盈 +80% / 满 7 天。趋势评分保留为背景参考。</td></tr><tr class="hl"><td class="n">v2.1</td><td class="n">2026-11-11</td><td>把 GitHub 上常见的十几种短线策略逐一回测。"上升趋势中连跌 ≥4 天买 Call"最好且最稳定（每笔 +8.8%，6 年每年为正），取代 RSI(2) &lt;5。回测发现 RSI(2) &lt;5 但没连跌 4 天的那部分其实没有优势。退场改为收盘站上 5 日均线。信号只在收盘前半小时确认。测了 22 种 Put 规则，全部为负，不加。</td></tr></tbody></table></div>
+
 <p class="muted">仅供个人研究参考，不构成投资建议。期权可能损失全部权利金。</p></section>
 </main></body></html>

@@ -66,7 +66,7 @@
     h.appendChild(px);
     const status = blocked[r.symbol];
     const setup = r.setup || "";
-    const label = setup === "回调信号" ? "回调信号" : setup === "接近信号" ? "接近信号" : r.uptrend ? "等回调" : "不做";
+    const label = setup === "回调信号" ? "回调信号" : /接近信号|收盘前/.test(setup) ? "接近信号" : r.uptrend ? "等回调" : "不做";
     h.appendChild(el("span", "pick-st" + (setup === "回调信号" ? " ok" : ""), label));
     c.appendChild(h);
     const main = up ? r.why_bull : r.why_bear;
@@ -90,7 +90,8 @@
     (d.watchlist || []).forEach((w) => {
       const tr = el("tr");
       tr.appendChild(el("td", "b", w.symbol));
-      tr.appendChild(el("td", "r b " + (w.rsi2 < 5 ? "pos" : ""), w.dip_score == null ? "—" : String(w.dip_score)));
+      tr.appendChild(el("td", "r b " + (w.dip_score >= 100 ? "pos" : ""), w.dip_score == null ? "—" : String(w.dip_score)));
+      tr.appendChild(el("td", "r", w.down_streak == null ? "—" : String(w.down_streak)));
       tr.appendChild(el("td", "r", num(w.rsi2, 0)));
       tr.appendChild(el("td", "r", num(w.price)));
       tr.appendChild(el("td", null, w.setup));
@@ -99,7 +100,7 @@
     if (!(d.watchlist || []).length) {
       const tr = el("tr");
       const td = el("td", "note", "这一天的数据没有这项（v2 之前）。");
-      td.colSpan = 5;
+      td.colSpan = 6;
       tr.appendChild(td);
       $("watchrows").appendChild(tr);
     }
