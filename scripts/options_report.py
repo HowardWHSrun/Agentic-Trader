@@ -94,7 +94,14 @@ def detail_card(r: dict, chg: dict, blocked: dict) -> str:
                     f'{esc(c["expiration"])} 到期，中间价 {c["mid"]}（每张约 ${c["cost_per_contract"]:.0f}），'
                     f'Delta {c["delta"]}，隐含波动率 {c["iv"]}%，盈亏平衡 {c["breakeven"]}</p>')
     note = blocked.get(r["symbol"])
-    status = f'<p class="status"><b>系统处理：</b>{esc(note)}</p>' if note else '<p class="status ok"><b>系统处理：</b>符合进场条件</p>'
+    if note:
+        status = f'<p class="status"><b>系统处理：</b>{esc(note)}</p>'
+    elif r.get("uptrend") and (r.get("down_streak") or 0) >= 4:
+        status = '<p class="status ok"><b>系统处理：</b>趋势向上且连跌 ≥4 天，符合买入条件</p>'
+    elif r.get("uptrend"):
+        status = f'<p class="status"><b>系统处理：</b>趋势向上，连跌 {r.get("down_streak") or 0} 天，等连跌 4 天再考虑</p>'
+    else:
+        status = '<p class="status"><b>系统处理：</b>不在长期上升趋势，不交易</p>'
     risks = "".join(f"<li>{esc(x)}</li>" for x in other[:3]) or "<li>暂无明显反向信号</li>"
     return f'''<div class="card {'bull' if r['direction'] == '看涨' else 'bear'}">
 <div class="card-head"><span class="sym">{esc(r['symbol'])}</span>{tag(r['direction'])}
