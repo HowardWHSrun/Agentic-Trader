@@ -8,61 +8,146 @@
     return n;
   };
   const num = (x, d = 2) => (x == null ? "—" : Number(x).toFixed(d));
-  const pct = (x) => (x == null ? "—" : (x > 0 ? "+" : "") + Number(x).toFixed(1) + "%");
+  const pct = (x, d = 1) => (x == null ? "—" : (x > 0 ? "+" : "") + Number(x).toFixed(d) + "%");
+  const sign = (x) => (x == null || x === 0 ? "" : x > 0 ? "pos" : "neg");
+  const WEEK = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  const weekday = (d) => WEEK[new Date(d + "T12:00:00Z").getUTCDay()];
   const legs = (s) =>
-    s.legs.map((l) => (l.qty > 0 ? "买 " : "卖 ") + l.strike + (s.type === "call" ? "C" : "P")).join(" / ") + " · " + s.expiration;
+    s.legs.map((l) => (l.qty > 0 ? "买 " : "卖 ") + l.strike + (s.type === "call" ? " Call" : " Put")).join(" / ") + " · " + s.expiration + " 到期";
   const dirTag = (d) => el("span", "tag " + (d === "看涨" ? "call" : d === "看跌" ? "put" : "wait"), d);
+  const clear = (...ids) => ids.forEach((id) => ($(id).textContent = ""));
 
-  function card(s, kind) {
+  function tile(label, value, cls, sub) {
+    const t = el("div", "tile");
+    t.appendChild(el("div", "tile-l", label));
+    t.appendChild(el("div", "tile-v " + (cls || ""), value));
+    if (sub) t.appendChild(el("div", "tile-s", sub));
+    return t;
+  }
+
+  function signalCard(s, kind) {
     const c = el("div", "card " + (kind === "exit" ? "exit" : s.type));
-    const h = el("h3", null, s.symbol + " ");
+    const h = el("h3", null, (kind === "exit" ? "退场 " : "进场 ") + s.symbol + " ");
     h.appendChild(el("span", "tag " + s.type, s.type === "call" ? "看涨 Call" : "看跌 Put"));
-    if (kind === "exit") h.appendChild(el("span", "tag wait", "退场"));
-    if (kind === "open") h.appendChild(el("span", "tag wait", "持有中"));
     c.appendChild(h);
-    c.appendChild(el("p", null, (s.structure === "spread" ? "借方价差：" : "单买期权：") + legs(s)));
-    if (kind === "entry") {
-      const gain = s.max_gain_per_contract ? `；最多赚 $${Math.round(s.max_gain_per_contract)}` : "";
-      c.appendChild(el("p", null, `评分 ${s.score_at_entry} · 股价 ${s.underlying_at_entry} · 净成本约 ${num(s.entry_cost)}（每张约 $${Math.round(s.cost_per_contract)}，这是最大亏损${gain}）`));
-      c.appendChild(el("p", null, `盈亏平衡 ${s.breakeven} · 止损 ${s.stop_value} · 止盈 ${s.target_value} · 最晚 ${s.exit_by} 退场`));
-    } else if (kind === "exit") {
-      c.appendChild(el("p", null, `${s.exit_reason} · 进场 ${num(s.entry_cost)} → 现在 ${num(s.last_value)}`));
+    c.appendChild(el("p", null, legs(s)));
+    if (kind === "exit") {
+      c.appendChild(el("p", null, `${s.exit_reason} · 进场 ${num(s.entry_cost)} → 退场 ${num(s.last_value)}（${pct(s.pnl_pct)}）`));
     } else {
-      c.appendChild(el("p", null, `进场 ${s.entry_date} @ ${num(s.entry_cost)} · 现在 ${num(s.last_value)} · 盈亏 ${pct(s.pnl_pct)} · 最晚 ${s.exit_by} 退场`));
+      c.appendChild(el("p", null, `评分 ${s.score_at_entry} · 当时股价 ${s.underlying_at_entry} · 成本约 ${num(s.entry_cost)}（每张约 $${Math.round(s.cost_per_contract)}，这是最大亏损）`));
+      c.appendChild(el("p", null, `止损 ${s.stop_value} · 止盈 ${s.target_value} · 最晚 ${s.exit_by} 退场 · 盈亏平衡 ${s.breakeven}`));
     }
     return c;
   }
 
+  function focusCard(r, blocked) {
+    const up = r.direction === "看涨";
+    const c = el("div", "card " + (up ? "call" : "put"));
+    const h = el("h3", null, r.symbol + " ");
+    h.appendChild(dirTag(r.direction));
+    const sc = el("span", "card-score", `评分 ${r.score}`);
+    if (r.score_prev_close != null && r.score !== r.score_prev_close) {
+      const d = r.score - r.score_prev_close;
+      sc.appendChild(el("span", "delta " + sign(d), ` ${d > 0 ? "▲" : "▼"}${Math.abs(d)}`));
+    }
+    h.appendChild(sc);
+    c.appendChild(h);
+    const px = el("p", "px", `股价 ${num(r.price)} `);
+    px.appendChild(el("span", sign(r.day_pct), `当日 ${pct(r.day_pct)}`));
+    c.appendChild(px);
+    const main = up ? r.why_bull : r.why_bear;
+    const other = up ? r.why_bear : r.why_bull;
+    c.appendChild(el("h4", null, "为什么" + r.direction));
+    const ul = el("ul");
+    (main || []).slice(0, 6).forEach((x) => ul.appendChild(el("li", null, x)));
+    c.appendChild(ul);
+    c.appendChild(el("h4", null, "风险 / 反向信号"));
+    const ul2 = el("ul");
+    ((other || []).length ? other.slice(0, 3) : ["暂无明显反向信号"]).forEach((x) => ul2.appendChild(el("li", null, x)));
+    c.appendChild(ul2);
+    const single = r.contracts && r.contracts.single;
+    if (single) c.appendChild(el("p", "note", `参考合约：${single.strike} ${single.type === "call" ? "Call" : "Put"}，${single.expiration} 到期，约 $${Math.round(single.cost_per_contract)}/张`));
+    c.appendChild(el("p", "note", "系统处理：" + (blocked[r.symbol] || "符合进场条件")));
+    return c;
+  }
+
   function render(d) {
-    $("meta").textContent = `更新于 ${d.generated_at_ct} · 覆盖 ${d.coverage.scored}/${d.coverage.total} 只 · 每张合约上限 $${d.thresholds.max_cost_per_contract}`;
-    d.exits.forEach((s) => $("exits").appendChild(card(s, "exit")));
-    d.entries.forEach((s) => $("entries").appendChild(card(s, "entry")));
-    const entered = new Set(d.entries.map((e) => e.legs[0].contract));
-    d.open.filter((s) => !entered.has(s.legs[0].contract)).forEach((s) => $("open").appendChild(card(s, "open")));
-    $("none").hidden = d.entries.length + d.exits.length > 0;
+    clear("tiles", "exits", "entries", "open", "bulls", "bears", "rows", "rule-list");
+    const day = d.session_date || d.generated_at_ct.slice(0, 10);
+    const rows = d.rankings.filter((r) => r.score != null);
+    const bulls = rows.filter((r) => r.direction === "看涨");
+    const bears = rows.filter((r) => r.direction === "看跌").reverse();
     const blocked = Object.fromEntries((d.blocked || []).map((b) => [b.symbol, b.reason]));
-    const entrySyms = new Set(d.entries.map((e) => e.symbol));
-    d.rankings.forEach((r) => {
-      const tr = document.createElement("tr");
+
+    $("day-title").textContent = `${day} ${weekday(day)}`;
+    const time = d.generated_at_ct.slice(11);
+    $("stamp-text").textContent = `当天第 ${d.scan_no || "—"} 次扫描 · 最后更新 ${time} · 规则 ${d.rules_version}` + (d.prev_session_date ? ` · 对比基准：${d.prev_session_date} 收盘` : "");
+
+    const movers = rows.filter((r) => r.score_prev_close != null).map((r) => ({ s: r.symbol, d: r.score - r.score_prev_close }));
+    const upM = movers.slice().sort((a, b) => b.d - a.d)[0];
+    const dnM = movers.slice().sort((a, b) => a.d - b.d)[0];
+    $("tiles").appendChild(tile("大盘 SPY 当日", pct(d.spy_day_pct, 2), sign(d.spy_day_pct)));
+    $("tiles").appendChild(tile("看涨 / 观望 / 看跌", `${bulls.length} / ${rows.length - bulls.length - bears.length} / ${bears.length}`));
+    $("tiles").appendChild(tile("评分上升最多", upM && upM.d > 0 ? `${upM.s} +${upM.d}` : "—", "pos", "较上一交易日收盘"));
+    $("tiles").appendChild(tile("评分下降最多", dnM && dnM.d < 0 ? `${dnM.s} ${dnM.d}` : "—", "neg", "较上一交易日收盘"));
+
+    const todays = d.open.filter((s) => s.entry_date === day);
+    const flips = rows.filter((r) => r.score_prev_close != null && ((r.score >= 70 && r.score_prev_close < 70) || (r.score <= 30 && r.score_prev_close > 30)));
+    $("lead").textContent =
+      `最高分：${rows.slice(0, 3).map((r) => `${r.symbol} ${r.score}`).join("、")}；最低分：${rows.slice(-3).reverse().map((r) => `${r.symbol} ${r.score}`).join("、")}。` +
+      (flips.length ? `今天新进入看涨/看跌区的：${flips.map((r) => `${r.symbol}（${r.score_prev_close}→${r.score}）`).join("、")}。` : "今天没有股票新进入看涨或看跌区。") +
+      `当天新信号 ${todays.length} 个，退场 ${d.exits.length} 个。`;
+
+    d.exits.forEach((s) => $("exits").appendChild(signalCard(s, "exit")));
+    todays.forEach((s) => $("entries").appendChild(signalCard(s, "entry")));
+    $("none").hidden = todays.length + d.exits.length > 0;
+    const held = d.open.filter((s) => s.legs);
+    $("open-title").hidden = $("open-wrap").hidden = held.length === 0;
+    held.forEach((s) => {
+      const tr = el("tr");
+      tr.appendChild(el("td", "b", s.symbol));
+      const td = el("td");
+      td.appendChild(el("span", "tag " + s.type, s.type === "call" ? "看涨" : "看跌"));
+      tr.appendChild(td);
+      tr.appendChild(el("td", null, legs(s)));
+      tr.appendChild(el("td", null, s.entry_date));
+      tr.appendChild(el("td", "r", num(s.entry_cost)));
+      tr.appendChild(el("td", "r", num(s.last_value != null ? s.last_value : s.entry_cost)));
+      tr.appendChild(el("td", "r " + sign(s.pnl_pct), pct(s.pnl_pct)));
+      tr.appendChild(el("td", null, s.exit_by));
+      $("open").appendChild(tr);
+    });
+
+    bulls.slice(0, 5).forEach((r) => $("bulls").appendChild(focusCard(r, blocked)));
+    bears.slice(0, 5).forEach((r) => $("bears").appendChild(focusCard(r, blocked)));
+
+    const entered = new Set(todays.map((e) => e.symbol));
+    rows.forEach((r) => {
+      const tr = el("tr");
       tr.appendChild(el("td", null, r.rank));
-      tr.appendChild(el("td", null, r.symbol)).style.fontWeight = "700";
-      const sc = el("td", null, r.score == null ? "—" : r.score);
-      if (r.score != null) {
-        const b = el("span", "bar" + (r.score <= 30 ? " low" : ""));
-        const i = el("i");
-        i.style.width = r.score + "%";
-        b.appendChild(i);
-        sc.appendChild(b);
-      }
+      tr.appendChild(el("td", "b", r.symbol));
+      const sc = el("td", "nw", String(r.score));
+      const b = el("span", "bar" + (r.score <= 30 ? " low" : r.score < 70 ? " mid" : ""));
+      const i = el("i");
+      i.style.width = r.score + "%";
+      b.appendChild(i);
+      sc.appendChild(b);
       tr.appendChild(sc);
+      const dl = r.score_prev_close == null ? null : r.score - r.score_prev_close;
+      tr.appendChild(el("td", "r " + sign(dl), dl == null ? "—" : dl === 0 ? "0" : (dl > 0 ? "+" : "") + dl));
+      tr.appendChild(el("td", "r muted", r.score_open == null ? "—" : r.score_open));
       const dt = el("td");
       dt.appendChild(dirTag(r.direction));
       tr.appendChild(dt);
-      tr.appendChild(el("td", null, num(r.price)));
-      tr.appendChild(el("td", r.ret20 > 0 ? "pos" : "neg", pct(r.ret20)));
-      tr.appendChild(el("td", r.rel_spy20 > 0 ? "pos" : "neg", pct(r.rel_spy20)));
-      tr.appendChild(el("td", null, num(r.rsi14, 0)));
-      let note = entrySyms.has(r.symbol) ? "✅ 本次进场" : blocked[r.symbol] || r.missing || "";
+      tr.appendChild(el("td", "r", num(r.price)));
+      tr.appendChild(el("td", "r " + sign(r.day_pct), pct(r.day_pct)));
+      tr.appendChild(el("td", "r " + sign(r.ret20), pct(r.ret20)));
+      tr.appendChild(el("td", "r " + sign(r.rel_spy20), pct(r.rel_spy20)));
+      tr.appendChild(el("td", "r", num(r.rsi14, 0)));
+      const side = r.direction === "看涨" ? r.why_bull : r.direction === "看跌" ? r.why_bear : [].concat((r.why_bull || []).slice(0, 1), (r.why_bear || []).slice(0, 1));
+      const key = (side || []).filter((x) => /跑|RSI|过多/.test(x)).slice(0, 2);
+      tr.appendChild(el("td", "note", (key.length ? key : (side || []).slice(0, 2)).join("；")));
+      let note = entered.has(r.symbol) ? "✅ 当天进场" : blocked[r.symbol] || "";
       if (r.earnings) note += (note ? " · " : "") + "财报 " + r.earnings;
       tr.appendChild(el("td", "note", note));
       $("rows").appendChild(tr);
@@ -74,48 +159,65 @@
   function renderReview(r) {
     const box = $("review-body");
     box.textContent = "";
-    box.appendChild(el("p", "meta", `${r.date} 收盘 · 规则 ${r.rules_version}`));
-    const rows = [["same_day", "今天"], ["one_day", "1 天"], ["five_day", "5 天"]];
+    if (!r) {
+      box.appendChild(el("p", "muted", "这一天还没有收盘复盘（收盘后约 15:50 CT 生成）。"));
+      return;
+    }
     const wrap = el("div", "table-wrap");
     const t = el("table");
     const head = el("tr");
-    ["周期", "SPY", "看涨组平均", "看涨组上涨比例", "看跌组平均", "看跌组下跌比例", "看涨−看跌", "相关性"].forEach((h) => head.appendChild(el("th", null, h)));
+    ["周期", "SPY", "看涨组平均", "真的涨了", "看跌组平均", "真的跌了", "看涨 − 看跌", "相关性"].forEach((h, i) => head.appendChild(el("th", i ? "r" : null, h)));
     t.appendChild(head);
-    rows.forEach(([k, name]) => {
+    [["same_day", "当天（今早分数 → 收盘）"], ["one_day", "1 天（昨日分数 → 今日）"], ["five_day", "5 天"]].forEach(([k, name]) => {
       const g = r[k];
       const tr = el("tr");
       tr.appendChild(el("td", null, name));
-      if (!g) { const td = el("td", "note", "数据还不够"); td.colSpan = 7; tr.appendChild(td); t.appendChild(tr); return; }
-      tr.appendChild(el("td", null, pct(g.spy_ret)));
-      tr.appendChild(el("td", g.bull.avg_ret > 0 ? "pos" : "neg", pct(g.bull.avg_ret)));
-      tr.appendChild(el("td", null, g.bull.hit_rate == null ? "—" : g.bull.hit_rate + "%"));
-      tr.appendChild(el("td", g.bear.avg_ret < 0 ? "pos" : "neg", pct(g.bear.avg_ret)));
-      tr.appendChild(el("td", null, g.bear.hit_rate == null ? "—" : g.bear.hit_rate + "%"));
-      tr.appendChild(el("td", g.bull_minus_bear > 0 ? "pos" : "neg", pct(g.bull_minus_bear)));
-      tr.appendChild(el("td", null, g.rank_corr == null ? "—" : g.rank_corr));
+      if (!g) {
+        const td = el("td", "note", "数据还不够");
+        td.colSpan = 7;
+        tr.appendChild(td);
+        t.appendChild(tr);
+        return;
+      }
+      tr.appendChild(el("td", "r " + sign(g.spy_ret), pct(g.spy_ret, 2)));
+      tr.appendChild(el("td", "r " + sign(g.bull.avg_ret), pct(g.bull.avg_ret, 2)));
+      tr.appendChild(el("td", "r", g.bull.hit_rate == null ? "—" : g.bull.hit_rate + "%"));
+      tr.appendChild(el("td", "r " + sign(g.bear.avg_ret == null ? null : -g.bear.avg_ret), pct(g.bear.avg_ret, 2)));
+      tr.appendChild(el("td", "r", g.bear.hit_rate == null ? "—" : g.bear.hit_rate + "%"));
+      tr.appendChild(el("td", "r " + sign(g.bull_minus_bear), pct(g.bull_minus_bear, 2)));
+      tr.appendChild(el("td", "r", g.rank_corr == null ? "—" : g.rank_corr));
       t.appendChild(tr);
     });
     wrap.appendChild(t);
     box.appendChild(wrap);
-    const v = el("p", "warn");
-    v.textContent = `最近 ${r.rolling.days} 个交易日结论：${r.verdict}。${r.action}`;
-    box.appendChild(v);
-    const sg = r.signals;
-    box.appendChild(el("p", null, `信号战绩：已平仓 ${sg.closed} 笔，赢 ${sg.wins} 笔${sg.closed ? `，胜率 ${sg.win_rate}%，平均 ${pct(sg.avg_pnl_pct)}` : ""}`));
+    box.appendChild(el("p", "warn", `最近 ${r.rolling.days} 个交易日结论：${r.verdict}。${r.action}`));
+    box.appendChild(el("p", "muted", "\"看涨 − 看跌\"为正，说明高分股票跑赢了低分股票；相关性越接近 +1 说明分数越准。攒够 10 个交易日才会据此调整方法。"));
   }
 
-  fetch("data/options/review/latest.json", { cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : null))
-    .then((r) => r && renderReview(r))
-    .catch(() => {});
+  const getJSON = (url) => fetch(url, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
-  fetch("data/options/latest.json", { cache: "no-store" })
-    .then((r) => {
-      if (!r.ok) throw new Error(String(r.status));
-      return r.json();
-    })
-    .then(render)
-    .catch(() => {
-      $("meta").textContent = "还没有发布评分数据。";
+  function load(day) {
+    const src = day ? `data/options/days/${day}.json` : "data/options/latest.json";
+    getJSON(src).then((d) => {
+      if (!d) {
+        $("day-title").textContent = "还没有发布评分数据";
+        return;
+      }
+      render(d);
+      const date = d.session_date || d.generated_at_ct.slice(0, 10);
+      getJSON(`data/options/review/${date}.json`).then(renderReview);
     });
+  }
+
+  getJSON("data/options/days/index.json").then((idx) => {
+    const sel = $("day-select");
+    const dates = (idx && idx.dates) || [];
+    dates.forEach((d, i) => {
+      const o = el("option", null, `${d} ${weekday(d)}${i === 0 ? "（最新）" : ""}`);
+      o.value = d;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", () => load(sel.value));
+    load(dates[0] || null);
+  });
 })();

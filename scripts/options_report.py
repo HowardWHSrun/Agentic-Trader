@@ -48,39 +48,8 @@ def check(row: dict, name: str) -> int:
     return 0
 
 
-def reasons(r: dict) -> tuple[list[str], list[str]]:
-    """(supporting bullish points, supporting bearish points) in plain Chinese."""
-    bull, bear = [], []
-    px, s20, s50, s200 = r["price"], r["sma20"], r["sma50"], r.get("sma200")
-    (bull if px > s20 else bear).append(f"股价 {px:.2f} 在 20 日均线 {s20:.2f} {'上方' if px > s20 else '下方'}")
-    (bull if s20 > s50 else bear).append(f"20 日均线在 50 日均线{'上方（短期趋势向上）' if s20 > s50 else '下方（短期趋势向下）'}")
-    if s200:
-        (bull if s50 > s200 else bear).append(f"50 日均线在 200 日均线{'上方（中期趋势向上）' if s50 > s200 else '下方（中期趋势向下）'}")
-    d = check(r, "20日均线方向")
-    if d:
-        (bull if d > 0 else bear).append(f"20 日均线正在{'上行' if d > 0 else '下行'}")
-    if r.get("rel_spy20") is not None:
-        v = r["rel_spy20"]
-        (bull if v > 0 else bear).append(f"近 20 天{'跑赢' if v > 0 else '跑输'}大盘 {abs(v):.1f} 个百分点")
-    if r.get("rel_sector20") is not None:
-        v = r["rel_sector20"]
-        (bull if v > 0 else bear).append(f"近 20 天{'跑赢' if v > 0 else '跑输'}{SECTOR_NAMES.get(r.get('sector_etf'), '行业')}板块 {abs(v):.1f} 个百分点")
-    rsi = r["rsi14"]
-    if rsi >= 80:
-        bear.append(f"RSI {rsi:.0f}，严重超买，容易回调")
-    elif rsi >= 55:
-        bull.append(f"RSI {rsi:.0f}，上涨动能健康")
-    elif rsi <= 20:
-        bull.append(f"RSI {rsi:.0f}，严重超卖，容易反弹")
-    elif rsi <= 45:
-        bear.append(f"RSI {rsi:.0f}，动能偏弱")
-    m = check(r, "MACD 柱")
-    if m:
-        (bull if m > 0 else bear).append(f"MACD 动能{'转强' if m > 0 else '转弱'}")
-    st = r.get("stretch_atr") or 0
-    if abs(st) > 2:
-        (bear if st > 0 else bull).append(f"离 20 日均线 {abs(st):.1f} 倍日均波幅，短期{'涨' if st > 0 else '跌'}得过多")
-    return bull, bear
+sys.path.insert(0, str(ROOT / "scripts"))
+from options_scorer import explain_row as reasons  # noqa: E402
 
 
 def short_reason(r: dict) -> str:
@@ -180,7 +149,7 @@ def build_html(latest: dict, review: dict | None, positions: list[dict], comment
 <th class="r">现价</th><th class="r">盈亏 $</th><th class="r">盈亏 %</th><th class="r">止损</th><th class="r">止盈</th><th>最晚退场</th><th class="r">评分</th><th>状态</th></tr></thead>
 <tbody>{trs}</tbody><tfoot><tr><td colspan="5" class="b">合计（投入 ${cost_total:,.0f}）</td><td class="r b {cls(pnl_total)}">{pnl_total:+,.0f}</td>
 <td class="r b {cls(pnl_total)}">{pct(pnl_total / cost_total * 100 if cost_total else None)}</td><td colspan="5"></td></tr></tfoot></table>
-<p class="fine">现价为期权买卖中间价。止损 = 成本 −50%，止盈 = 成本 +80%，最晚退场 = 到期前 10 天。</p>'''
+<p class="fine">现价为期权买卖中间价。止损 = 成本 −35%，止盈 = 成本 +50%，最晚退场 = 买入后第 7 天。</p>'''
 
     # --- signals
     def sig_line(s: dict, kind: str) -> str:

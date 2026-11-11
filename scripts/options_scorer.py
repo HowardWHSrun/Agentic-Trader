@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v1.1"
+RULES_VERSION = "options-score-v1.2"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -67,11 +67,12 @@ LONG_DELTA = (0.45, 0.65)
 SHORT_DELTA = (0.20, 0.35)
 MAX_SPREAD_PCT = 0.10
 # Exit rules (premium-based, on the long single-leg idea)
-TAKE_PROFIT = 0.80   # +80% of entry mid (single option)
+TAKE_PROFIT = 0.50   # +50% of entry mid (1-7 day holds)
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
 MAX_COST_DEFAULT = 1000.0  # USD per contract (100 shares)
 SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
-STOP_LOSS = -0.50    # -50% of entry mid
+STOP_LOSS = -0.35    # -35% of entry mid
+MAX_HOLD_DAYS = 7     # calendar days; the user holds each option 1-7 days
 TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
 COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
@@ -82,7 +83,7 @@ EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would 
 RISK_RULES = [
     "只买入开仓（单买看涨或看跌期权），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
     "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
-    "亏 50% 止损；赚 80% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
+    "每笔持有 1–7 天：亏 35% 止损；赚 50% 止盈；满 7 天无论盈亏都退场；财报前 2 天退场。合约仍选 3–6 周后到期的，时间损耗更小。",
     "评分是技术面排序，不是赚钱概率。下单前请在券商核对实时买卖价，用限价单。",
 ]
 
@@ -495,6 +496,8 @@ def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earn
             reason = f"止盈：+{pnl * 100:.0f}%"
         elif pnl is not None and pnl <= STOP_LOSS:
             reason = f"止损：{pnl * 100:.0f}%"
+        elif sig.get("entry_date") and (today - date.fromisoformat(sig["entry_date"])).days >= MAX_HOLD_DAYS:
+            reason = f"时间退场：已持有满 {MAX_HOLD_DAYS} 天"
         elif dte <= TIME_EXIT_DTE:
             reason = f"时间退场：只剩 {dte} 天到期"
         elif earnings_soon(earnings, sig["symbol"], today, EARNINGS_EXIT_DAYS):
@@ -541,7 +544,7 @@ def make_entry(r: dict, side: str, pick: dict, structure: str, today: date) -> d
         "entry_cost": round(cost, 2), "cost_per_contract": round(cost * 100, 2),
         "max_gain_per_contract": max_gain, "breakeven": breakeven,
         "stop_value": round(cost * (1 + STOP_LOSS), 2), "target_value": round(cost * (1 + tp), 2),
-        "exit_by": (date.fromisoformat(single["expiration"]) - timedelta(days=TIME_EXIT_DTE)).isoformat(),
+        "exit_by": (today + timedelta(days=MAX_HOLD_DAYS)).isoformat(),
         "entry_date": today.isoformat(), "iv_vs_hv20": pick["iv_vs_hv20"],
     }
 
@@ -657,7 +660,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY,
                        "max_cost_per_contract": max_cost,
                        "take_profit_pct": TAKE_PROFIT * 100, "take_profit_spread_pct": TAKE_PROFIT_SPREAD * 100, "stop_loss_pct": STOP_LOSS * 100,
-                       "time_exit_dte": TIME_EXIT_DTE},
+                       "time_exit_dte": TIME_EXIT_DTE, "max_hold_days": MAX_HOLD_DAYS},
         "top": [r["symbol"] for r in scored[:5]],
         "bottom": [r["symbol"] for r in scored[-5:][::-1]],
         "entries": entries,
@@ -720,12 +723,86 @@ def report(result: dict) -> str:
     return "\n".join(lines)
 
 
+SECTOR_NAMES = {"XLK": "科技", "XLC": "通信", "XLY": "可选消费", "XLP": "必需消费", "XLV": "医疗", "XLF": "金融",
+                "XLE": "能源", "XLI": "工业", "XLU": "公用事业", "XLB": "材料", "XLRE": "地产"}
+
+
+def explain_row(r: dict) -> tuple[list[str], list[str]]:
+    """(bullish points, bearish points) in plain Chinese, from the row's own numbers."""
+    def chk(name: str) -> int:
+        for c in r.get("checks", []):
+            if c["name"] == name:
+                return 1 if c["bull"] > c["bear"] else -1 if c["bear"] > c["bull"] else 0
+        return 0
+
+    bull, bear = [], []
+    px, s20, s50, s200 = r["price"], r["sma20"], r["sma50"], r.get("sma200")
+    (bull if px > s20 else bear).append(f"股价 {px:.2f} 在 20 日均线 {s20:.2f} {'上方' if px > s20 else '下方'}")
+    (bull if s20 > s50 else bear).append(f"20 日均线在 50 日均线{'上方（短期趋势向上）' if s20 > s50 else '下方（短期趋势向下）'}")
+    if s200:
+        (bull if s50 > s200 else bear).append(f"50 日均线在 200 日均线{'上方（中期趋势向上）' if s50 > s200 else '下方（中期趋势向下）'}")
+    d = chk("20日均线方向")
+    if d:
+        (bull if d > 0 else bear).append(f"20 日均线正在{'上行' if d > 0 else '下行'}")
+    if r.get("rel_spy20") is not None:
+        v = r["rel_spy20"]
+        (bull if v > 0 else bear).append(f"近 20 天{'跑赢' if v > 0 else '跑输'}大盘 {abs(v):.1f} 个百分点")
+    if r.get("rel_sector20") is not None:
+        v = r["rel_sector20"]
+        (bull if v > 0 else bear).append(f"近 20 天{'跑赢' if v > 0 else '跑输'}{SECTOR_NAMES.get(r.get('sector_etf'), '行业')}板块 {abs(v):.1f} 个百分点")
+    rsi_v = r["rsi14"]
+    if rsi_v >= 80:
+        bear.append(f"RSI {rsi_v:.0f}，严重超买，容易回调")
+    elif rsi_v >= 55:
+        bull.append(f"RSI {rsi_v:.0f}，上涨动能健康")
+    elif rsi_v <= 20:
+        bull.append(f"RSI {rsi_v:.0f}，严重超卖，容易反弹")
+    elif rsi_v <= 45:
+        bear.append(f"RSI {rsi_v:.0f}，动能偏弱")
+    m = chk("MACD 柱")
+    if m:
+        (bull if m > 0 else bear).append(f"MACD 动能{'转强' if m > 0 else '转弱'}")
+    st = r.get("stretch_atr") or 0
+    if abs(st) > 2:
+        (bear if st > 0 else bull).append(f"离 20 日均线 {abs(st):.1f} 倍日均波幅，短期{'涨' if st > 0 else '跌'}得过多")
+    return bull, bear
+
+
+def annotate(result: dict) -> None:
+    """Add what a reader needs to place this scan in its day: scan number, score and
+    price change versus the previous session's close, today's opening score, reasons."""
+    day = result["generated_at_ct"][:10]
+    files = sorted((OUT_DIR / "daily").glob("*.json")) if (OUT_DIR / "daily").exists() else []
+    today = next((json.loads(p.read_text()) for p in files if p.stem == day), None)
+    prev = next((json.loads(p.read_text()) for p in reversed(files) if p.stem < day), None)
+    result["session_date"] = day
+    result["scan_no"] = (today or {}).get("scans", 0) + 1
+    result["prev_session_date"] = prev["date"] if prev else None
+    prices = {**{r["symbol"]: r.get("price") for r in result["rankings"]}, **result.get("benchmark_prices", {})}
+    pp = prev["last"]["prices"] if prev else {}
+    result["spy_day_pct"] = round((prices["SPY"] / pp["SPY"] - 1) * 100, 2) if pp.get("SPY") and prices.get("SPY") else None
+    for r in result["rankings"]:
+        sym = r["symbol"]
+        r["score_prev_close"] = prev["last"]["scores"].get(sym) if prev else None
+        r["score_open"] = today["first"]["scores"].get(sym) if today else r.get("score")
+        r["day_pct"] = round((r["price"] / pp[sym] - 1) * 100, 2) if r.get("price") and pp.get(sym) else None
+        if r.get("score") is not None:
+            bull, bear = explain_row(r)
+            r["why_bull"], r["why_bear"] = bull, bear
+
+
 def write_outputs(result: dict) -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     (OUT_DIR / "history").mkdir(exist_ok=True)
     stamp = datetime.fromisoformat(result["generated_at"]).strftime("%Y%m%dT%H%M%SZ")
+    annotate(result)
     payload = json.dumps(result, ensure_ascii=False, indent=1) + "\n"
     (OUT_DIR / "latest.json").write_text(payload)
+    days = OUT_DIR / "days"  # one full snapshot per session (the day's last scan wins)
+    days.mkdir(exist_ok=True)
+    (days / f"{result['session_date']}.json").write_text(payload)
+    (days / "index.json").write_text(json.dumps(
+        {"dates": sorted((p.stem for p in days.glob("2*.json")), reverse=True)}) + "\n")
     if result["entries"] or result["exits"] or not any((OUT_DIR / "history").iterdir()):
         (OUT_DIR / "history" / f"{stamp}.json").write_text(payload)  # keep only signal snapshots
     write_daily_snapshot(result)
@@ -748,6 +825,7 @@ def write_daily_snapshot(result: dict) -> None:
     data = json.loads(path.read_text()) if path.exists() else {"date": day}
     data.setdefault("first", snap)
     data["last"] = snap
+    data["scans"] = data.get("scans", 0) + 1
     path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
 
 
