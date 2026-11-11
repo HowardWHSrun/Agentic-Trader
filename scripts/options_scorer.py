@@ -80,10 +80,10 @@ MAX_STRETCH_ATR = 2.0  # don't chase: skip entries this many ATRs past the 20-da
 EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would be too short)
 
 RISK_RULES = [
-    "只买入开仓（买看涨/看跌期权或借方价差），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
+    "只买入开仓（单买看涨或看跌期权），最大亏损 = 付出的权利金；不裸卖期权、不用保证金、不借钱。",
     "只用你亏光也不影响生活的钱。单笔风险不超过这笔期权资金的 5%，同时持仓不超过 5 笔，每天最多 2 个新信号，每张合约默认不超过 $1000。",
-    "亏 50% 止损；单腿赚 80%、价差赚 60% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
-    "评分是技术面排序，不是赚钱概率。报价为 Cboe 免费数据（延迟约 15 分钟），下单前请在券商核对实时买卖价，用限价单。",
+    "亏 50% 止损；赚 80% 止盈；到期前 10 天无论盈亏都退场；财报前 2 天退场。",
+    "评分是技术面排序，不是赚钱概率。下单前请在券商核对实时买卖价，用限价单。",
 ]
 
 OCC_RE = re.compile(r"^([A-Z.]+)(\d{6})([CP])(\d{8})$")
@@ -651,7 +651,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "rules_version": RULES_VERSION,
         "generated_at": now.isoformat(),
         "generated_at_ct": now.astimezone(CT).strftime("%Y-%m-%d %H:%M CT"),
-        "data_source": "Stock prices: Nasdaq real-time last sale during the session. Option chains: Cboe (about 15 minutes delayed) with Greeks, IV and open interest. Verify the live bid/ask at your broker and use limit orders.",
+        "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
         "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY,
