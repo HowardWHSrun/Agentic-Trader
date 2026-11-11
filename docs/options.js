@@ -90,7 +90,8 @@
     (d.watchlist || []).forEach((w) => {
       const tr = el("tr");
       tr.appendChild(el("td", "b", w.symbol));
-      tr.appendChild(el("td", "r " + (w.rsi2 < 5 ? "pos" : ""), num(w.rsi2, 0)));
+      tr.appendChild(el("td", "r b " + (w.rsi2 < 5 ? "pos" : ""), w.dip_score == null ? "—" : String(w.dip_score)));
+      tr.appendChild(el("td", "r", num(w.rsi2, 0)));
       tr.appendChild(el("td", "r", num(w.price)));
       tr.appendChild(el("td", null, w.setup));
       $("watchrows").appendChild(tr);
@@ -98,7 +99,7 @@
     if (!(d.watchlist || []).length) {
       const tr = el("tr");
       const td = el("td", "note", "这一天的数据没有这项（v2 之前）。");
-      td.colSpan = 4;
+      td.colSpan = 5;
       tr.appendChild(td);
       $("watchrows").appendChild(tr);
     }

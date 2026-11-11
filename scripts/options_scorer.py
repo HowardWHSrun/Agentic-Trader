@@ -613,6 +613,8 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
     for r in rows:  # tell the reader how far each name is from a signal
         if r.get("score") is None:
             continue
+        # Opportunity score 0-100: how close the stock is to a dip signal (>=95 = signal). 0 if not in an uptrend.
+        r["dip_score"] = round(100 - r["rsi2"]) if r.get("uptrend") else 0
         r["setup"] = ("回调信号" if r in dips else "接近信号" if r.get("uptrend") and r["rsi2"] < RSI2_WATCH
                       else "趋势向上，等回调" if r.get("uptrend") else "长期趋势不向上，不做")
     for side, pool in (("call", dips),):
@@ -667,7 +669,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
-        "watchlist": [{"symbol": r["symbol"], "rsi2": r["rsi2"], "price": r["price"], "setup": r["setup"]}
+        "watchlist": [{"symbol": r["symbol"], "dip_score": r["dip_score"], "rsi2": r["rsi2"], "price": r["price"], "setup": r["setup"]}
                       for r in sorted((x for x in rows if x.get("uptrend") and x.get("rsi2") is not None), key=lambda x: x["rsi2"])[:8]],
         "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY, "rsi2_entry": RSI2_ENTRY, "rsi2_exit": RSI2_EXIT,
                        "max_cost_per_contract": max_cost,
