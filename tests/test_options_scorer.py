@@ -136,6 +136,8 @@ class RunTests(unittest.TestCase):
         for k, drop in zip((-4, -3, -2, -1), (1.5, 3.0, 4.5, 6.0)):  # ... then four lower closes in a row
             b = bars["KO"][k]
             bars["KO"][k] = {**b, "c": b["c"] - drop, "l": b["l"] - drop}
+            x = bars["XLP"][k]  # the sector fell too, so this is a market dip rather than company news
+            bars["XLP"][k] = {**x, "c": x["c"] - drop, "l": x["l"] - drop}
         bars["BAC"] = series(260, 120, -0.3, 0.1)  # strong downtrend
         exp = TODAY + timedelta(days=30)
         chains = {"KO": chain("KO", bars["KO"][-1]["c"], exp, "C"),
@@ -160,6 +162,11 @@ class RunTests(unittest.TestCase):
         # Earnings inside the window blocks the entry.
         res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": [], "qualified": ["KO", "BAC"]}, max_cost=5000)
         self.assertNotIn("KO", {e["symbol"] for e in res2["entries"]})
+        # A stock falling alone in a calm market (likely company news) is skipped.
+        alone = {**bars, "XLP": series(260, 100, 0.05)}
+        res4 = o.run(FakeClient(alone, chains), TODAY, now, {}, {"open": [], "qualified": ["KO"]}, max_cost=5000)
+        self.assertEqual(res4["entries"], [])
+        self.assertIn("板块", next(r for r in res4["rankings"] if r["symbol"] == "KO")["entry_block"])
         # A quiet stock (20-day volatility under MIN_HV20) is skipped.
         with mock.patch.object(o, "MIN_HV20", 1000.0):
             res3 = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": [], "qualified": ["KO"]}, max_cost=5000)

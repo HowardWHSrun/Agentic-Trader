@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.4"
+RULES_VERSION = "options-score-v2.5"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -97,6 +97,12 @@ MAX_PER_SECTOR = 2   # open signals in one sector (they move together)
 # dips during a broad pullback rebounded far better than a single stock falling on its own.
 RISK_FULL = 0.03     # broad pullback: SPY down >2% over 5 days, below its 50-day, or 2+ signals that day
 RISK_HALF = 0.015    # a single stock falling alone in a calm market
+# v2.5 news proxy: compare the stock's fall over the down streak with its sector ETF over the same days.
+# Backtest (v2.4 contract, per trade, 2021-24 / 2025-26): fell with its sector +19.8% / +17.0%;
+# calm market and >=2% worse than its sector -3.1% / -1.9% (likely company news) -> skip;
+# market pullback and >5% worse than its sector +8.4% / +8.1% -> half size.
+SECTOR_LAG_SKIP = -2.0   # % vs sector, calm market
+SECTOR_LAG_HALF = -5.0   # % vs sector, market pullback
 DRAWDOWN_HALVE = 0.10  # account more than 10% below its peak -> halve every size
 DRAWDOWN_PAUSE = 0.20  # more than 20% below its peak -> no new entries until reviewed
 MAX_STRETCH_ATR = 2.0  # don't chase: skip entries this many ATRs past the 20-day average
@@ -104,7 +110,7 @@ EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would 
 
 RISK_RULES = [
     "只买看涨期权（Call），最大亏损 = 付出的权利金；不买看跌、不裸卖期权、不用保证金、不借钱。进场条件：长期趋势向上（股价和 50 日均线都在 200 日均线上方）且已连续 4 个交易日收盘下跌，在收盘前半小时确认后买入。",
-    "仓位随行情和账户变：大盘普跌回调时每笔用期权资金的 3%，大盘平稳、个股独跌时 1.5%；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
+    "仓位随行情、板块和账户变：跟板块一起跌时每笔用期权资金的 3%；大盘回调但它比板块多跌 5% 以上时 1.5%；大盘平稳而它比板块多跌 2% 以上（多半是公司利空）不做；信号出现时再查新闻，有公司自身的基本面利空就不做；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
     "合约：2–3 周后到期（14–30 天，优先第 17 天左右的周五）、Delta 约 0.75 的价内 Call；超过每张上限就降到 Delta 0.65，再贵就不做，绝不改买平值或价外。退场（收盘前半小时按收盘价判断）：收盘站上 5 日均线就卖；大反弹（股价 ≥ 入场价 + 1.5 倍 ATR）时有 2 张以上可留一半；收盘跌破“信号日低点 − 2 倍 ATR”全部卖；满 5 个交易日没反弹全部卖；到期前一天、财报前 2 天必须卖。不设期权涨跌百分比止损止盈，风控靠每笔只用 1.5–3% 的钱。",
     "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套「连跌 4 天」规则每笔平均约 +8.5%、胜率约 61%（估算的期权价格，且是从十几条规则里挑出来的，实际会打折扣），不保证盈利。下单前请在券商核对实时买卖价，用限价单。",
 ]
@@ -313,6 +319,15 @@ def down_streak(closes: list[float], cap: int = 10) -> int:
     return n
 
 
+def streak_vs(closes: list[float], dates: list[str], sector: list[dict] | None) -> float | None:
+    """Stock return over its current down streak minus the sector ETF's return over the same dates."""
+    n = down_streak(closes)
+    if not n or not sector:
+        return None
+    sec = ret_on_dates(sector, dates[-1 - n], dates[-1])
+    return None if sec is None else (closes[-1] / closes[-1 - n] - 1) - sec
+
+
 def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -> dict:
     """Return a direction score 0-100 (50 neutral) and its transparent parts.
 
@@ -392,6 +407,7 @@ def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -
         "down_streak": down_streak(closes),
         "above_sma5": px > sma(closes, 5),
         "low": round(bars[-1]["l"], 2),
+        "vs_sector_streak": _pct(streak_vs(closes, dates, sector)),
         "uptrend": bool(s200 and px > s200 and s50 > s200),
         "bar_date": bars[-1]["t"][:10],
     }
@@ -607,7 +623,15 @@ def market_context(spy: list[dict]) -> dict:
 
 
 def size_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
+    """Size from market state and whether the stock fell with its sector (0 = skip)."""
     broad = market.get("broad_pullback") or n_signals_today >= 2
+    lag = r.get("vs_sector_streak")
+    if lag is not None and not broad and lag <= SECTOR_LAG_SKIP:
+        return 0.0, f"不做：大盘平稳，它却比板块多跌 {-lag:.1f}%，多半是公司自己的利空"
+    if lag is not None and broad and lag <= SECTOR_LAG_HALF:
+        return RISK_HALF, f"半仓：比板块多跌 {-lag:.1f}%，可能有公司自身利空，先查新闻"
+    if lag is not None and lag > SECTOR_LAG_SKIP:
+        return RISK_FULL, "标准仓位：跟板块一起跌，属于被错杀"
     if broad:
         return RISK_FULL, "标准仓位（普跌中的回调）"
     return RISK_HALF, "半仓（大盘平稳、个股独跌）"
@@ -720,6 +744,10 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             sector_open = sum(1 for s in still_open + entries if SECTOR.get(s["symbol"]) == SECTOR[r["symbol"]])
             if SECTOR[r["symbol"]] and sector_open >= MAX_PER_SECTOR:
                 r["entry_block"] = f"同板块已有 {sector_open} 笔，最多 {MAX_PER_SECTOR} 笔"
+                continue
+            tier, tier_note = size_tier(r, market, len(cands))
+            if tier <= 0:
+                r["entry_block"] = tier_note
                 continue
             if r["earnings_soon"]:
                 r["entry_block"] = f"{EARNINGS_BLOCK_DAYS}天内有财报（{r['earnings']}），财报后期权价格易暴跌，先不进"
