@@ -230,3 +230,13 @@ class ShortAltTests(unittest.TestCase):
         exp = o.expectation(0.7)
         self.assertEqual(exp["group"], "high")
         self.assertIn("2021-2026", exp["by_score"])
+
+
+class DeepStarTests(unittest.TestCase):
+    def test_deep_star_needs_all_three(self):
+        mk = {"broad_pullback": True}
+        r = {"vs_sector_streak": -0.5, "streak_drop_atr": -3.1}
+        self.assertTrue(o.is_deep_star(r, mk, 1))
+        self.assertFalse(o.is_deep_star({**r, "streak_drop_atr": -1.5}, mk, 1))   # shallow
+        self.assertFalse(o.is_deep_star({**r, "vs_sector_streak": -4.0}, mk, 1))  # fell alone
+        self.assertFalse(o.is_deep_star(r, {"broad_pullback": False}, 1))         # calm market

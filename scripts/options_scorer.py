@@ -39,7 +39,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.6"
+RULES_VERSION = "options-score-v2.7"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -106,6 +106,10 @@ MAX_PER_SECTOR = 2   # open signals in one sector (they move together)
 RISK_FULL = 0.20     # standard trade
 RISK_HALF = 0.10     # weaker setups: lone faller in a pullback, or a lone faller in a calm market without sector data
 RISK_STAR = 0.30     # best setup, flagged to the user: market pullback AND the stock fell with its sector
+# v2.7 "big rebound" setup: market pullback + fell with its sector + the streak dropped >= 2.5 ATR.
+# Backtest 2010-2026 (123 trades, 88 days): +27% per trade, 75% wins with the standard contract; +20% to +35% in
+# each of 2010-17 / 2018-21 / 2022-26; stress +17%, IV-crush +13%. Neither condition works alone (+7% each).
+DEEP_DROP_ATR = -2.5
 # v2.5 news proxy: compare the stock's fall over the down streak with its sector ETF over the same days.
 # Backtest (v2.4 contract, per trade, 2021-24 / 2025-26): fell with its sector +19.8% / +17.0%;
 # calm market and >=2% worse than its sector -3.1% / -1.9% (likely company news) -> skip;
@@ -416,6 +420,8 @@ def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -
         "down_streak": down_streak(closes),
         "above_sma5": px > sma(closes, 5),
         "low": round(bars[-1]["l"], 2),
+        "streak_drop_atr": (round((px - closes[-1 - down_streak(closes)]) / a14, 2)
+                            if a14 and down_streak(closes) else None),
         "vs_sector_streak": _pct(streak_vs(closes, dates, sector)),
         "uptrend": bool(s200 and px > s200 and s50 > s200),
         "bar_date": bars[-1]["t"][:10],
@@ -666,6 +672,13 @@ def rule_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
     return (1.0, "普跌中的回调") if broad else (0.5, "大盘平稳、个股独跌")
 
 
+def is_deep_star(r: dict, market: dict, n_signals_today: int) -> bool:
+    """Market pullback + fell with its sector + a deep streak: the rare setup with the largest rebounds."""
+    broad = market.get("broad_pullback") or n_signals_today >= 2
+    lag, deep = r.get("vs_sector_streak"), r.get("streak_drop_atr")
+    return bool(broad and lag is not None and lag > SECTOR_LAG_SKIP and deep is not None and deep <= DEEP_DROP_ATR)
+
+
 def ml_size(r: dict, market: dict, n_signals_today: int, bars: dict) -> tuple[float, str, float | None]:
     """v2.6 position size = 20% x rule tier x model multiplier (0.5/1/1.5), capped at 30%."""
     tier, note = rule_tier(r, market, n_signals_today)
@@ -681,6 +694,9 @@ def ml_size(r: dict, market: dict, n_signals_today: int, bars: dict) -> tuple[fl
     p = options_ml.score(feat, model)
     mult, mnote = options_ml.size_multiplier(p, model)
     risk = min(RISK_STAR, RISK_FULL * tier * mult)
+    if is_deep_star(r, market, n_signals_today):
+        return RISK_STAR, (f"⭐⭐ 大反弹机会：大盘回调、跟板块一起跌、连跌幅度 {-r['streak_drop_atr']:.1f} 倍 ATR"
+                           f"（回测每笔约 +27%、胜率 75%，一年约 8 次）。每笔 {RISK_STAR * 100:.0f}%；{mnote}"), round(p, 3)
     star = "⭐ 特别好的机会：" if risk >= RISK_STAR else ""
     return risk, f"{star}每笔 {risk * 100:.0f}%。{note}；{mnote}", round(p, 3)
 
@@ -849,6 +865,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                             "runner_level": round(r["price"] + RUNNER_ATR * r["atr14"], 2) if r.get("atr14") else None,
                             "risk_pct": round(tier * 100, 1), "size_note": tier_note, "ml_score": ml_p,
                             "short_alt": pick.get("short_alt"), "expect": expectation(ml_p),
+                            "deep_star": is_deep_star(r, market, len(cands)),
                             "over_budget_note": (f"⚠️ 每张约 ${pick['single']['cost_per_contract']:.0f}，超过建议上限 ${max_cost:.0f}，买不买由你决定"
                                                  if pick["single"]["cost_per_contract"] > max_cost else None),
                             "market_state": market.get("state")})
@@ -917,6 +934,9 @@ def report(result: dict) -> str:
                 g = ex["by_score"]["2021-2026"]
                 lines.append(f"  - 赚钱概率（模型）{e.get('ml_score')}；同类信号回测：胜率 {g['win']}%，每笔平均 {g['mean']:+.0f}%，"
                              f"压力情景 {g['stress']:+.0f}%，亏一半以上 {g['lose_half']}%")
+            if e.get("deep_star"):
+                lines.append("  - ⭐⭐ 这类信号回测（2010–2026，123 笔）：标准合约每笔 +27%、胜率 75%、亏一半以上 7%；"
+                             "换成 1 周到期 Delta 0.75：每笔 +38%、翻倍 18%、亏一半以上 10%。想搏大反弹，用下面更短的合约")
             if e.get("short_alt"):
                 a = e["short_alt"]
                 lines.append(f"  - 更短的选择：{a['expiration']} 到期 {a['strike']}C（{a['dte']} 天，Delta {a['delta']}），每张约 ${a['cost_per_contract']:.0f}；"

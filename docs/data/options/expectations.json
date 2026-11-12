@@ -167,5 +167,36 @@
     "double": 2.7
    }
   }
+ },
+ "deep_star": {
+  "rule": "大盘回调 + 跟板块一起跌(>-2%) + 连跌幅度 ≥2.5 ATR",
+  "period": "2010-2026",
+  "n": 123,
+  "days": 88,
+  "standard": {
+   "mean": 26.9,
+   "win": 75,
+   "double": 8.9,
+   "lose_half": 7,
+   "stress": 17.3,
+   "crush": 13.1
+  },
+  "one_week_delta75": {
+   "mean": 37.6,
+   "win": 72,
+   "double": 17.9,
+   "lose_half": 10,
+   "stress": 25.7,
+   "crush": 23.5
+  },
+  "one_week_atm": {
+   "mean": 50.7,
+   "win": 62,
+   "double": 25.2,
+   "triple": 10.6,
+   "lose_half": 16,
+   "stress": 32.7,
+   "crush": 22.2
+  }
  }
 }
