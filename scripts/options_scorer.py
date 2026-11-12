@@ -95,8 +95,11 @@ MAX_NEW_PER_DAY = 2  # cap new signals per day (all sides)
 MAX_PER_SECTOR = 2   # open signals in one sector (they move together)
 # Position size as a share of the options budget, set by market context (backtested 2021-2026):
 # dips during a broad pullback rebounded far better than a single stock falling on its own.
-RISK_FULL = 0.03     # broad pullback: SPY down >2% over 5 days, below its 50-day, or 2+ signals that day
-RISK_HALF = 0.015    # a single stock falling alone in a calm market
+# 2026-11-12 the user chose 20% of the options budget per trade (bootstrapped years, 40 trades: median end
+# about 1.7x, 10th percentile about 0.7x, 4% chance of losing half; 100% per trade ends near zero 69% of the time).
+RISK_FULL = 0.20     # standard trade
+RISK_HALF = 0.10     # weaker setups: lone faller in a pullback, or a lone faller in a calm market without sector data
+RISK_STAR = 0.30     # best setup, flagged to the user: market pullback AND the stock fell with its sector
 # v2.5 news proxy: compare the stock's fall over the down streak with its sector ETF over the same days.
 # Backtest (v2.4 contract, per trade, 2021-24 / 2025-26): fell with its sector +19.8% / +17.0%;
 # calm market and >=2% worse than its sector -3.1% / -1.9% (likely company news) -> skip;
@@ -110,8 +113,8 @@ EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would 
 
 RISK_RULES = [
     "只买看涨期权（Call），最大亏损 = 付出的权利金；不买看跌、不裸卖期权、不用保证金、不借钱。进场条件：长期趋势向上（股价和 50 日均线都在 200 日均线上方）且已连续 4 个交易日收盘下跌，在收盘前半小时确认后买入。",
-    "仓位随行情、板块和账户变：跟板块一起跌时每笔用期权资金的 3%；大盘回调但它比板块多跌 5% 以上时 1.5%；大盘平稳而它比板块多跌 2% 以上（多半是公司利空）不做；信号出现时再查新闻，有公司自身的基本面利空就不做；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
-    "合约：2–3 周后到期（14–30 天，优先第 17 天左右的周五）、Delta 约 0.75 的价内 Call；超过每张上限就降到 Delta 0.65，再贵就不做，绝不改买平值或价外。退场（收盘前半小时按收盘价判断）：收盘站上 5 日均线就卖；大反弹（股价 ≥ 入场价 + 1.5 倍 ATR）时有 2 张以上可留一半；收盘跌破“信号日低点 − 2 倍 ATR”全部卖；满 5 个交易日没反弹全部卖；到期前一天、财报前 2 天必须卖。不设期权涨跌百分比止损止盈，风控靠每笔只用 1.5–3% 的钱。",
+    "仓位随行情、板块和账户变：每笔用期权资金的 20%；大盘回调且它跟板块一起跌是特别好的机会（⭐），可加到 30%；大盘回调但它比板块多跌 5% 以上时 10%；大盘平稳而它比板块多跌 2% 以上（多半是公司利空）不做；信号出现时再查新闻，有公司自身的基本面利空就不做；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
+    "合约：2–3 周后到期（14–30 天，优先第 17 天左右的周五）、Delta 约 0.75 的价内 Call；超过每张上限就降到 Delta 0.65，再贵就不做，绝不改买平值或价外。退场（收盘前半小时按收盘价判断）：收盘站上 5 日均线就卖；大反弹（股价 ≥ 入场价 + 1.5 倍 ATR）时有 2 张以上可留一半；收盘跌破“信号日低点 − 2 倍 ATR”全部卖；满 5 个交易日没反弹全部卖；到期前一天、财报前 2 天必须卖。不设期权涨跌百分比止损止盈，风控靠仓位：每笔只用期权资金的 20%（特别好的机会最多 30%），绝不满仓。",
     "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套「连跌 4 天」规则每笔平均约 +8.5%、胜率约 61%（估算的期权价格，且是从十几条规则里挑出来的，实际会打折扣），不保证盈利。下单前请在券商核对实时买卖价，用限价单。",
 ]
 
@@ -630,6 +633,8 @@ def size_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
         return 0.0, f"不做：大盘平稳，它却比板块多跌 {-lag:.1f}%，多半是公司自己的利空"
     if lag is not None and broad and lag <= SECTOR_LAG_HALF:
         return RISK_HALF, f"半仓：比板块多跌 {-lag:.1f}%，可能有公司自身利空，先查新闻"
+    if lag is not None and lag > SECTOR_LAG_SKIP and broad:
+        return RISK_STAR, "⭐ 特别好的机会：大盘回调、它跟板块一起跌（回测每笔约 +18%，两段时间都成立），可以加到 30%"
     if lag is not None and lag > SECTOR_LAG_SKIP:
         return RISK_FULL, "标准仓位：跟板块一起跌，属于被错杀"
     if broad:
@@ -795,7 +800,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
         "risk_rules": RISK_RULES,
         "market": market,
-        "sizing": {"risk_full_pct": RISK_FULL * 100, "risk_half_pct": RISK_HALF * 100,
+        "sizing": {"risk_full_pct": RISK_FULL * 100, "risk_half_pct": RISK_HALF * 100, "risk_star_pct": RISK_STAR * 100,
                    "drawdown_halve_pct": DRAWDOWN_HALVE * 100, "drawdown_pause_pct": DRAWDOWN_PAUSE * 100,
                    "max_per_sector": MAX_PER_SECTOR},
         "watchlist": [{"symbol": r["symbol"], "dip_score": r["dip_score"], "down_streak": r["down_streak"], "rsi2": r["rsi2"],
