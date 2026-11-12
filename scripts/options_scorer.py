@@ -78,7 +78,9 @@ MAX_SPREAD_PCT = 0.10
 TAKE_PROFIT = 0.80   # +80% of entry mid
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
 MAX_COST_DEFAULT = 1000.0  # preferred USD per contract (about 20% of a $5k budget); above it try delta 0.65
-HARD_MAX_COST = 3000.0     # 2026-11-12 user: still alert above the preferred cap and let them decide
+HARD_MAX_COST = float("inf")  # 2026-11-12 user: alert at any price, the user decides
+SHORT_DTE = (5, 13)          # optional 1-2 week alternative shown next to the main contract
+SHORT_DELTA_TARGET = 0.80
 SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
 STOP_LOSS = -0.50    # -50% of entry mid (tight stops cut rebounds short in the backtest)
 MAX_HOLD_DAYS = 7     # calendar days; the user holds each option 1-7 days
@@ -494,7 +496,13 @@ def pick_contracts(options: list[dict], side: str, today: date, hv20_pct: float 
             }
     iv = long["iv"]
     iv_vs_hv = round(iv * 100 / hv20_pct, 2) if iv and hv20_pct else None
+    near = [c for c in candidates(options, today)
+            if c["type"] == side and SHORT_DTE[0] <= c["dte"] <= SHORT_DTE[1]
+            and c["spread_pct"] <= MAX_SPREAD_PCT and c["open_interest"] >= MIN_OPEN_INTEREST
+            and 0.70 <= abs(c["delta"]) <= 0.90]
+    alt = min(near, key=lambda c: abs(abs(c["delta"]) - SHORT_DELTA_TARGET) + abs(c["dte"] - 8) / 60) if near else None
     return {
+        "short_alt": {**short_view(alt), "cost_per_contract": round(alt["mid"] * 100, 2)} if alt else None,
         "single": {**short_view(long),
                    "cost_per_contract": round(long["mid"] * 100, 2),
                    "breakeven": round(long["strike"] + sign * long["mid"], 2)},
@@ -627,6 +635,22 @@ def market_context(spy: list[dict]) -> dict:
             "note": (f"大盘 5 日 {r5:+.1f}%，{'在' if above50 else '跌破'} 50 日线、{'在' if above200 else '跌破'} 200 日线。"
                      + ("属于普跌回调：回测里这时的连跌信号反弹最好，按标准仓位。" if r5 < -2 or not above50
                         else "大盘平稳：此时单只股票独自连跌，回测反弹较弱，信号按半仓。"))}
+
+
+EXPECT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "data", "options", "expectations.json")
+
+
+def expectation(ml_p: float | None) -> dict | None:
+    """Backtest expectation for this signal (by model tercile) and for the main vs 1-2 week contract."""
+    try:
+        ex = json.load(open(EXPECT_PATH))
+    except (OSError, ValueError):
+        return None
+    model = options_ml.load_model() or {}
+    grp = None
+    if ml_p is not None and model:
+        grp = "low" if ml_p < model["q33"] else "high" if ml_p > model["q67"] else "mid"
+    return {"group": grp, "by_score": ex["ml"].get(grp) if grp else None, "by_expiry": ex["dte"]}
 
 
 def rule_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
@@ -800,7 +824,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             except RuntimeError as exc:
                 r["entry_block"] = f"期权链获取失败：{exc}"[:160]
                 continue
-            pick = pick_contracts(chain, side, today, r.get("hv20"), max_cost)
+            pick = pick_contracts(chain, side, today, r.get("hv20"))  # no cost fallback: the user decides
             r["contracts"] = pick
             if not pick:
                 r["entry_block"] = f"没有买卖价差 ≤10%、未平仓量 ≥{MIN_OPEN_INTEREST} 的 14–30 天、Delta 0.65–0.85 合约"
@@ -824,6 +848,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                             "disaster_line": round(r["low"] - DISASTER_ATR * r["atr14"], 2) if r.get("low") and r.get("atr14") else None,
                             "runner_level": round(r["price"] + RUNNER_ATR * r["atr14"], 2) if r.get("atr14") else None,
                             "risk_pct": round(tier * 100, 1), "size_note": tier_note, "ml_score": ml_p,
+                            "short_alt": pick.get("short_alt"), "expect": expectation(ml_p),
                             "over_budget_note": (f"⚠️ 每张约 ${pick['single']['cost_per_contract']:.0f}，超过建议上限 ${max_cost:.0f}，买不买由你决定"
                                                  if pick["single"]["cost_per_contract"] > max_cost else None),
                             "market_state": market.get("state")})
@@ -887,6 +912,15 @@ def report(result: dict) -> str:
             lines.append(f"  - 净成本约 {e['entry_cost']}（每张约 ${e['cost_per_contract']:.0f}，最多亏这么多{gain}），盈亏平衡 {e['breakeven']}")
             if e.get("over_budget_note"):
                 lines.append(f"  - {e['over_budget_note']}")
+            ex = e.get("expect") or {}
+            if ex.get("by_score"):
+                g = ex["by_score"]["2021-2026"]
+                lines.append(f"  - 赚钱概率（模型）{e.get('ml_score')}；同类信号回测：胜率 {g['win']}%，每笔平均 {g['mean']:+.0f}%，"
+                             f"压力情景 {g['stress']:+.0f}%，亏一半以上 {g['lose_half']}%")
+            if e.get("short_alt"):
+                a = e["short_alt"]
+                lines.append(f"  - 更短的选择：{a['expiration']} 到期 {a['strike']}C（{a['dte']} 天，Delta {a['delta']}），每张约 ${a['cost_per_contract']:.0f}；"
+                             "回测平均更高，但亏一半以上的比例也更高、最差 10% 亏 80% 以上")
             lines.append(f"  - 止损 {e['stop_value']} ｜ 止盈 {e['target_value']} ｜ 最晚 {e['exit_by']} 退场")
         lines.append("")
     if not result["entries"] and not result["exits"]:

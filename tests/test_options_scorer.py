@@ -217,3 +217,16 @@ class DipV24Tests(unittest.TestCase):
         cheap = o.pick_contracts(fine, "call", TODAY, 25, max_cost=pick["single"]["cost_per_contract"] - 1)
         self.assertLess(cheap["single"]["delta"], pick["single"]["delta"])
         self.assertGreaterEqual(cheap["single"]["delta"], 0.65)
+
+
+class ShortAltTests(unittest.TestCase):
+    def test_short_dated_alternative_is_offered(self):
+        main = chain("X", 100, TODAY + timedelta(days=18), "C", step=1)
+        near = chain("X", 100, TODAY + timedelta(days=8), "C", step=1)
+        pick = o.pick_contracts(main + near, "call", TODAY, 25)
+        self.assertGreaterEqual(pick["single"]["dte"], o.DTE_MIN)
+        self.assertEqual(pick["short_alt"]["dte"], 8)
+        self.assertGreaterEqual(pick["short_alt"]["delta"], 0.70)
+        exp = o.expectation(0.7)
+        self.assertEqual(exp["group"], "high")
+        self.assertIn("2021-2026", exp["by_score"])
