@@ -26,6 +26,9 @@ import re
 import sys
 import time
 import urllib.error
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import options_ml  # noqa: E402  (ML sizing overlay, v2.6)
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -36,7 +39,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.5"
+RULES_VERSION = "options-score-v2.6"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -625,6 +628,38 @@ def market_context(spy: list[dict]) -> dict:
                         else "大盘平稳：此时单只股票独自连跌，回测反弹较弱，信号按半仓。"))}
 
 
+def rule_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
+    """v2.5 rule tier: 0 skip, 0.5 half, 1 full."""
+    broad = market.get("broad_pullback") or n_signals_today >= 2
+    lag = r.get("vs_sector_streak")
+    if lag is not None and not broad and lag <= SECTOR_LAG_SKIP:
+        return 0.0, f"不做：大盘平稳，它却比板块多跌 {-lag:.1f}%，多半是公司自己的利空"
+    if lag is not None and broad and lag <= SECTOR_LAG_HALF:
+        return 0.5, f"比板块多跌 {-lag:.1f}%，可能有公司自身利空，先查新闻"
+    if lag is not None and lag > SECTOR_LAG_SKIP:
+        return 1.0, "跟板块一起跌，属于被错杀"
+    return (1.0, "普跌中的回调") if broad else (0.5, "大盘平稳、个股独跌")
+
+
+def ml_size(r: dict, market: dict, n_signals_today: int, bars: dict) -> tuple[float, str, float | None]:
+    """v2.6 position size = 20% x rule tier x model multiplier (0.5/1/1.5), capped at 30%."""
+    tier, note = rule_tier(r, market, n_signals_today)
+    if tier <= 0:
+        return 0.0, note, None
+    model = options_ml.load_model()
+    feat = options_ml.features(bars.get(r["symbol"], []), bars.get(SECTOR.get(r["symbol"]) or "", None),
+                               bars.get("SPY", []), n_signals_today,
+                               bool(market.get("broad_pullback") or n_signals_today >= 2), tier) if model else None
+    if not feat:
+        risk, n2 = size_tier(r, market, n_signals_today)
+        return risk, n2 + "（模型数据不足，按规则）", None
+    p = options_ml.score(feat, model)
+    mult, mnote = options_ml.size_multiplier(p, model)
+    risk = min(RISK_STAR, RISK_FULL * tier * mult)
+    star = "⭐ 特别好的机会：" if risk >= RISK_STAR else ""
+    return risk, f"{star}每笔 {risk * 100:.0f}%。{note}；{mnote}", round(p, 3)
+
+
 def size_tier(r: dict, market: dict, n_signals_today: int) -> tuple[float, str]:
     """Size from market state and whether the stock fell with its sector (0 = skip)."""
     broad = market.get("broad_pullback") or n_signals_today >= 2
@@ -750,7 +785,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if SECTOR[r["symbol"]] and sector_open >= MAX_PER_SECTOR:
                 r["entry_block"] = f"同板块已有 {sector_open} 笔，最多 {MAX_PER_SECTOR} 笔"
                 continue
-            tier, tier_note = size_tier(r, market, len(cands))
+            tier, tier_note, ml_p = ml_size(r, market, len(cands), bars)
             if tier <= 0:
                 r["entry_block"] = tier_note
                 continue
@@ -787,8 +822,8 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                             "exit_rules": "v2.4", "stop_value": None, "target_value": None,
                             "disaster_line": round(r["low"] - DISASTER_ATR * r["atr14"], 2) if r.get("low") and r.get("atr14") else None,
                             "runner_level": round(r["price"] + RUNNER_ATR * r["atr14"], 2) if r.get("atr14") else None,
-                            "risk_pct": size_tier(r, market, len(cands))[0] * 100,
-                            "size_note": size_tier(r, market, len(cands))[1], "market_state": market.get("state")})
+                            "risk_pct": round(tier * 100, 1), "size_note": tier_note, "ml_score": ml_p,
+                            "market_state": market.get("state")})
             added += 1
 
     scored = [r for r in rows if r["score"] is not None]
