@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.3"
+RULES_VERSION = "options-score-v2.4"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -62,8 +62,13 @@ PUT_ENTRY = 30
 MAX_NEW_PER_SIDE = 3
 MAX_OPEN = 10  # tracked paper signals; the user's real positions are capped at 5 separately
 # Contract selection
-DTE_MIN, DTE_MAX = 21, 45
-LONG_DELTA = (0.45, 0.65)
+# v2.4: 2-3 week expiry, in-the-money (delta ~0.75). Same leverage as a 30-day ATM call but only about a quarter
+# of the premium is time value, so an IV drop after entry hurts far less (backtest: stress+crush -12% -> about -1%).
+DTE_MIN, DTE_MAX = 14, 30
+TARGET_DTE = 17
+LONG_DELTA = (0.65, 0.85)
+TARGET_DELTA = 0.75
+FALLBACK_DELTA = 0.65  # if delta 0.75 is over the per-contract cap; never go lower (ATM/OTM)
 SHORT_DELTA = (0.20, 0.35)
 MAX_SPREAD_PCT = 0.10
 # Exit rules (premium-based, on the long single-leg idea)
@@ -74,6 +79,10 @@ SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
 STOP_LOSS = -0.50    # -50% of entry mid (tight stops cut rebounds short in the backtest)
 MAX_HOLD_DAYS = 7     # calendar days; the user holds each option 1-7 days
 TIME_EXIT_DTE = 10
+DIP_TIME_EXIT_DTE = 1   # dip trades: sell by the last trading day before expiry
+DIP_MAX_SESSIONS = 5    # dip trades: sell at the close of session 5 if nothing else fired
+DISASTER_ATR = 2.0      # dip trades: close below signal-day low - 2 ATR -> sell all (rare brake)
+RUNNER_ATR = 1.5        # on the rebound exit, if close >= entry + 1.5 ATR, 2+ contracts may keep half
 EARNINGS_EXIT_DAYS = 2
 # v2 entry: a sharp short-term dip inside a long-term uptrend (calls only).
 DOWN_STREAK_ENTRY = 4   # consecutive lower closes that trigger a call signal
@@ -96,7 +105,7 @@ EARNINGS_BLOCK_DAYS = 14  # no new entry if earnings are this close (hold would 
 RISK_RULES = [
     "只买看涨期权（Call），最大亏损 = 付出的权利金；不买看跌、不裸卖期权、不用保证金、不借钱。进场条件：长期趋势向上（股价和 50 日均线都在 200 日均线上方）且已连续 4 个交易日收盘下跌，在收盘前半小时确认后买入。",
     "仓位随行情和账户变：大盘普跌回调时每笔用期权资金的 3%，大盘平稳、个股独跌时 1.5%；账户比最高点低 10% 时全部减半，低 20% 时暂停新开仓。同时最多 5 笔、同板块最多 2 笔、每天最多 2 个新信号，每张不超过 $1000。只用亏光也不影响生活的钱。",
-    "每笔持有 1–7 天：亏 50% 止损；赚 80% 止盈；反弹到位（收盘站上 5 日均线）退场；满 7 天无论盈亏都退场；财报前 2 天退场。合约选 3–6 周后到期的，时间损耗更小。",
+    "合约：2–3 周后到期（14–30 天，优先第 17 天左右的周五）、Delta 约 0.75 的价内 Call；超过每张上限就降到 Delta 0.65，再贵就不做，绝不改买平值或价外。退场（收盘前半小时按收盘价判断）：收盘站上 5 日均线就卖；大反弹（股价 ≥ 入场价 + 1.5 倍 ATR）时有 2 张以上可留一半；收盘跌破“信号日低点 − 2 倍 ATR”全部卖；满 5 个交易日没反弹全部卖；到期前一天、财报前 2 天必须卖。不设期权涨跌百分比止损止盈，风控靠每笔只用 1.5–3% 的钱。",
     "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套「连跌 4 天」规则每笔平均约 +8.5%、胜率约 61%（估算的期权价格，且是从十几条规则里挑出来的，实际会打折扣），不保证盈利。下单前请在券商核对实时买卖价，用限价单。",
 ]
 
@@ -382,6 +391,7 @@ def score_symbol(bars: list[dict], spy: list[dict], sector: list[dict] | None) -
         "rsi2": round(rsi(closes[-40:], 2), 1),
         "down_streak": down_streak(closes),
         "above_sma5": px > sma(closes, 5),
+        "low": round(bars[-1]["l"], 2),
         "uptrend": bool(s200 and px > s200 and s50 > s200),
         "bar_date": bars[-1]["t"][:10],
     }
@@ -427,7 +437,8 @@ def candidates(options: list[dict], today: date) -> list[dict]:
     return out
 
 
-def pick_contracts(options: list[dict], side: str, today: date, hv20_pct: float | None) -> dict | None:
+def pick_contracts(options: list[dict], side: str, today: date, hv20_pct: float | None,
+                   max_cost: float | None = None) -> dict | None:
     """Choose a long single option and a same-expiry debit spread."""
     opts = [c for c in candidates(options, today)
             if c["type"] == side and DTE_MIN <= c["dte"] <= DTE_MAX
@@ -435,8 +446,13 @@ def pick_contracts(options: list[dict], side: str, today: date, hv20_pct: float 
     longs = [c for c in opts if LONG_DELTA[0] <= abs(c["delta"]) <= LONG_DELTA[1]]
     if not longs:
         return None
-    target_dte = 30
-    long = min(longs, key=lambda c: (abs(abs(c["delta"]) - 0.55) + abs(c["dte"] - target_dte) / 60))
+    def best(pool, target):
+        return min(pool, key=lambda c: (abs(abs(c["delta"]) - target) + abs(c["dte"] - TARGET_DTE) / 60))
+    long = best(longs, TARGET_DELTA)
+    if max_cost and long["mid"] * 100 > max_cost:  # step down to delta ~0.65, never to ATM/OTM
+        cheaper = [c for c in longs if c["mid"] * 100 <= max_cost]
+        if cheaper:
+            long = best(cheaper, FALLBACK_DELTA)
     sign = 1 if long["type"] == "call" else -1
     shorts = [c for c in opts if c["expiration"] == long["expiration"]
               and SHORT_DELTA[0] <= abs(c["delta"]) <= SHORT_DELTA[1]
@@ -504,6 +520,15 @@ def position_value(sig: dict, option_snaps: dict) -> float | None:
     return total
 
 
+def sessions_since(start: str, today: date) -> int:
+    """Weekday sessions after the entry day up to and including today (holidays ignored)."""
+    d, n = date.fromisoformat(start), 0
+    while d < today:
+        d += timedelta(days=1)
+        n += d.weekday() < 5
+    return n
+
+
 def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earnings: dict,
                 today: date, near_close: bool = True) -> tuple[list[dict], list[dict]]:
     """Return (still_open, exits)."""
@@ -516,19 +541,30 @@ def review_open(open_signals: list[dict], option_snaps: dict, scores: dict, earn
         dte = (date.fromisoformat(sig["expiration"]) - today).days
         score = scores.get(sig["symbol"], {}).get("score")
         tp = TAKE_PROFIT if sig["structure"] == "single" else TAKE_PROFIT_SPREAD
+        dip4 = sig.get("exit_rules") == "v2.4"  # v2.4 dip trades: no option-% stop or target
+        price = scores.get(sig["symbol"], {}).get("price")
         reason = None
-        if pnl is not None and pnl >= tp:
+        if not dip4 and pnl is not None and pnl >= tp:
             reason = f"止盈：+{pnl * 100:.0f}%"
-        elif pnl is not None and pnl <= STOP_LOSS:
+        elif not dip4 and pnl is not None and pnl <= STOP_LOSS:
             reason = f"止损：{pnl * 100:.0f}%"
+        elif dip4 and price is not None and sig.get("disaster_line") and price < sig["disaster_line"] and near_close:
+            reason = f"走势破位：收盘 {price} 跌破止损线 {sig['disaster_line']}（信号日低点 − {DISASTER_ATR:g} 倍 ATR），全部卖出"
+        elif dip4 and dte <= DIP_TIME_EXIT_DTE:
+            reason = f"到期前退场：只剩 {dte} 天到期，不拿到到期日"
+        elif dip4 and sig.get("entry_date") and near_close and sessions_since(sig["entry_date"], today) >= DIP_MAX_SESSIONS:
+            reason = f"时间退场：已持有 {DIP_MAX_SESSIONS} 个交易日还没反弹到位"
         elif sig.get("entry_date") and (today - date.fromisoformat(sig["entry_date"])).days >= MAX_HOLD_DAYS:
             reason = f"时间退场：已持有满 {MAX_HOLD_DAYS} 天"
-        elif dte <= TIME_EXIT_DTE:
+        elif not dip4 and dte <= TIME_EXIT_DTE:
             reason = f"时间退场：只剩 {dte} 天到期"
         elif earnings_soon(earnings, sig["symbol"], today, EARNINGS_EXIT_DAYS):
             reason = f"财报前退场（财报日 {earnings[sig['symbol']]}）"
         elif sig.get("setup") == "dip" and near_close and scores.get(sig["symbol"], {}).get("above_sma5"):
             reason = "反弹到位：收盘站上 5 日均线"
+            if dip4 and price is not None and sig.get("runner_level") and price >= sig["runner_level"]:
+                reason += (f"。涨幅已超过 {sig['runner_level']}（入场 + {RUNNER_ATR:g} 倍 ATR），属于大反弹："
+                           "有 2 张以上可以先卖一半、留一半，留下的那一半跌回最高价值的一半、满 10 个交易日或到期前一天再卖")
         elif sig.get("setup") != "dip" and score is not None and sig["type"] == "call" and score < 50:
             reason = f"趋势失效：评分降到 {score}"
         elif sig.get("setup") != "dip" and score is not None and sig["type"] == "put" and score > 50:
@@ -695,10 +731,10 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             except RuntimeError as exc:
                 r["entry_block"] = f"期权链获取失败：{exc}"[:160]
                 continue
-            pick = pick_contracts(chain, side, today, r.get("hv20"))
+            pick = pick_contracts(chain, side, today, r.get("hv20"), max_cost)
             r["contracts"] = pick
             if not pick:
-                r["entry_block"] = f"没有买卖价差 ≤10%、未平仓量 ≥{MIN_OPEN_INTEREST} 的 21–45 天合约"
+                r["entry_block"] = f"没有买卖价差 ≤10%、未平仓量 ≥{MIN_OPEN_INTEREST} 的 14–30 天、Delta 0.65–0.85 合约"
                 continue
             structure, block = choose_structure(pick, max_cost)
             if block:
@@ -715,6 +751,9 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                 r["entry_block"] = f"今天已有 {MAX_NEW_PER_DAY} 个新信号，明天再看"
                 continue
             entries.append({**make_entry(r, side, pick, structure, today), "setup": "dip", "down_streak_at_entry": r["down_streak"],
+                            "exit_rules": "v2.4", "stop_value": None, "target_value": None,
+                            "disaster_line": round(r["low"] - DISASTER_ATR * r["atr14"], 2) if r.get("low") and r.get("atr14") else None,
+                            "runner_level": round(r["price"] + RUNNER_ATR * r["atr14"], 2) if r.get("atr14") else None,
                             "risk_pct": size_tier(r, market, len(cands))[0] * 100,
                             "size_note": size_tier(r, market, len(cands))[1], "market_state": market.get("state")})
             added += 1

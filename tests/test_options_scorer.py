@@ -24,9 +24,9 @@ def occ(root, exp, cp, strike):
     return f"{root}{exp.strftime('%y%m%d')}{cp}{int(strike * 1000):08d}"
 
 
-def chain(root, px, exp, cp, oi=500, spread=0.05):
+def chain(root, px, exp, cp, oi=500, spread=0.05, step=5):
     rows = []
-    for k in range(int(px * 0.8), int(px * 1.2) + 1, 5):
+    for k in range(int(px * 0.8), int(px * 1.2) + 1, step):
         moneyness = (px - k) / px if cp == "C" else (k - px) / px
         delta = max(0.02, min(0.98, 0.5 + moneyness * 4))
         mid = max(0.1, px * 0.04 + (px - k if cp == "C" else k - px) * delta)
@@ -177,3 +177,36 @@ class RunTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class DipV24Tests(unittest.TestCase):
+    def sig(self, **kw):
+        base = {"symbol": "X", "type": "call", "structure": "single", "expiration": "2026-11-27",
+                "entry_cost": 2.0, "legs": [{"contract": "C1", "qty": 1, "strike": 100, "entry_mid": 2.0}],
+                "setup": "dip", "exit_rules": "v2.4", "entry_date": "2026-11-09",
+                "disaster_line": 90.0, "runner_level": 106.0}
+        return {**base, **kw}
+
+    def run_one(self, mid, price, above5=False, today=TODAY, **kw):
+        snaps = {"C1": {"bid": mid - 0.05, "ask": mid + 0.05}}
+        return o.review_open([self.sig(**kw)], snaps, {"X": {"score": 60, "price": price, "above_sma5": above5}}, {}, today)
+
+    def test_no_option_percent_stop_or_target(self):
+        self.assertEqual(len(self.run_one(0.6, 95)[1]), 0)   # -70% but chart intact: hold
+        self.assertEqual(len(self.run_one(4.0, 99)[1]), 0)   # +100% but not above SMA5 yet: hold
+
+    def test_disaster_line_time_and_runner(self):
+        self.assertIn("破位", self.run_one(1.0, 89.5)[1][0]["exit_reason"])
+        self.assertIn("交易日", self.run_one(2.0, 95, today=date(2026, 11, 16))[1][0]["exit_reason"])
+        self.assertIn("到期前", self.run_one(2.0, 95, today=date(2026, 11, 26))[1][0]["exit_reason"])
+        self.assertNotIn("留一半", self.run_one(2.5, 101, above5=True)[1][0]["exit_reason"])
+        self.assertIn("留一半", self.run_one(4.0, 107, above5=True)[1][0]["exit_reason"])
+
+    def test_pick_prefers_itm_short_expiry_and_steps_down_for_cost(self):
+        exp = TODAY + timedelta(days=18)
+        fine = chain("X", 100, exp, "C", step=1)
+        pick = o.pick_contracts(fine, "call", TODAY, 25)
+        self.assertAlmostEqual(pick["single"]["delta"], 0.74, places=2)
+        cheap = o.pick_contracts(fine, "call", TODAY, 25, max_cost=pick["single"]["cost_per_contract"] - 1)
+        self.assertLess(cheap["single"]["delta"], pick["single"]["delta"])
+        self.assertGreaterEqual(cheap["single"]["delta"], 0.65)
