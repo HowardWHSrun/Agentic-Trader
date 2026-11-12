@@ -77,7 +77,8 @@ MAX_SPREAD_PCT = 0.10
 # Exit rules (premium-based, on the long single-leg idea)
 TAKE_PROFIT = 0.80   # +80% of entry mid
 TAKE_PROFIT_SPREAD = 0.60  # +60% of debit (spread gain is capped)
-MAX_COST_DEFAULT = 1000.0  # USD per contract (100 shares)
+MAX_COST_DEFAULT = 1000.0  # preferred USD per contract (about 20% of a $5k budget); above it try delta 0.65
+HARD_MAX_COST = 3000.0     # 2026-11-12 user: still alert above the preferred cap and let them decide
 SINGLE_LEG_ONLY = True     # Robinhood options level 2: no spreads
 STOP_LOSS = -0.50    # -50% of entry mid (tight stops cut rebounds short in the backtest)
 MAX_HOLD_DAYS = 7     # calendar days; the user holds each option 1-7 days
@@ -804,7 +805,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if not pick:
                 r["entry_block"] = f"没有买卖价差 ≤10%、未平仓量 ≥{MIN_OPEN_INTEREST} 的 14–30 天、Delta 0.65–0.85 合约"
                 continue
-            structure, block = choose_structure(pick, max_cost)
+            structure, block = choose_structure(pick, max(max_cost, HARD_MAX_COST))
             if block:
                 r["entry_block"] = block
                 continue
@@ -823,6 +824,8 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
                             "disaster_line": round(r["low"] - DISASTER_ATR * r["atr14"], 2) if r.get("low") and r.get("atr14") else None,
                             "runner_level": round(r["price"] + RUNNER_ATR * r["atr14"], 2) if r.get("atr14") else None,
                             "risk_pct": round(tier * 100, 1), "size_note": tier_note, "ml_score": ml_p,
+                            "over_budget_note": (f"⚠️ 每张约 ${pick['single']['cost_per_contract']:.0f}，超过建议上限 ${max_cost:.0f}，买不买由你决定"
+                                                 if pick["single"]["cost_per_contract"] > max_cost else None),
                             "market_state": market.get("state")})
             added += 1
 
@@ -882,6 +885,8 @@ def report(result: dict) -> str:
             gain = f"，最多赚 ${e['max_gain_per_contract']:.0f}" if e["max_gain_per_contract"] else ""
             lines.append(f"- **{e['symbol']} {kind}**（评分 {e['score_at_entry']}，股价 {e['underlying_at_entry']}）{what}：{legs_text(e)}")
             lines.append(f"  - 净成本约 {e['entry_cost']}（每张约 ${e['cost_per_contract']:.0f}，最多亏这么多{gain}），盈亏平衡 {e['breakeven']}")
+            if e.get("over_budget_note"):
+                lines.append(f"  - {e['over_budget_note']}")
             lines.append(f"  - 止损 {e['stop_value']} ｜ 止盈 {e['target_value']} ｜ 最晚 {e['exit_by']} 退场")
         lines.append("")
     if not result["entries"] and not result["exits"]:
