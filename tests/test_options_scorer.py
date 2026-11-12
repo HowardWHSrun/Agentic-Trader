@@ -1,6 +1,7 @@
 """Offline tests for scripts/options_scorer.py using synthetic data (no network)."""
 import sys
 import unittest
+from unittest import mock
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -128,6 +129,7 @@ class ExitTests(unittest.TestCase):
 
 
 class RunTests(unittest.TestCase):
+    @mock.patch.object(o, "MIN_HV20", 0.0)  # the fake series are smooth; volatility filter tested below
     def test_end_to_end_with_fake_data(self):
         bars = {s: series(260, 100, 0.05) for s in o.UNIVERSE + o.BENCHMARKS}
         bars["KO"] = series(260, 50, 0.2, 0.1)    # strong uptrend ...
@@ -158,6 +160,11 @@ class RunTests(unittest.TestCase):
         # Earnings inside the window blocks the entry.
         res2 = o.run(FakeClient(bars, chains), TODAY, now, {"KO": "2026-11-12"}, {"open": [], "qualified": ["KO", "BAC"]}, max_cost=5000)
         self.assertNotIn("KO", {e["symbol"] for e in res2["entries"]})
+        # A quiet stock (20-day volatility under MIN_HV20) is skipped.
+        with mock.patch.object(o, "MIN_HV20", 1000.0):
+            res3 = o.run(FakeClient(bars, chains), TODAY, now, {}, {"open": [], "qualified": ["KO"]}, max_cost=5000)
+        self.assertEqual(res3["entries"], [])
+        self.assertIn("波动", next(r for r in res3["rankings"] if r["symbol"] == "KO")["entry_block"])
         # A fresh exit puts the stock on cooldown.
         state = {"open": [], "qualified": ["KO", "BAC"], "closed": [{"symbol": "KO", "exit_date": "2026-11-08"}]}
         res3 = o.run(FakeClient(bars, chains), TODAY, now, {}, state, max_cost=5000)

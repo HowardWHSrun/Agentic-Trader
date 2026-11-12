@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "data" / "options"
 CT = ZoneInfo("America/Chicago")
-RULES_VERSION = "options-score-v2.2"
+RULES_VERSION = "options-score-v2.3"
 
 UNIVERSE = [
     "AAPL", "AVGO", "CRM", "MSFT", "NVDA", "GOOGL", "META", "AMZN", "HD", "COST",
@@ -77,6 +77,9 @@ TIME_EXIT_DTE = 10
 EARNINGS_EXIT_DAYS = 2
 # v2 entry: a sharp short-term dip inside a long-term uptrend (calls only).
 DOWN_STREAK_ENTRY = 4   # consecutive lower closes that trigger a call signal
+# Skip quiet stocks: their rebounds are too small to pay for an option (backtest: HV20<20% +2.9%/+4.8% per
+# trade in 2021-24/2025-26 vs +11.1%/+10.0% for HV20>=20%; threshold set on 2021-24 only).
+MIN_HV20 = 20.0
 ENTRY_WINDOW_CT = ("14:30", "15:05")  # signals and rebound exits are judged near the close, as in the backtest
 COOLDOWN_DAYS = 3  # no re-entry on the same stock right after an exit
 MAX_NEW_PER_DAY = 2  # cap new signals per day (all sides)
@@ -675,6 +678,9 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
             if r["symbol"] in cooling:
                 r["entry_block"] = f"{cooling[r['symbol']]} 刚退场，冷却 {COOLDOWN_DAYS} 天"
                 continue
+            if (r.get("hv20") or 0) < MIN_HV20:
+                r["entry_block"] = f"股价波动太小（20 日波动率 {r.get('hv20')}% < {MIN_HV20:.0f}%），反弹幅度不够付期权成本，不做"
+                continue
             sector_open = sum(1 for s in still_open + entries if SECTOR.get(s["symbol"]) == SECTOR[r["symbol"]])
             if SECTOR[r["symbol"]] and sector_open >= MAX_PER_SECTOR:
                 r["entry_block"] = f"同板块已有 {sector_open} 笔，最多 {MAX_PER_SECTOR} 笔"
@@ -728,7 +734,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "watchlist": [{"symbol": r["symbol"], "dip_score": r["dip_score"], "down_streak": r["down_streak"], "rsi2": r["rsi2"],
                        "price": r["price"], "setup": r["setup"]}
                       for r in sorted((x for x in rows if x.get("uptrend")), key=lambda x: (-x["down_streak"], x["rsi2"]))[:8]],
-        "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY, "down_streak_entry": DOWN_STREAK_ENTRY,
+        "thresholds": {"call_entry": CALL_ENTRY, "put_entry": PUT_ENTRY, "down_streak_entry": DOWN_STREAK_ENTRY, "min_hv20": MIN_HV20,
                        "max_cost_per_contract": max_cost,
                        "take_profit_pct": TAKE_PROFIT * 100, "take_profit_spread_pct": TAKE_PROFIT_SPREAD * 100, "stop_loss_pct": STOP_LOSS * 100,
                        "time_exit_dte": TIME_EXIT_DTE, "max_hold_days": MAX_HOLD_DAYS},
