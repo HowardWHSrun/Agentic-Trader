@@ -238,8 +238,10 @@ class CboeClient:
         # official close (pre-market / after-hours prices must not overwrite it).
         ltt = q.get("last_trade_time") or ""
         today_et = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
-        in_session = day == today_et and "09:30:00" <= ltt[11:19] < "16:00:00"
-        price = (q.get("current_price") if in_session else None) or q.get("close")
+        # After 16:00 ET Cboe's current_price drifts with after-hours prints while last_trade_time stays
+        # at 15:59:59, so also require that the session is open right now; otherwise take the official close.
+        in_session = day == today_et and "09:30:00" <= ltt[11:19] < "16:00:00" and regular_session_open()
+        price = (q.get("current_price") if in_session else None) or q.get("close") or q.get("current_price")
         if day and price and q.get("high"):
             bar = {"t": day, "o": q.get("open") or price, "h": max(q["high"], price),
                    "l": min(q.get("low") or price, price), "c": price, "v": q.get("volume", 0)}
@@ -759,12 +761,14 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
     spy = bars.get("SPY", [])
     market = market_context(spy)
     bench_prices = {b: bars[b][-1]["c"] for b in BENCHMARKS if bars.get(b)}
+    spy_prev = (spy[-2]["c"], spy[-1]["t"][:10]) if len(spy) > 1 else None
     rows = []
     for sym in UNIVERSE:
         series = bars.get(sym, [])
         sec = bars.get(SECTOR[sym] or "", None)
         res = score_symbol(series, spy, sec) if series else {"score": None, "missing": f"没有行情数据 {errors.get(sym, '')}".strip()}
         res.update(symbol=sym, sector_etf=SECTOR[sym], direction=direction_for(res.get("score")))
+        res["prev_close"] = series[-2]["c"] if len(series) > 1 else None
         soon = earnings_soon(earnings, sym, today, EARNINGS_BLOCK_DAYS)
         res["earnings"] = earnings.get(sym)
         res["earnings_soon"] = bool(soon)
@@ -878,6 +882,7 @@ def run(client, today: date, now: datetime, earnings: dict, state: dict,
         "generated_at_ct": now.astimezone(CT).strftime("%Y-%m-%d %H:%M CT"),
         "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
         "coverage": {"scored": len(scored), "total": len(UNIVERSE)},
+        "_spy_prev": spy_prev,
         "risk_rules": RISK_RULES,
         "market": market,
         "sizing": {"risk_full_pct": RISK_FULL * 100, "risk_half_pct": RISK_HALF * 100, "risk_star_pct": RISK_STAR * 100,
@@ -1023,12 +1028,16 @@ def annotate(result: dict) -> None:
     result["prev_session_date"] = prev["date"] if prev else None
     prices = {**{r["symbol"]: r.get("price") for r in result["rankings"]}, **result.get("benchmark_prices", {})}
     pp = prev["last"]["prices"] if prev else {}
-    result["spy_day_pct"] = round((prices["SPY"] / pp["SPY"] - 1) * 100, 2) if pp.get("SPY") and prices.get("SPY") else None
+    # Prefer the official previous close from the bar series (snapshots saved after hours could be off).
+    spy_prev = result.pop("_spy_prev", None)
+    spy_base = spy_prev[0] if spy_prev and spy_prev[1] == day else pp.get("SPY")
+    result["spy_day_pct"] = round((prices["SPY"] / spy_base - 1) * 100, 2) if spy_base and prices.get("SPY") else None
     for r in result["rankings"]:
         sym = r["symbol"]
         r["score_prev_close"] = prev["last"]["scores"].get(sym) if prev else None
         r["score_open"] = today["first"]["scores"].get(sym) if today else r.get("score")
-        r["day_pct"] = round((r["price"] / pp[sym] - 1) * 100, 2) if r.get("price") and pp.get(sym) else None
+        base = r.get("prev_close") if r.get("bar_date") == day and r.get("prev_close") else pp.get(sym)
+        r["day_pct"] = round((r["price"] / base - 1) * 100, 2) if r.get("price") and base else None
         if r.get("score") is not None:
             bull, bear = explain_row(r)
             r["why_bull"], r["why_bear"] = bull, bear

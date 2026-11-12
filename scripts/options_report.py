@@ -115,6 +115,10 @@ def build_html(latest: dict, review: dict | None, positions: list[dict], comment
     date = latest["generated_at_ct"][:10]
     rows = [r for r in latest["rankings"] if r["score"] is not None]
     chg = day_changes(date)
+    if latest.get("session_date") == date:  # the scan's own change uses the official previous close
+        chg.update({r["symbol"]: r["day_pct"] for r in latest.get("rankings", []) if r.get("day_pct") is not None})
+        if latest.get("spy_day_pct") is not None:
+            chg["SPY"] = latest["spy_day_pct"]
     blocked = {b["symbol"]: b["reason"] for b in latest.get("blocked", [])}
     bulls = [r for r in rows if r["direction"] == "看涨"]
     bears = [r for r in rows if r["direction"] == "看跌"][::-1]
