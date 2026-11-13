@@ -1,7 +1,7 @@
 {
  "rules_version": "options-score-v2.7",
- "generated_at": "2026-11-13T20:48:00.759562+00:00",
- "generated_at_ct": "2026-11-13 14:48 CT",
+ "generated_at": "2026-11-13T20:51:38.976881+00:00",
+ "generated_at_ct": "2026-11-13 14:51 CT",
  "data_source": "数据来源：股价为 Nasdaq 盘中实时成交价；期权链为 Cboe 数据（延迟约 15 分钟），含 Delta、隐含波动率和未平仓量。",
  "coverage": {
   "scored": 32,
@@ -14,13 +14,13 @@
   "趋势评分只是背景参考：5 年回测显示它对之后几天的涨跌没有预测力。回测里这套「连跌 4 天」规则每笔平均约 +8.5%、胜率约 61%（估算的期权价格，且是从十几条规则里挑出来的，实际会打折扣），不保证盈利。下单前请在券商核对实时买卖价，用限价单。"
  ],
  "market": {
-  "spy": 753.02,
-  "spy_r5": 2.41,
+  "spy": 754.58,
+  "spy_r5": 2.62,
   "spy_above50": false,
   "spy_above200": true,
   "state": "普跌回调",
   "broad_pullback": true,
-  "note": "大盘 5 日 +2.4%，跌破 50 日线、在 200 日线。属于普跌回调：回测里这时的连跌信号反弹最好，按标准仓位。"
+  "note": "大盘 5 日 +2.6%，跌破 50 日线、在 200 日线。属于普跌回调：回测里这时的连跌信号反弹最好，按标准仓位。"
  },
  "sizing": {
   "risk_full_pct": 20.0,
@@ -35,64 +35,64 @@
    "symbol": "DE",
    "dip_score": 50,
    "down_streak": 2,
-   "rsi2": 16.3,
-   "price": 672.51,
+   "rsi2": 16.6,
+   "price": 672.77,
    "setup": "趋势向上，连跌 2 天"
   },
   {
    "symbol": "AMZN",
    "dip_score": 25,
    "down_streak": 1,
-   "rsi2": 42.8,
-   "price": 266.39,
+   "rsi2": 53.7,
+   "price": 267.23,
    "setup": "趋势向上，连跌 1 天"
   },
   {
    "symbol": "MSFT",
    "dip_score": 0,
    "down_streak": 0,
-   "rsi2": 38.6,
-   "price": 523.98,
-   "setup": "趋势向上，等回调"
-  },
-  {
-   "symbol": "ABBV",
-   "dip_score": 0,
-   "down_streak": 0,
-   "rsi2": 67.2,
-   "price": 294.61,
+   "rsi2": 51.3,
+   "price": 526.11,
    "setup": "趋势向上，等回调"
   },
   {
    "symbol": "V",
    "dip_score": 0,
    "down_streak": 0,
-   "rsi2": 67.4,
-   "price": 425.39,
+   "rsi2": 68.0,
+   "price": 425.56,
+   "setup": "趋势向上，等回调"
+  },
+  {
+   "symbol": "ABBV",
+   "dip_score": 0,
+   "down_streak": 0,
+   "rsi2": 69.8,
+   "price": 294.71,
    "setup": "趋势向上，等回调"
   },
   {
    "symbol": "CRM",
    "dip_score": 0,
    "down_streak": 0,
-   "rsi2": 68.3,
-   "price": 218.0,
+   "rsi2": 69.8,
+   "price": 218.12,
    "setup": "趋势向上，等回调"
   },
   {
    "symbol": "META",
    "dip_score": 0,
    "down_streak": 0,
-   "rsi2": 76.9,
-   "price": 641.84,
+   "rsi2": 78.0,
+   "price": 643.15,
    "setup": "趋势向上，等回调"
   },
   {
    "symbol": "LLY",
    "dip_score": 0,
    "down_streak": 0,
-   "rsi2": 77.9,
-   "price": 1441.59,
+   "rsi2": 78.1,
+   "price": 1441.77,
    "setup": "趋势向上，等回调"
   }
  ],
@@ -111,8 +111,8 @@
  "top": [
   "AAPL",
   "LLY",
-  "AMZN",
   "PG",
+  "AMZN",
   "KO"
  ],
  "bottom": [
@@ -209,8 +209,8 @@
    "exit_by": "2026-12-01",
    "entry_date": "2026-11-09",
    "iv_vs_hv20": 0.97,
-   "last_value": 5.83,
-   "pnl_pct": 20.1
+   "last_value": 5.93,
+   "pnl_pct": 22.16
   },
   {
    "symbol": "FCX",
@@ -263,8 +263,8 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-10",
    "iv_vs_hv20": 0.87,
-   "last_value": 5.7,
-   "pnl_pct": -21.38
+   "last_value": 5.53,
+   "pnl_pct": -23.79
   }
  ],
  "qualified": [],
@@ -299,7 +299,7 @@
  "rankings": [
   {
    "score": 95,
-   "bull": 90.4,
+   "bull": 90.3,
    "bear": 0.0,
    "checks": [
     {
@@ -328,7 +328,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 12.4,
+     "bull": 12.3,
      "bear": 0.0,
      "max": 15
     },
@@ -357,21 +357,21 @@
      "max": 15
     }
    ],
-   "price": 355.9,
-   "sma20": 346.13,
-   "sma50": 339.03,
+   "price": 356.44,
+   "sma20": 346.16,
+   "sma50": 339.04,
    "sma200": 301.25,
-   "rsi14": 60.4,
+   "rsi14": 60.8,
    "atr14": 8.22,
-   "stretch_atr": 1.19,
-   "ret20": 3.62,
-   "rel_spy20": 4.96,
-   "rel_sector20": 10.95,
-   "hv20": 27.52,
-   "rsi2": 80.7,
+   "stretch_atr": 1.25,
+   "ret20": 3.78,
+   "rel_spy20": 4.92,
+   "rel_sector20": 10.77,
+   "hv20": 27.54,
+   "rsi2": 82.8,
    "down_streak": 0,
    "above_sma5": true,
-   "low": 355.9,
+   "low": 356.09,
    "streak_drop_atr": null,
    "vs_sector_streak": null,
    "uptrend": true,
@@ -387,15 +387,15 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 96,
    "score_open": 96,
-   "day_pct": 0.29,
+   "day_pct": 0.44,
    "why_bull": [
-    "股价 355.90 在 20 日均线 346.13 上方",
+    "股价 356.44 在 20 日均线 346.16 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 5.0 个百分点",
-    "近 20 天跑赢科技板块 10.9 个百分点",
-    "RSI 60，上涨动能健康",
+    "近 20 天跑赢大盘 4.9 个百分点",
+    "近 20 天跑赢科技板块 10.8 个百分点",
+    "RSI 61，上涨动能健康",
     "MACD 动能转强"
    ],
    "why_bear": []
@@ -460,18 +460,18 @@
      "max": 15
     }
    ],
-   "price": 1441.59,
-   "sma20": 1356.15,
+   "price": 1441.77,
+   "sma20": 1356.16,
    "sma50": 1241.04,
-   "sma200": 1109.31,
+   "sma200": 1109.32,
    "rsi14": 69.5,
    "atr14": 44.31,
    "stretch_atr": 1.93,
-   "ret20": 14.68,
-   "rel_spy20": 16.02,
-   "rel_sector20": 7.93,
+   "ret20": 14.7,
+   "rel_spy20": 15.83,
+   "rel_sector20": 7.91,
    "hv20": 37.9,
-   "rsi2": 77.9,
+   "rsi2": 78.1,
    "down_streak": 0,
    "above_sma5": true,
    "low": 1419.77,
@@ -490,13 +490,13 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 94,
    "score_open": 94,
-   "day_pct": 1.0,
+   "day_pct": 1.02,
    "why_bull": [
-    "股价 1441.59 在 20 日均线 1356.15 上方",
+    "股价 1441.77 在 20 日均线 1356.16 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 16.0 个百分点",
+    "近 20 天跑赢大盘 15.8 个百分点",
     "近 20 天跑赢医疗板块 7.9 个百分点",
     "RSI 70，上涨动能健康",
     "MACD 动能转强"
@@ -504,112 +504,8 @@
    "why_bear": []
   },
   {
-   "score": 92,
-   "bull": 85.0,
-   "bear": 0.1,
-   "checks": [
-    {
-     "name": "价格 vs 20日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日 vs 50日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "50日 vs 200日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日均线方向",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日相对 SPY",
-     "bull": 15.0,
-     "bear": 0.0,
-     "max": 15
-    },
-    {
-     "name": "20日相对行业ETF",
-     "bull": 0.0,
-     "bear": 0.1,
-     "max": 10
-    },
-    {
-     "name": "RSI14 动能",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "MACD 柱",
-     "bull": 5.0,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "离20日均线不过远",
-     "bull": 15,
-     "bear": 0,
-     "max": 15
-    }
-   ],
-   "price": 266.39,
-   "sma20": 257.32,
-   "sma50": 254.81,
-   "sma200": 244.59,
-   "rsi14": 57.2,
-   "atr14": 9.08,
-   "stretch_atr": 1.0,
-   "ret20": 6.56,
-   "rel_spy20": 7.9,
-   "rel_sector20": -0.06,
-   "hv20": 41.76,
-   "rsi2": 42.8,
-   "down_streak": 1,
-   "above_sma5": false,
-   "low": 263.92,
-   "streak_drop_atr": -0.12,
-   "vs_sector_streak": 0.07,
-   "uptrend": true,
-   "bar_date": "2026-11-13",
-   "symbol": "AMZN",
-   "sector_etf": "XLY",
-   "direction": "看涨",
-   "prev_close": 267.44,
-   "earnings": null,
-   "earnings_soon": false,
-   "rank": 3,
-   "dip_score": 25,
-   "setup": "趋势向上，连跌 1 天",
-   "score_prev_close": 88,
-   "score_open": 90,
-   "day_pct": -0.39,
-   "why_bull": [
-    "股价 266.39 在 20 日均线 257.32 上方",
-    "20 日均线在 50 日均线上方（短期趋势向上）",
-    "50 日均线在 200 日均线上方（中期趋势向上）",
-    "20 日均线正在上行",
-    "近 20 天跑赢大盘 7.9 个百分点",
-    "RSI 57，上涨动能健康",
-    "MACD 动能转强"
-   ],
-   "why_bear": [
-    "近 20 天跑输可选消费板块 0.1 个百分点"
-   ]
-  },
-  {
    "score": 90,
-   "bull": 80.5,
+   "bull": 80.4,
    "bear": 0.0,
    "checks": [
     {
@@ -644,7 +540,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 2.5,
+     "bull": 2.4,
      "bear": 0.0,
      "max": 10
     },
@@ -667,18 +563,18 @@
      "max": 15
     }
    ],
-   "price": 169.71,
+   "price": 169.68,
    "sma20": 163.39,
    "sma50": 154.26,
    "sma200": 149.88,
    "rsi14": 68.1,
    "atr14": 3.2,
-   "stretch_atr": 1.97,
-   "ret20": 6.5,
-   "rel_spy20": 7.84,
-   "rel_sector20": 1.26,
-   "hv20": 28.58,
-   "rsi2": 87.3,
+   "stretch_atr": 1.96,
+   "ret20": 6.48,
+   "rel_spy20": 7.62,
+   "rel_sector20": 1.19,
+   "hv20": 28.57,
+   "rsi2": 87.1,
    "down_streak": 0,
    "above_sma5": true,
    "low": 168.5,
@@ -692,27 +588,27 @@
    "prev_close": 168.03,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 4,
+   "rank": 3,
    "dip_score": 0,
    "setup": "趋势向上，等回调",
    "score_prev_close": 91,
    "score_open": 91,
-   "day_pct": 1.0,
+   "day_pct": 0.98,
    "why_bull": [
-    "股价 169.71 在 20 日均线 163.39 上方",
+    "股价 169.68 在 20 日均线 163.39 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 7.8 个百分点",
-    "近 20 天跑赢必需消费板块 1.3 个百分点",
+    "近 20 天跑赢大盘 7.6 个百分点",
+    "近 20 天跑赢必需消费板块 1.2 个百分点",
     "RSI 68，上涨动能健康",
     "MACD 动能转强"
    ],
    "why_bear": []
   },
   {
-   "score": 88,
-   "bull": 75.7,
+   "score": 89,
+   "bull": 78.1,
    "bear": 0.0,
    "checks": [
     {
@@ -747,7 +643,110 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 0.7,
+     "bull": 0.1,
+     "bear": 0.0,
+     "max": 10
+    },
+    {
+     "name": "RSI14 动能",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "MACD 柱",
+     "bull": 5.0,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "离20日均线不过远",
+     "bull": 8,
+     "bear": 0,
+     "max": 15
+    }
+   ],
+   "price": 267.23,
+   "sma20": 257.36,
+   "sma50": 254.82,
+   "sma200": 244.6,
+   "rsi14": 58.0,
+   "atr14": 9.08,
+   "stretch_atr": 1.09,
+   "ret20": 6.89,
+   "rel_spy20": 8.03,
+   "rel_sector20": 0.05,
+   "hv20": 41.71,
+   "rsi2": 53.7,
+   "down_streak": 1,
+   "above_sma5": false,
+   "low": 263.92,
+   "streak_drop_atr": -0.02,
+   "vs_sector_streak": 0.17,
+   "uptrend": true,
+   "bar_date": "2026-11-13",
+   "symbol": "AMZN",
+   "sector_etf": "XLY",
+   "direction": "看涨",
+   "prev_close": 267.44,
+   "earnings": null,
+   "earnings_soon": false,
+   "rank": 4,
+   "dip_score": 25,
+   "setup": "趋势向上，连跌 1 天",
+   "score_prev_close": 88,
+   "score_open": 90,
+   "day_pct": -0.08,
+   "why_bull": [
+    "股价 267.23 在 20 日均线 257.36 上方",
+    "20 日均线在 50 日均线上方（短期趋势向上）",
+    "50 日均线在 200 日均线上方（中期趋势向上）",
+    "20 日均线正在上行",
+    "近 20 天跑赢大盘 8.0 个百分点",
+    "近 20 天跑赢可选消费板块 0.1 个百分点",
+    "RSI 58，上涨动能健康",
+    "MACD 动能转强"
+   ],
+   "why_bear": []
+  },
+  {
+   "score": 88,
+   "bull": 75.6,
+   "bear": 0.0,
+   "checks": [
+    {
+     "name": "价格 vs 20日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日 vs 50日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "50日 vs 200日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日均线方向",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日相对 SPY",
+     "bull": 15.0,
+     "bear": 0.0,
+     "max": 15
+    },
+    {
+     "name": "20日相对行业ETF",
+     "bull": 0.6,
      "bear": 0.0,
      "max": 10
     },
@@ -770,18 +769,18 @@
      "max": 15
     }
    ],
-   "price": 99.15,
+   "price": 99.16,
    "sma20": 94.75,
    "sma50": 90.82,
    "sma200": 83.35,
    "rsi14": 73.3,
    "atr14": 1.73,
    "stretch_atr": 2.54,
-   "ret20": 5.59,
-   "rel_spy20": 6.93,
-   "rel_sector20": 0.35,
+   "ret20": 5.6,
+   "rel_spy20": 6.73,
+   "rel_sector20": 0.31,
    "hv20": 20.55,
-   "rsi2": 96.5,
+   "rsi2": 96.6,
    "down_streak": 0,
    "above_sma5": true,
    "low": 97.96,
@@ -800,13 +799,13 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 90,
    "score_open": 88,
-   "day_pct": 1.75,
+   "day_pct": 1.77,
    "why_bull": [
-    "股价 99.15 在 20 日均线 94.75 上方",
+    "股价 99.16 在 20 日均线 94.75 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 6.9 个百分点",
+    "近 20 天跑赢大盘 6.7 个百分点",
     "近 20 天跑赢必需消费板块 0.3 个百分点",
     "RSI 73，上涨动能健康",
     "MACD 动能转强"
@@ -817,7 +816,7 @@
   },
   {
    "score": 85,
-   "bull": 79.8,
+   "bull": 79.6,
    "bear": 10.0,
    "checks": [
     {
@@ -852,7 +851,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 4.8,
+     "bull": 4.6,
      "bear": 0.0,
      "max": 10
     },
@@ -875,23 +874,23 @@
      "max": 15
     }
    ],
-   "price": 85.11,
+   "price": 85.09,
    "sma20": 83.66,
    "sma50": 80.81,
    "sma200": 87.37,
-   "rsi14": 57.9,
+   "rsi14": 57.8,
    "atr14": 1.65,
-   "stretch_atr": 0.88,
-   "ret20": 6.65,
-   "rel_spy20": 7.99,
-   "rel_sector20": 2.42,
+   "stretch_atr": 0.87,
+   "ret20": 6.63,
+   "rel_spy20": 7.77,
+   "rel_sector20": 2.29,
    "hv20": 28.69,
-   "rsi2": 4.8,
+   "rsi2": 4.7,
    "down_streak": 7,
    "above_sma5": false,
    "low": 84.37,
-   "streak_drop_atr": -2.02,
-   "vs_sector_streak": -4.66,
+   "streak_drop_atr": -2.03,
+   "vs_sector_streak": -4.78,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "NEE",
@@ -905,13 +904,13 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 82,
    "score_open": 85,
-   "day_pct": -0.21,
+   "day_pct": -0.23,
    "why_bull": [
-    "股价 85.11 在 20 日均线 83.66 上方",
+    "股价 85.09 在 20 日均线 83.66 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 8.0 个百分点",
-    "近 20 天跑赢公用事业板块 2.4 个百分点",
+    "近 20 天跑赢大盘 7.8 个百分点",
+    "近 20 天跑赢公用事业板块 2.3 个百分点",
     "RSI 58，上涨动能健康",
     "MACD 动能转强"
    ],
@@ -979,23 +978,23 @@
      "max": 15
     }
    ],
-   "price": 347.13,
-   "sma20": 333.75,
-   "sma50": 312.12,
+   "price": 348.0,
+   "sma20": 333.8,
+   "sma50": 312.14,
    "sma200": 332.69,
-   "rsi14": 62.7,
+   "rsi14": 63.5,
    "atr14": 8.98,
-   "stretch_atr": 1.49,
-   "ret20": 12.11,
-   "rel_spy20": 13.45,
-   "rel_sector20": 5.49,
-   "hv20": 37.49,
-   "rsi2": 21.6,
+   "stretch_atr": 1.58,
+   "ret20": 12.39,
+   "rel_spy20": 13.53,
+   "rel_sector20": 5.55,
+   "hv20": 37.42,
+   "rsi2": 27.2,
    "down_streak": 2,
    "above_sma5": false,
    "low": 343.37,
-   "streak_drop_atr": -0.47,
-   "vs_sector_streak": -0.29,
+   "streak_drop_atr": -0.37,
+   "vs_sector_streak": -0.25,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "HD",
@@ -1009,14 +1008,117 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 84,
    "score_open": 84,
-   "day_pct": -0.32,
+   "day_pct": -0.07,
    "why_bull": [
-    "股价 347.13 在 20 日均线 333.75 上方",
+    "股价 348.00 在 20 日均线 333.80 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 13.4 个百分点",
+    "近 20 天跑赢大盘 13.5 个百分点",
     "近 20 天跑赢可选消费板块 5.5 个百分点",
-    "RSI 63，上涨动能健康",
+    "RSI 64，上涨动能健康",
+    "MACD 动能转强"
+   ],
+   "why_bear": [
+    "50 日均线在 200 日均线下方（中期趋势向下）"
+   ]
+  },
+  {
+   "score": 84,
+   "bull": 77.6,
+   "bear": 10.0,
+   "checks": [
+    {
+     "name": "价格 vs 20日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日 vs 50日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "50日 vs 200日均线",
+     "bull": 0,
+     "bear": 10,
+     "max": 10
+    },
+    {
+     "name": "20日均线方向",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日相对 SPY",
+     "bull": 15.0,
+     "bear": 0.0,
+     "max": 15
+    },
+    {
+     "name": "20日相对行业ETF",
+     "bull": 7.6,
+     "bear": 0.0,
+     "max": 10
+    },
+    {
+     "name": "RSI14 动能",
+     "bull": 0,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "MACD 柱",
+     "bull": 10,
+     "bear": 0.0,
+     "max": 10
+    },
+    {
+     "name": "离20日均线不过远",
+     "bull": 15,
+     "bear": 0,
+     "max": 15
+    }
+   ],
+   "price": 392.53,
+   "sma20": 385.48,
+   "sma50": 374.79,
+   "sma200": 382.74,
+   "rsi14": 54.5,
+   "atr14": 16.71,
+   "stretch_atr": 0.42,
+   "ret20": 10.66,
+   "rel_spy20": 11.8,
+   "rel_sector20": 3.81,
+   "hv20": 60.77,
+   "rsi2": 58.4,
+   "down_streak": 1,
+   "above_sma5": true,
+   "low": 385.83,
+   "streak_drop_atr": -0.29,
+   "vs_sector_streak": -0.99,
+   "uptrend": false,
+   "bar_date": "2026-11-13",
+   "symbol": "TSLA",
+   "sector_etf": "XLY",
+   "direction": "看涨",
+   "prev_close": 397.45,
+   "earnings": null,
+   "earnings_soon": false,
+   "rank": 8,
+   "dip_score": 0,
+   "setup": "长期趋势不向上，不做",
+   "score_prev_close": 81,
+   "score_open": 75,
+   "day_pct": -1.24,
+   "why_bull": [
+    "股价 392.53 在 20 日均线 385.48 上方",
+    "20 日均线在 50 日均线上方（短期趋势向上）",
+    "20 日均线正在上行",
+    "近 20 天跑赢大盘 11.8 个百分点",
+    "近 20 天跑赢可选消费板块 3.8 个百分点",
     "MACD 动能转强"
    ],
    "why_bear": [
@@ -1083,18 +1185,18 @@
      "max": 15
     }
    ],
-   "price": 1104.58,
-   "sma20": 1032.03,
-   "sma50": 967.08,
+   "price": 1105.84,
+   "sma20": 1032.09,
+   "sma50": 967.11,
    "sma200": 975.68,
-   "rsi14": 75.8,
+   "rsi14": 76.0,
    "atr14": 19.58,
-   "stretch_atr": 3.71,
-   "ret20": 11.67,
-   "rel_spy20": 13.01,
-   "rel_sector20": 6.43,
-   "hv20": 22.39,
-   "rsi2": 97.9,
+   "stretch_atr": 3.77,
+   "ret20": 11.8,
+   "rel_spy20": 12.94,
+   "rel_sector20": 6.51,
+   "hv20": 22.44,
+   "rsi2": 98.0,
    "down_streak": 0,
    "above_sma5": true,
    "low": 1092.64,
@@ -1108,29 +1210,29 @@
    "prev_close": 1092.21,
    "earnings": "2026-12-10",
    "earnings_soon": false,
-   "rank": 8,
+   "rank": 9,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 82,
    "score_open": 82,
-   "day_pct": 1.13,
+   "day_pct": 1.25,
    "why_bull": [
-    "股价 1104.58 在 20 日均线 1032.03 上方",
+    "股价 1105.84 在 20 日均线 1032.09 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 13.0 个百分点",
-    "近 20 天跑赢必需消费板块 6.4 个百分点",
+    "近 20 天跑赢大盘 12.9 个百分点",
+    "近 20 天跑赢必需消费板块 6.5 个百分点",
     "RSI 76，上涨动能健康",
     "MACD 动能转强"
    ],
    "why_bear": [
     "50 日均线在 200 日均线下方（中期趋势向下）",
-    "离 20 日均线 3.7 倍日均波幅，短期涨得过多"
+    "离 20 日均线 3.8 倍日均波幅，短期涨得过多"
    ]
   },
   {
    "score": 82,
-   "bull": 73.7,
+   "bull": 73.3,
    "bear": 10.0,
    "checks": [
     {
@@ -1159,13 +1261,13 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 15.0,
+     "bull": 14.9,
      "bear": 0.0,
      "max": 15
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 8.7,
+     "bull": 8.4,
      "bear": 0.0,
      "max": 10
     },
@@ -1188,23 +1290,23 @@
      "max": 15
     }
    ],
-   "price": 672.51,
-   "sma20": 660.47,
-   "sma50": 668.37,
+   "price": 672.77,
+   "sma20": 660.48,
+   "sma50": 668.38,
    "sma200": 612.68,
-   "rsi14": 52.8,
+   "rsi14": 52.9,
    "atr14": 19.24,
-   "stretch_atr": 0.63,
-   "ret20": 4.78,
-   "rel_spy20": 6.12,
-   "rel_sector20": 4.33,
-   "hv20": 24.32,
-   "rsi2": 16.3,
+   "stretch_atr": 0.64,
+   "ret20": 4.82,
+   "rel_spy20": 5.95,
+   "rel_sector20": 4.22,
+   "hv20": 24.3,
+   "rsi2": 16.6,
    "down_streak": 2,
    "above_sma5": false,
    "low": 669.53,
-   "streak_drop_atr": -1.0,
-   "vs_sector_streak": -1.34,
+   "streak_drop_atr": -0.99,
+   "vs_sector_streak": -1.45,
    "uptrend": true,
    "bar_date": "2026-11-13",
    "symbol": "DE",
@@ -1213,18 +1315,18 @@
    "prev_close": 678.79,
    "earnings": "2026-11-25",
    "earnings_soon": true,
-   "rank": 9,
+   "rank": 10,
    "dip_score": 50,
    "setup": "趋势向上，连跌 2 天",
    "score_prev_close": 82,
    "score_open": 82,
-   "day_pct": -0.93,
+   "day_pct": -0.89,
    "why_bull": [
-    "股价 672.51 在 20 日均线 660.47 上方",
+    "股价 672.77 在 20 日均线 660.48 上方",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 6.1 个百分点",
-    "近 20 天跑赢工业板块 4.3 个百分点",
+    "近 20 天跑赢大盘 6.0 个百分点",
+    "近 20 天跑赢工业板块 4.2 个百分点",
     "MACD 动能转强"
    ],
    "why_bear": [
@@ -1233,7 +1335,7 @@
   },
   {
    "score": 82,
-   "bull": 73.9,
+   "bull": 73.7,
    "bear": 10.0,
    "checks": [
     {
@@ -1268,7 +1370,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 5.9,
+     "bull": 5.7,
      "bear": 0.0,
      "max": 10
     },
@@ -1291,18 +1393,18 @@
      "max": 15
     }
    ],
-   "price": 525.21,
-   "sma20": 513.79,
+   "price": 525.01,
+   "sma20": 513.77,
    "sma50": 490.18,
    "sma200": 496.67,
-   "rsi14": 64.1,
+   "rsi14": 63.9,
    "atr14": 8.94,
-   "stretch_atr": 1.28,
-   "ret20": 5.37,
-   "rel_spy20": 6.71,
-   "rel_sector20": 2.97,
-   "hv20": 17.89,
-   "rsi2": 66.3,
+   "stretch_atr": 1.26,
+   "ret20": 5.33,
+   "rel_spy20": 6.47,
+   "rel_sector20": 2.83,
+   "hv20": 17.88,
+   "rsi2": 65.3,
    "down_streak": 0,
    "above_sma5": true,
    "low": 521.47,
@@ -1316,18 +1418,18 @@
    "prev_close": 522.49,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 10,
+   "rank": 11,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 81,
    "score_open": 78,
-   "day_pct": 0.52,
+   "day_pct": 0.48,
    "why_bull": [
-    "股价 525.21 在 20 日均线 513.79 上方",
+    "股价 525.01 在 20 日均线 513.77 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 6.7 个百分点",
-    "近 20 天跑赢材料板块 3.0 个百分点",
+    "近 20 天跑赢大盘 6.5 个百分点",
+    "近 20 天跑赢材料板块 2.8 个百分点",
     "RSI 64，上涨动能健康",
     "MACD 动能转强"
    ],
@@ -1337,7 +1439,7 @@
   },
   {
    "score": 82,
-   "bull": 73.6,
+   "bull": 73.5,
    "bear": 10.0,
    "checks": [
     {
@@ -1372,7 +1474,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 0.6,
+     "bull": 0.5,
      "bear": 0.0,
      "max": 10
     },
@@ -1395,18 +1497,18 @@
      "max": 15
     }
    ],
-   "price": 425.39,
+   "price": 425.56,
    "sma20": 415.73,
    "sma50": 390.36,
    "sma200": 347.06,
-   "rsi14": 62.7,
+   "rsi14": 62.8,
    "atr14": 8.96,
-   "stretch_atr": 1.08,
-   "ret20": 5.66,
-   "rel_spy20": 7.0,
-   "rel_sector20": 0.32,
-   "hv20": 25.72,
-   "rsi2": 67.4,
+   "stretch_atr": 1.1,
+   "ret20": 5.7,
+   "rel_spy20": 6.84,
+   "rel_sector20": 0.23,
+   "hv20": 25.74,
+   "rsi2": 68.0,
    "down_streak": 0,
    "above_sma5": true,
    "low": 422.87,
@@ -1420,19 +1522,19 @@
    "prev_close": 420.31,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 11,
+   "rank": 12,
    "dip_score": 0,
    "setup": "趋势向上，等回调",
    "score_prev_close": 85,
    "score_open": 82,
-   "day_pct": 1.21,
+   "day_pct": 1.25,
    "why_bull": [
-    "股价 425.39 在 20 日均线 415.73 上方",
+    "股价 425.56 在 20 日均线 415.73 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 7.0 个百分点",
-    "近 20 天跑赢金融板块 0.3 个百分点",
+    "近 20 天跑赢大盘 6.8 个百分点",
+    "近 20 天跑赢金融板块 0.2 个百分点",
     "RSI 63，上涨动能健康"
    ],
    "why_bear": [
@@ -1441,7 +1543,7 @@
   },
   {
    "score": 81,
-   "bull": 72.3,
+   "bull": 72.0,
    "bear": 10.0,
    "checks": [
     {
@@ -1476,7 +1578,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 4.3,
+     "bull": 4.0,
      "bear": 0.0,
      "max": 10
     },
@@ -1499,18 +1601,18 @@
      "max": 15
     }
    ],
-   "price": 129.24,
-   "sma20": 126.19,
+   "price": 129.19,
+   "sma20": 126.18,
    "sma50": 120.65,
    "sma200": 124.83,
-   "rsi14": 64.7,
+   "rsi14": 64.6,
    "atr14": 2.14,
-   "stretch_atr": 1.43,
-   "ret20": 6.4,
-   "rel_spy20": 7.74,
-   "rel_sector20": 2.17,
+   "stretch_atr": 1.4,
+   "ret20": 6.35,
+   "rel_spy20": 7.49,
+   "rel_sector20": 2.02,
    "hv20": 22.54,
-   "rsi2": 79.3,
+   "rsi2": 78.1,
    "down_streak": 0,
    "above_sma5": true,
    "low": 127.94,
@@ -1524,18 +1626,18 @@
    "prev_close": 128.59,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 12,
+   "rank": 13,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 82,
    "score_open": 73,
-   "day_pct": 0.51,
+   "day_pct": 0.47,
    "why_bull": [
-    "股价 129.24 在 20 日均线 126.19 上方",
+    "股价 129.19 在 20 日均线 126.18 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 7.7 个百分点",
-    "近 20 天跑赢公用事业板块 2.2 个百分点",
+    "近 20 天跑赢大盘 7.5 个百分点",
+    "近 20 天跑赢公用事业板块 2.0 个百分点",
     "RSI 65，上涨动能健康",
     "MACD 动能转强"
    ],
@@ -1544,8 +1646,8 @@
    ]
   },
   {
-   "score": 80,
-   "bull": 76.4,
+   "score": 79,
+   "bull": 76.0,
    "bear": 17.1,
    "checks": [
     {
@@ -1574,7 +1676,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 11.4,
+     "bull": 11.0,
      "bear": 0.0,
      "max": 15
     },
@@ -1603,18 +1705,18 @@
      "max": 15
     }
    ],
-   "price": 294.61,
-   "sma20": 289.63,
+   "price": 294.71,
+   "sma20": 289.64,
    "sma50": 275.5,
    "sma200": 240.79,
-   "rsi14": 62.2,
+   "rsi14": 62.3,
    "atr14": 6.87,
-   "stretch_atr": 0.72,
-   "ret20": 3.22,
-   "rel_spy20": 4.56,
-   "rel_sector20": -3.53,
+   "stretch_atr": 0.74,
+   "ret20": 3.25,
+   "rel_spy20": 4.39,
+   "rel_sector20": -3.54,
    "hv20": 21.25,
-   "rsi2": 67.2,
+   "rsi2": 69.8,
    "down_streak": 0,
    "above_sma5": true,
    "low": 293.56,
@@ -1628,18 +1730,18 @@
    "prev_close": 294.45,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 13,
+   "rank": 14,
    "dip_score": 0,
    "setup": "趋势向上，等回调",
    "score_prev_close": 83,
    "score_open": 80,
-   "day_pct": 0.05,
+   "day_pct": 0.09,
    "why_bull": [
-    "股价 294.61 在 20 日均线 289.63 上方",
+    "股价 294.71 在 20 日均线 289.64 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 4.6 个百分点",
+    "近 20 天跑赢大盘 4.4 个百分点",
     "RSI 62，上涨动能健康"
    ],
    "why_bear": [
@@ -1648,8 +1750,112 @@
    ]
   },
   {
+   "score": 77,
+   "bull": 72.0,
+   "bear": 17.6,
+   "checks": [
+    {
+     "name": "价格 vs 20日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日 vs 50日均线",
+     "bull": 0,
+     "bear": 10,
+     "max": 10
+    },
+    {
+     "name": "50日 vs 200日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日均线方向",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日相对 SPY",
+     "bull": 7.0,
+     "bear": 0.0,
+     "max": 15
+    },
+    {
+     "name": "20日相对行业ETF",
+     "bull": 0.0,
+     "bear": 7.6,
+     "max": 10
+    },
+    {
+     "name": "RSI14 动能",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "MACD 柱",
+     "bull": 10,
+     "bear": 0.0,
+     "max": 10
+    },
+    {
+     "name": "离20日均线不过远",
+     "bull": 15,
+     "bear": 0,
+     "max": 15
+    }
+   ],
+   "price": 345.41,
+   "sma20": 339.01,
+   "sma50": 340.41,
+   "sma200": 324.86,
+   "rsi14": 55.5,
+   "atr14": 7.11,
+   "stretch_atr": 0.9,
+   "ret20": 1.67,
+   "rel_spy20": 2.81,
+   "rel_sector20": -3.79,
+   "hv20": 27.34,
+   "rsi2": 84.9,
+   "down_streak": 0,
+   "above_sma5": true,
+   "low": 342.86,
+   "streak_drop_atr": null,
+   "vs_sector_streak": null,
+   "uptrend": true,
+   "bar_date": "2026-11-13",
+   "symbol": "JPM",
+   "sector_etf": "XLF",
+   "direction": "看涨",
+   "prev_close": 342.82,
+   "earnings": null,
+   "earnings_soon": false,
+   "rank": 15,
+   "dip_score": 0,
+   "setup": "趋势向上，等回调",
+   "score_prev_close": 72,
+   "score_open": 72,
+   "day_pct": 0.76,
+   "why_bull": [
+    "股价 345.41 在 20 日均线 339.01 上方",
+    "50 日均线在 200 日均线上方（中期趋势向上）",
+    "20 日均线正在上行",
+    "近 20 天跑赢大盘 2.8 个百分点",
+    "RSI 56，上涨动能健康",
+    "MACD 动能转强"
+   ],
+   "why_bear": [
+    "20 日均线在 50 日均线下方（短期趋势向下）",
+    "近 20 天跑输金融板块 3.8 个百分点"
+   ]
+  },
+  {
    "score": 76,
-   "bull": 62.0,
+   "bull": 61.7,
    "bear": 10.0,
    "checks": [
     {
@@ -1678,13 +1884,13 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 8.7,
+     "bull": 8.4,
      "bear": 0.0,
      "max": 15
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 3.4,
+     "bull": 3.3,
      "bear": 0.0,
      "max": 10
     },
@@ -1707,23 +1913,23 @@
      "max": 15
     }
    ],
-   "price": 198.04,
-   "sma20": 196.53,
+   "price": 198.23,
+   "sma20": 196.54,
    "sma50": 192.79,
    "sma200": 195.3,
-   "rsi14": 53.3,
+   "rsi14": 53.5,
    "atr14": 5.26,
-   "stretch_atr": 0.29,
-   "ret20": 2.12,
-   "rel_spy20": 3.46,
-   "rel_sector20": 1.68,
-   "hv20": 29.66,
-   "rsi2": 37.2,
+   "stretch_atr": 0.32,
+   "ret20": 2.22,
+   "rel_spy20": 3.36,
+   "rel_sector20": 1.63,
+   "hv20": 29.65,
+   "rsi2": 39.6,
    "down_streak": 2,
    "above_sma5": false,
    "low": 196.37,
-   "streak_drop_atr": -0.62,
-   "vs_sector_streak": -0.17,
+   "streak_drop_atr": -0.58,
+   "vs_sector_streak": -0.22,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "RTX",
@@ -1732,18 +1938,18 @@
    "prev_close": 198.36,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 14,
+   "rank": 16,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 82,
    "score_open": 75,
-   "day_pct": -0.16,
+   "day_pct": -0.07,
    "why_bull": [
-    "股价 198.04 在 20 日均线 196.53 上方",
+    "股价 198.23 在 20 日均线 196.54 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 3.5 个百分点",
-    "近 20 天跑赢工业板块 1.7 个百分点",
+    "近 20 天跑赢大盘 3.4 个百分点",
+    "近 20 天跑赢工业板块 1.6 个百分点",
     "MACD 动能转强"
    ],
    "why_bear": [
@@ -1752,7 +1958,7 @@
   },
   {
    "score": 76,
-   "bull": 67.0,
+   "bull": 67.8,
    "bear": 15.0,
    "checks": [
     {
@@ -1787,110 +1993,7 @@
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 7.0,
-     "bear": 0.0,
-     "max": 10
-    },
-    {
-     "name": "RSI14 动能",
-     "bull": 0,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "MACD 柱",
-     "bull": 0,
-     "bear": 5.0,
-     "max": 10
-    },
-    {
-     "name": "离20日均线不过远",
-     "bull": 15,
-     "bear": 0,
-     "max": 15
-    }
-   ],
-   "price": 390.69,
-   "sma20": 385.38,
-   "sma50": 374.75,
-   "sma200": 382.73,
-   "rsi14": 53.7,
-   "atr14": 16.71,
-   "stretch_atr": 0.32,
-   "ret20": 10.14,
-   "rel_spy20": 11.48,
-   "rel_sector20": 3.52,
-   "hv20": 60.98,
-   "rsi2": 51.5,
-   "down_streak": 1,
-   "above_sma5": true,
-   "low": 385.83,
-   "streak_drop_atr": -0.4,
-   "vs_sector_streak": -1.24,
-   "uptrend": false,
-   "bar_date": "2026-11-13",
-   "symbol": "TSLA",
-   "sector_etf": "XLY",
-   "direction": "看涨",
-   "prev_close": 397.45,
-   "earnings": null,
-   "earnings_soon": false,
-   "rank": 15,
-   "dip_score": 0,
-   "setup": "长期趋势不向上，不做",
-   "score_prev_close": 81,
-   "score_open": 75,
-   "day_pct": -1.7,
-   "why_bull": [
-    "股价 390.69 在 20 日均线 385.38 上方",
-    "20 日均线在 50 日均线上方（短期趋势向上）",
-    "20 日均线正在上行",
-    "近 20 天跑赢大盘 11.5 个百分点",
-    "近 20 天跑赢可选消费板块 3.5 个百分点"
-   ],
-   "why_bear": [
-    "50 日均线在 200 日均线下方（中期趋势向下）",
-    "MACD 动能转弱"
-   ]
-  },
-  {
-   "score": 76,
-   "bull": 67.6,
-   "bear": 15.0,
-   "checks": [
-    {
-     "name": "价格 vs 20日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日 vs 50日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "50日 vs 200日均线",
-     "bull": 0,
-     "bear": 10,
-     "max": 10
-    },
-    {
-     "name": "20日均线方向",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日相对 SPY",
-     "bull": 15.0,
-     "bear": 0.0,
-     "max": 15
-    },
-    {
-     "name": "20日相对行业ETF",
-     "bull": 4.6,
+     "bull": 4.8,
      "bear": 0.0,
      "max": 10
     },
@@ -1913,18 +2016,18 @@
      "max": 15
     }
    ],
-   "price": 127.78,
+   "price": 127.92,
    "sma20": 123.22,
    "sma50": 114.53,
    "sma200": 118.93,
-   "rsi14": 67.4,
+   "rsi14": 67.6,
    "atr14": 2.79,
-   "stretch_atr": 1.64,
-   "ret20": 7.55,
-   "rel_spy20": 8.89,
-   "rel_sector20": 2.31,
-   "hv20": 25.49,
-   "rsi2": 94.3,
+   "stretch_atr": 1.68,
+   "ret20": 7.67,
+   "rel_spy20": 8.8,
+   "rel_sector20": 2.38,
+   "hv20": 25.54,
+   "rsi2": 94.7,
    "down_streak": 0,
    "above_sma5": true,
    "low": 126.22,
@@ -1938,19 +2041,19 @@
    "prev_close": 126.19,
    "earnings": "2026-11-19",
    "earnings_soon": true,
-   "rank": 16,
+   "rank": 17,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 74,
    "score_open": 77,
-   "day_pct": 1.26,
+   "day_pct": 1.37,
    "why_bull": [
-    "股价 127.78 在 20 日均线 123.22 上方",
+    "股价 127.92 在 20 日均线 123.22 上方",
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 8.9 个百分点",
-    "近 20 天跑赢必需消费板块 2.3 个百分点",
-    "RSI 67，上涨动能健康"
+    "近 20 天跑赢大盘 8.8 个百分点",
+    "近 20 天跑赢必需消费板块 2.4 个百分点",
+    "RSI 68，上涨动能健康"
    ],
    "why_bear": [
     "50 日均线在 200 日均线下方（中期趋势向下）",
@@ -2017,18 +2120,18 @@
      "max": 15
     }
    ],
-   "price": 330.97,
-   "sma20": 313.51,
-   "sma50": 314.76,
-   "sma200": 323.88,
-   "rsi14": 57.1,
+   "price": 331.36,
+   "sma20": 313.53,
+   "sma50": 314.77,
+   "sma200": 323.89,
+   "rsi14": 57.3,
    "atr14": 10.52,
-   "stretch_atr": 1.66,
-   "ret20": 5.46,
-   "rel_spy20": 6.8,
-   "rel_sector20": 5.02,
-   "hv20": 44.73,
-   "rsi2": 31.0,
+   "stretch_atr": 1.69,
+   "ret20": 5.59,
+   "rel_spy20": 6.72,
+   "rel_sector20": 4.99,
+   "hv20": 44.72,
+   "rsi2": 33.8,
    "down_streak": 0,
    "above_sma5": false,
    "low": 328.13,
@@ -2042,16 +2145,16 @@
    "prev_close": 330.86,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 17,
+   "rank": 18,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 74,
    "score_open": 74,
-   "day_pct": 0.03,
+   "day_pct": 0.15,
    "why_bull": [
-    "股价 330.97 在 20 日均线 313.51 上方",
+    "股价 331.36 在 20 日均线 313.53 上方",
     "20 日均线正在上行",
-    "近 20 天跑赢大盘 6.8 个百分点",
+    "近 20 天跑赢大盘 6.7 个百分点",
     "近 20 天跑赢工业板块 5.0 个百分点",
     "RSI 57，上涨动能健康",
     "MACD 动能转强"
@@ -2059,109 +2162,6 @@
    "why_bear": [
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "50 日均线在 200 日均线下方（中期趋势向下）"
-   ]
-  },
-  {
-   "score": 72,
-   "bull": 62.0,
-   "bear": 17.8,
-   "checks": [
-    {
-     "name": "价格 vs 20日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日 vs 50日均线",
-     "bull": 0,
-     "bear": 10,
-     "max": 10
-    },
-    {
-     "name": "50日 vs 200日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日均线方向",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日相对 SPY",
-     "bull": 7.0,
-     "bear": 0.0,
-     "max": 15
-    },
-    {
-     "name": "20日相对行业ETF",
-     "bull": 0.0,
-     "bear": 7.8,
-     "max": 10
-    },
-    {
-     "name": "RSI14 动能",
-     "bull": 0,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "MACD 柱",
-     "bull": 10,
-     "bear": 0.0,
-     "max": 10
-    },
-    {
-     "name": "离20日均线不过远",
-     "bull": 15,
-     "bear": 0,
-     "max": 15
-    }
-   ],
-   "price": 344.63,
-   "sma20": 338.97,
-   "sma50": 340.39,
-   "sma200": 324.85,
-   "rsi14": 54.8,
-   "atr14": 7.11,
-   "stretch_atr": 0.8,
-   "ret20": 1.45,
-   "rel_spy20": 2.79,
-   "rel_sector20": -3.9,
-   "hv20": 27.28,
-   "rsi2": 81.5,
-   "down_streak": 0,
-   "above_sma5": true,
-   "low": 342.86,
-   "streak_drop_atr": null,
-   "vs_sector_streak": null,
-   "uptrend": true,
-   "bar_date": "2026-11-13",
-   "symbol": "JPM",
-   "sector_etf": "XLF",
-   "direction": "看涨",
-   "prev_close": 342.82,
-   "earnings": null,
-   "earnings_soon": false,
-   "rank": 18,
-   "dip_score": 0,
-   "setup": "趋势向上，等回调",
-   "score_prev_close": 72,
-   "score_open": 72,
-   "day_pct": 0.53,
-   "why_bull": [
-    "股价 344.63 在 20 日均线 338.97 上方",
-    "50 日均线在 200 日均线上方（中期趋势向上）",
-    "20 日均线正在上行",
-    "近 20 天跑赢大盘 2.8 个百分点",
-    "MACD 动能转强"
-   ],
-   "why_bear": [
-    "20 日均线在 50 日均线下方（短期趋势向下）",
-    "近 20 天跑输金融板块 3.9 个百分点"
    ]
   },
   {
@@ -2224,23 +2224,23 @@
      "max": 15
     }
    ],
-   "price": 346.04,
-   "sma20": 330.91,
-   "sma50": 345.36,
-   "sma200": 367.42,
-   "rsi14": 52.9,
+   "price": 347.72,
+   "sma20": 330.99,
+   "sma50": 345.4,
+   "sma200": 367.43,
+   "rsi14": 53.4,
    "atr14": 17.84,
-   "stretch_atr": 0.85,
-   "ret20": 5.26,
-   "rel_spy20": 6.6,
-   "rel_sector20": 12.59,
-   "hv20": 70.94,
-   "rsi2": 46.1,
+   "stretch_atr": 0.94,
+   "ret20": 5.77,
+   "rel_spy20": 6.91,
+   "rel_sector20": 12.76,
+   "hv20": 70.46,
+   "rsi2": 48.4,
    "down_streak": 1,
    "above_sma5": true,
    "low": 337.69,
-   "streak_drop_atr": -1.03,
-   "vs_sector_streak": -2.87,
+   "streak_drop_atr": -0.93,
+   "vs_sector_streak": -2.77,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "AVGO",
@@ -2254,11 +2254,11 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 66,
    "score_open": 65,
-   "day_pct": -5.03,
+   "day_pct": -4.57,
    "why_bull": [
-    "股价 346.04 在 20 日均线 330.91 上方",
-    "近 20 天跑赢大盘 6.6 个百分点",
-    "近 20 天跑赢科技板块 12.6 个百分点",
+    "股价 347.72 在 20 日均线 330.99 上方",
+    "近 20 天跑赢大盘 6.9 个百分点",
+    "近 20 天跑赢科技板块 12.8 个百分点",
     "MACD 动能转强"
    ],
    "why_bear": [
@@ -2268,9 +2268,113 @@
    ]
   },
   {
-   "score": 52,
-   "bull": 38.9,
-   "bear": 35.8,
+   "score": 53,
+   "bull": 46.7,
+   "bear": 40.0,
+   "checks": [
+    {
+     "name": "价格 vs 20日均线",
+     "bull": 0,
+     "bear": 10,
+     "max": 10
+    },
+    {
+     "name": "20日 vs 50日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "50日 vs 200日均线",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日均线方向",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "20日相对 SPY",
+     "bull": 6.7,
+     "bear": 0.0,
+     "max": 15
+    },
+    {
+     "name": "20日相对行业ETF",
+     "bull": 0.0,
+     "bear": 10.0,
+     "max": 10
+    },
+    {
+     "name": "RSI14 动能",
+     "bull": 10,
+     "bear": 0,
+     "max": 10
+    },
+    {
+     "name": "MACD 柱",
+     "bull": 0,
+     "bear": 5.0,
+     "max": 10
+    },
+    {
+     "name": "离20日均线不过远",
+     "bull": 0,
+     "bear": 15,
+     "max": 15
+    }
+   ],
+   "price": 407.63,
+   "sma20": 407.74,
+   "sma50": 391.43,
+   "sma200": 366.44,
+   "rsi14": 55.4,
+   "atr14": 10.82,
+   "stretch_atr": -0.01,
+   "ret20": 1.54,
+   "rel_spy20": 2.68,
+   "rel_sector20": -5.25,
+   "hv20": 24.39,
+   "rsi2": 85.3,
+   "down_streak": 0,
+   "above_sma5": true,
+   "low": 400.45,
+   "streak_drop_atr": null,
+   "vs_sector_streak": null,
+   "uptrend": true,
+   "bar_date": "2026-11-13",
+   "symbol": "UNH",
+   "sector_etf": "XLV",
+   "direction": "观望",
+   "prev_close": 405.13,
+   "earnings": null,
+   "earnings_soon": false,
+   "rank": 20,
+   "dip_score": 0,
+   "setup": "趋势向上，等回调",
+   "score_prev_close": 47,
+   "score_open": 48,
+   "day_pct": 0.62,
+   "why_bull": [
+    "20 日均线在 50 日均线上方（短期趋势向上）",
+    "50 日均线在 200 日均线上方（中期趋势向上）",
+    "20 日均线正在上行",
+    "近 20 天跑赢大盘 2.7 个百分点",
+    "RSI 55，上涨动能健康"
+   ],
+   "why_bear": [
+    "股价 407.63 在 20 日均线 407.74 下方",
+    "近 20 天跑输医疗板块 5.2 个百分点",
+    "MACD 动能转弱"
+   ]
+  },
+  {
+   "score": 51,
+   "bull": 38.3,
+   "bear": 35.9,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -2298,14 +2402,14 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 8.9,
+     "bull": 8.3,
      "bear": 0.0,
      "max": 15
     },
     {
      "name": "20日相对行业ETF",
      "bull": 0.0,
-     "bear": 5.8,
+     "bear": 5.9,
      "max": 10
     },
     {
@@ -2327,23 +2431,23 @@
      "max": 15
     }
    ],
-   "price": 128.54,
+   "price": 128.51,
    "sma20": 127.98,
    "sma50": 130.65,
    "sma200": 137.85,
-   "rsi14": 47.9,
+   "rsi14": 47.8,
    "atr14": 2.55,
-   "stretch_atr": 0.22,
-   "ret20": 2.22,
-   "rel_spy20": 3.56,
-   "rel_sector20": -2.9,
+   "stretch_atr": 0.21,
+   "ret20": 2.19,
+   "rel_spy20": 3.33,
+   "rel_sector20": -2.96,
    "hv20": 21.73,
-   "rsi2": 21.2,
+   "rsi2": 20.6,
    "down_streak": 4,
    "above_sma5": false,
    "low": 127.95,
-   "streak_drop_atr": -0.79,
-   "vs_sector_streak": -0.82,
+   "streak_drop_atr": -0.8,
+   "vs_sector_streak": -0.88,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "PLD",
@@ -2352,22 +2456,22 @@
    "prev_close": 128.55,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 20,
+   "rank": 21,
    "dip_score": 0,
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 50,
    "score_open": 52,
-   "day_pct": -0.01,
+   "day_pct": -0.03,
    "why_bull": [
-    "股价 128.54 在 20 日均线 127.98 上方",
-    "近 20 天跑赢大盘 3.6 个百分点",
+    "股价 128.51 在 20 日均线 127.98 上方",
+    "近 20 天跑赢大盘 3.3 个百分点",
     "MACD 动能转强"
    ],
    "why_bear": [
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "50 日均线在 200 日均线下方（中期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输地产板块 2.9 个百分点"
+    "近 20 天跑输地产板块 3.0 个百分点"
    ]
   },
   {
@@ -2430,18 +2534,18 @@
      "max": 15
     }
    ],
-   "price": 641.84,
-   "sma20": 637.07,
-   "sma50": 679.81,
+   "price": 643.15,
+   "sma20": 637.14,
+   "sma50": 679.84,
    "sma200": 630.77,
-   "rsi14": 47.8,
-   "atr14": 22.69,
-   "stretch_atr": 0.21,
-   "ret20": -9.51,
-   "rel_spy20": -8.17,
-   "rel_sector20": -7.97,
-   "hv20": 41.44,
-   "rsi2": 76.9,
+   "rsi14": 48.2,
+   "atr14": 22.73,
+   "stretch_atr": 0.26,
+   "ret20": -9.33,
+   "rel_spy20": -8.19,
+   "rel_sector20": -7.98,
+   "hv20": 41.67,
+   "rsi2": 78.0,
    "down_streak": 0,
    "above_sma5": true,
    "low": 624.79,
@@ -2455,14 +2559,14 @@
    "prev_close": 623.61,
    "earnings": null,
    "earnings_soon": false,
-   "rank": 21,
+   "rank": 22,
    "dip_score": 0,
    "setup": "趋势向上，等回调",
    "score_prev_close": 20,
    "score_open": 25,
-   "day_pct": 2.92,
+   "day_pct": 3.13,
    "why_bull": [
-    "股价 641.84 在 20 日均线 637.07 上方",
+    "股价 643.15 在 20 日均线 637.14 上方",
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "MACD 动能转强"
    ],
@@ -2475,112 +2579,8 @@
   },
   {
    "score": 48,
-   "bull": 36.8,
-   "bear": 40.0,
-   "checks": [
-    {
-     "name": "价格 vs 20日均线",
-     "bull": 0,
-     "bear": 10,
-     "max": 10
-    },
-    {
-     "name": "20日 vs 50日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "50日 vs 200日均线",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日均线方向",
-     "bull": 10,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "20日相对 SPY",
-     "bull": 6.8,
-     "bear": 0.0,
-     "max": 15
-    },
-    {
-     "name": "20日相对行业ETF",
-     "bull": 0.0,
-     "bear": 10.0,
-     "max": 10
-    },
-    {
-     "name": "RSI14 动能",
-     "bull": 0,
-     "bear": 0,
-     "max": 10
-    },
-    {
-     "name": "MACD 柱",
-     "bull": 0,
-     "bear": 5.0,
-     "max": 10
-    },
-    {
-     "name": "离20日均线不过远",
-     "bull": 0,
-     "bear": 15,
-     "max": 15
-    }
-   ],
-   "price": 406.98,
-   "sma20": 407.71,
-   "sma50": 391.42,
-   "sma200": 366.43,
-   "rsi14": 55.0,
-   "atr14": 10.82,
-   "stretch_atr": -0.07,
-   "ret20": 1.38,
-   "rel_spy20": 2.72,
-   "rel_sector20": -5.37,
-   "hv20": 24.35,
-   "rsi2": 83.4,
-   "down_streak": 0,
-   "above_sma5": true,
-   "low": 400.45,
-   "streak_drop_atr": null,
-   "vs_sector_streak": null,
-   "uptrend": true,
-   "bar_date": "2026-11-13",
-   "symbol": "UNH",
-   "sector_etf": "XLV",
-   "direction": "观望",
-   "prev_close": 405.13,
-   "earnings": null,
-   "earnings_soon": false,
-   "rank": 22,
-   "dip_score": 0,
-   "setup": "趋势向上，等回调",
-   "score_prev_close": 47,
-   "score_open": 48,
-   "day_pct": 0.46,
-   "why_bull": [
-    "20 日均线在 50 日均线上方（短期趋势向上）",
-    "50 日均线在 200 日均线上方（中期趋势向上）",
-    "20 日均线正在上行",
-    "近 20 天跑赢大盘 2.7 个百分点",
-    "RSI 55，上涨动能健康"
-   ],
-   "why_bear": [
-    "股价 406.98 在 20 日均线 407.71 下方",
-    "近 20 天跑输医疗板块 5.4 个百分点",
-    "MACD 动能转弱"
-   ]
-  },
-  {
-   "score": 43,
    "bull": 36.3,
-   "bear": 50.0,
+   "bear": 40.0,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -2621,7 +2621,7 @@
     {
      "name": "RSI14 动能",
      "bull": 0,
-     "bear": 10,
+     "bear": 0,
      "max": 10
     },
     {
@@ -2637,18 +2637,18 @@
      "max": 15
     }
    ],
-   "price": 50.8,
-   "sma20": 50.49,
+   "price": 50.91,
+   "sma20": 50.5,
    "sma50": 54.07,
    "sma200": 54.86,
-   "rsi14": 44.3,
+   "rsi14": 45.1,
    "atr14": 1.15,
-   "stretch_atr": 0.27,
-   "ret20": -0.84,
+   "stretch_atr": 0.35,
+   "ret20": -0.63,
    "rel_spy20": 0.5,
-   "rel_sector20": -6.18,
-   "hv20": 24.59,
-   "rsi2": 76.0,
+   "rel_sector20": -6.1,
+   "hv20": 24.67,
+   "rsi2": 80.0,
    "down_streak": 0,
    "above_sma5": true,
    "low": 50.43,
@@ -2667,9 +2667,9 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 17,
    "score_open": 43,
-   "day_pct": 0.57,
+   "day_pct": 0.79,
    "why_bull": [
-    "股价 50.80 在 20 日均线 50.49 上方",
+    "股价 50.91 在 20 日均线 50.50 上方",
     "近 20 天跑赢大盘 0.5 个百分点",
     "MACD 动能转强"
    ],
@@ -2677,13 +2677,12 @@
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "50 日均线在 200 日均线下方（中期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输金融板块 6.2 个百分点",
-    "RSI 44，动能偏弱"
+    "近 20 天跑输金融板块 6.1 个百分点"
    ]
   },
   {
    "score": 43,
-   "bull": 31.0,
+   "bull": 31.5,
    "bear": 45.0,
    "checks": [
     {
@@ -2712,7 +2711,7 @@
     },
     {
      "name": "20日相对 SPY",
-     "bull": 1.0,
+     "bull": 1.5,
      "bear": 0.0,
      "max": 15
     },
@@ -2741,18 +2740,18 @@
      "max": 15
     }
    ],
-   "price": 523.98,
-   "sma20": 529.39,
-   "sma50": 519.0,
-   "sma200": 441.42,
-   "rsi14": 48.9,
-   "atr14": 15.19,
-   "stretch_atr": -0.36,
-   "ret20": -0.96,
-   "rel_spy20": 0.38,
-   "rel_sector20": 6.37,
-   "hv20": 36.51,
-   "rsi2": 38.6,
+   "price": 526.11,
+   "sma20": 529.5,
+   "sma50": 519.04,
+   "sma200": 441.43,
+   "rsi14": 49.8,
+   "atr14": 15.2,
+   "stretch_atr": -0.22,
+   "ret20": -0.56,
+   "rel_spy20": 0.58,
+   "rel_sector20": 6.43,
+   "hv20": 36.57,
+   "rsi2": 51.3,
    "down_streak": 0,
    "above_sma5": false,
    "low": 513.82,
@@ -2771,23 +2770,23 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 41,
    "score_open": 42,
-   "day_pct": 0.19,
+   "day_pct": 0.59,
    "why_bull": [
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
-    "近 20 天跑赢大盘 0.4 个百分点",
+    "近 20 天跑赢大盘 0.6 个百分点",
     "近 20 天跑赢科技板块 6.4 个百分点"
    ],
    "why_bear": [
-    "股价 523.98 在 20 日均线 529.39 下方",
+    "股价 526.11 在 20 日均线 529.50 下方",
     "20 日均线正在下行",
     "MACD 动能转弱"
    ]
   },
   {
-   "score": 41,
-   "bull": 24.6,
-   "bear": 43.5,
+   "score": 40,
+   "bull": 24.7,
+   "bear": 43.9,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -2816,12 +2815,12 @@
     {
      "name": "20日相对 SPY",
      "bull": 0.0,
-     "bear": 3.5,
+     "bear": 3.9,
      "max": 15
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 4.6,
+     "bull": 4.7,
      "bear": 0.0,
      "max": 10
     },
@@ -2844,18 +2843,18 @@
      "max": 15
     }
    ],
-   "price": 218.8,
+   "price": 218.88,
    "sma20": 222.96,
    "sma50": 215.46,
    "sma200": 195.79,
-   "rsi14": 50.6,
+   "rsi14": 50.8,
    "atr14": 4.95,
-   "stretch_atr": -0.84,
-   "ret20": -2.75,
-   "rel_spy20": -1.41,
-   "rel_sector20": 2.28,
-   "hv20": 25.9,
-   "rsi2": 94.3,
+   "stretch_atr": -0.82,
+   "ret20": -2.72,
+   "rel_spy20": -1.58,
+   "rel_sector20": 2.36,
+   "hv20": 25.93,
+   "rsi2": 94.4,
    "down_streak": 0,
    "above_sma5": true,
    "low": 216.56,
@@ -2874,23 +2873,23 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 46,
    "score_open": 44,
-   "day_pct": 1.13,
+   "day_pct": 1.17,
    "why_bull": [
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
-    "近 20 天跑赢能源板块 2.3 个百分点"
+    "近 20 天跑赢能源板块 2.4 个百分点"
    ],
    "why_bear": [
-    "股价 218.80 在 20 日均线 222.96 下方",
+    "股价 218.88 在 20 日均线 222.96 下方",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 1.4 个百分点",
+    "近 20 天跑输大盘 1.6 个百分点",
     "MACD 动能转弱"
    ]
   },
   {
    "score": 39,
-   "bull": 20.2,
-   "bear": 42.0,
+   "bull": 20.4,
+   "bear": 42.4,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -2919,12 +2918,12 @@
     {
      "name": "20日相对 SPY",
      "bull": 0.0,
-     "bear": 9.0,
+     "bear": 9.4,
      "max": 15
     },
     {
      "name": "20日相对行业ETF",
-     "bull": 0.2,
+     "bull": 0.4,
      "bear": 0.0,
      "max": 10
     },
@@ -2947,18 +2946,18 @@
      "max": 15
     }
    ],
-   "price": 170.15,
-   "sma20": 175.3,
+   "price": 170.22,
+   "sma20": 175.31,
    "sma50": 169.37,
    "sma200": 156.36,
-   "rsi14": 47.5,
+   "rsi14": 47.7,
    "atr14": 4.31,
-   "stretch_atr": -1.2,
-   "ret20": -4.93,
-   "rel_spy20": -3.59,
-   "rel_sector20": 0.1,
-   "hv20": 30.97,
-   "rsi2": 90.7,
+   "stretch_atr": -1.18,
+   "ret20": -4.89,
+   "rel_spy20": -3.76,
+   "rel_sector20": 0.18,
+   "hv20": 30.98,
+   "rsi2": 91.0,
    "down_streak": 0,
    "above_sma5": true,
    "low": 169.21,
@@ -2977,23 +2976,23 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 43,
    "score_open": 40,
-   "day_pct": 0.22,
+   "day_pct": 0.26,
    "why_bull": [
     "20 日均线在 50 日均线上方（短期趋势向上）",
     "50 日均线在 200 日均线上方（中期趋势向上）",
-    "近 20 天跑赢能源板块 0.1 个百分点"
+    "近 20 天跑赢能源板块 0.2 个百分点"
    ],
    "why_bear": [
-    "股价 170.15 在 20 日均线 175.30 下方",
+    "股价 170.22 在 20 日均线 175.31 下方",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 3.6 个百分点",
+    "近 20 天跑输大盘 3.8 个百分点",
     "MACD 动能转弱"
    ]
   },
   {
    "score": 27,
    "bull": 11.1,
-   "bear": 57.9,
+   "bear": 58.0,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -3016,7 +3015,7 @@
     {
      "name": "20日相对 SPY",
      "bull": 0.0,
-     "bear": 7.1,
+     "bear": 7.2,
      "max": 15
     },
     {
@@ -3044,22 +3043,22 @@
      "max": 15
     }
    ],
-   "price": 139.93,
-   "sma20": 142.14,
-   "sma50": 148.92,
+   "price": 140.14,
+   "sma20": 142.16,
+   "sma50": 148.93,
    "sma200": null,
-   "rsi14": 46.9,
+   "rsi14": 47.1,
    "atr14": 8.08,
-   "stretch_atr": -0.27,
-   "ret20": -4.18,
-   "rel_spy20": -2.84,
+   "stretch_atr": -0.25,
+   "ret20": -4.03,
+   "rel_spy20": -2.9,
    "rel_sector20": null,
    "hv20": 75.43,
-   "rsi2": 49.3,
-   "down_streak": 1,
+   "rsi2": 54.0,
+   "down_streak": 0,
    "above_sma5": false,
    "low": 136.64,
-   "streak_drop_atr": -0.0,
+   "streak_drop_atr": null,
    "vs_sector_streak": null,
    "uptrend": false,
    "bar_date": "2026-11-13",
@@ -3074,15 +3073,15 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 25,
    "score_open": 25,
-   "day_pct": -0.01,
+   "day_pct": 0.14,
    "why_bull": [
     "MACD 动能转强"
    ],
    "why_bear": [
-    "股价 139.93 在 20 日均线 142.14 下方",
+    "股价 140.14 在 20 日均线 142.16 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 2.8 个百分点"
+    "近 20 天跑输大盘 2.9 个百分点"
    ]
   },
   {
@@ -3145,23 +3144,23 @@
      "max": 15
     }
    ],
-   "price": 162.31,
-   "sma20": 198.66,
-   "sma50": 214.64,
+   "price": 162.82,
+   "sma20": 198.69,
+   "sma50": 214.65,
    "sma200": 204.19,
-   "rsi14": 24.7,
+   "rsi14": 24.8,
    "atr14": 9.98,
-   "stretch_atr": -3.64,
-   "ret20": -24.2,
-   "rel_spy20": -22.86,
-   "rel_sector20": -16.87,
-   "hv20": 54.08,
-   "rsi2": 12.5,
+   "stretch_atr": -3.59,
+   "ret20": -23.96,
+   "rel_spy20": -22.83,
+   "rel_sector20": -16.97,
+   "hv20": 54.01,
+   "rsi2": 13.1,
    "down_streak": 2,
    "above_sma5": false,
    "low": 158.39,
-   "streak_drop_atr": -1.14,
-   "vs_sector_streak": -4.08,
+   "streak_drop_atr": -1.09,
+   "vs_sector_streak": -4.15,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "NVDA",
@@ -3175,17 +3174,17 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 18,
    "score_open": 18,
-   "day_pct": -2.33,
+   "day_pct": -2.03,
    "why_bull": [
     "50 日均线在 200 日均线上方（中期趋势向上）",
     "离 20 日均线 3.6 倍日均波幅，短期跌得过多"
    ],
    "why_bear": [
-    "股价 162.31 在 20 日均线 198.66 下方",
+    "股价 162.82 在 20 日均线 198.69 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 22.9 个百分点",
-    "近 20 天跑输科技板块 16.9 个百分点",
+    "近 20 天跑输大盘 22.8 个百分点",
+    "近 20 天跑输科技板块 17.0 个百分点",
     "RSI 25，动能偏弱",
     "MACD 动能转弱"
    ]
@@ -3193,7 +3192,7 @@
   {
    "score": 19,
    "bull": 10.0,
-   "bear": 72.2,
+   "bear": 72.8,
    "checks": [
     {
      "name": "价格 vs 20日均线",
@@ -3228,7 +3227,7 @@
     {
      "name": "20日相对行业ETF",
      "bull": 0.0,
-     "bear": 4.2,
+     "bear": 4.8,
      "max": 10
     },
     {
@@ -3250,18 +3249,18 @@
      "max": 15
     }
    ],
-   "price": 218.0,
+   "price": 218.12,
    "sma20": 230.49,
    "sma50": 235.28,
    "sma200": 197.99,
-   "rsi14": 39.7,
+   "rsi14": 39.8,
    "atr14": 8.07,
-   "stretch_atr": -1.55,
-   "ret20": -9.43,
-   "rel_spy20": -8.09,
-   "rel_sector20": -2.1,
-   "hv20": 31.46,
-   "rsi2": 68.3,
+   "stretch_atr": -1.53,
+   "ret20": -9.38,
+   "rel_spy20": -8.24,
+   "rel_sector20": -2.39,
+   "hv20": 31.48,
+   "rsi2": 69.8,
    "down_streak": 0,
    "above_sma5": true,
    "low": 215.58,
@@ -3280,16 +3279,16 @@
    "setup": "趋势向上，等回调",
    "score_prev_close": 17,
    "score_open": 19,
-   "day_pct": 0.2,
+   "day_pct": 0.25,
    "why_bull": [
     "50 日均线在 200 日均线上方（中期趋势向上）"
    ],
    "why_bear": [
-    "股价 218.00 在 20 日均线 230.49 下方",
+    "股价 218.12 在 20 日均线 230.49 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 8.1 个百分点",
-    "近 20 天跑输科技板块 2.1 个百分点",
+    "近 20 天跑输大盘 8.2 个百分点",
+    "近 20 天跑输科技板块 2.4 个百分点",
     "RSI 40，动能偏弱",
     "MACD 动能转弱"
    ]
@@ -3354,23 +3353,23 @@
      "max": 15
     }
    ],
-   "price": 598.74,
-   "sma20": 645.07,
-   "sma50": 740.74,
-   "sma200": 807.42,
-   "rsi14": 35.3,
+   "price": 600.08,
+   "sma20": 645.14,
+   "sma50": 740.77,
+   "sma200": 807.43,
+   "rsi14": 35.5,
    "atr14": 29.1,
-   "stretch_atr": -1.59,
-   "ret20": -18.07,
-   "rel_spy20": -16.73,
-   "rel_sector20": -18.51,
+   "stretch_atr": -1.55,
+   "ret20": -17.88,
+   "rel_spy20": -16.75,
+   "rel_sector20": -18.48,
    "hv20": 60.59,
-   "rsi2": 48.8,
+   "rsi2": 52.7,
    "down_streak": 1,
    "above_sma5": true,
    "low": 590.26,
-   "streak_drop_atr": -0.22,
-   "vs_sector_streak": -0.53,
+   "streak_drop_atr": -0.18,
+   "vs_sector_streak": -0.45,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "CAT",
@@ -3384,18 +3383,18 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 6,
    "score_open": 14,
-   "day_pct": -1.08,
+   "day_pct": -0.86,
    "why_bull": [
     "MACD 动能转强"
    ],
    "why_bear": [
-    "股价 598.74 在 20 日均线 645.07 下方",
+    "股价 600.08 在 20 日均线 645.14 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "50 日均线在 200 日均线下方（中期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 16.7 个百分点",
+    "近 20 天跑输大盘 16.8 个百分点",
     "近 20 天跑输工业板块 18.5 个百分点",
-    "RSI 35，动能偏弱"
+    "RSI 36，动能偏弱"
    ]
   },
   {
@@ -3458,23 +3457,23 @@
      "max": 15
     }
    ],
-   "price": 59.26,
+   "price": 59.33,
    "sma20": 63.64,
    "sma50": 68.51,
    "sma200": 65.2,
-   "rsi14": 36.8,
+   "rsi14": 37.0,
    "atr14": 2.76,
-   "stretch_atr": -1.59,
-   "ret20": -14.79,
-   "rel_spy20": -13.45,
-   "rel_sector20": -17.2,
-   "hv20": 50.8,
-   "rsi2": 22.6,
+   "stretch_atr": -1.57,
+   "ret20": -14.69,
+   "rel_spy20": -13.55,
+   "rel_sector20": -17.19,
+   "hv20": 50.76,
+   "rsi2": 23.1,
    "down_streak": 2,
    "above_sma5": false,
    "low": 58.88,
-   "streak_drop_atr": -1.04,
-   "vs_sector_streak": -2.96,
+   "streak_drop_atr": -1.01,
+   "vs_sector_streak": -2.94,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "FCX",
@@ -3488,15 +3487,15 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 16,
    "score_open": 16,
-   "day_pct": -1.97,
+   "day_pct": -1.85,
    "why_bull": [
     "50 日均线在 200 日均线上方（中期趋势向上）"
    ],
    "why_bear": [
-    "股价 59.26 在 20 日均线 63.64 下方",
+    "股价 59.33 在 20 日均线 63.64 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 13.4 个百分点",
+    "近 20 天跑输大盘 13.6 个百分点",
     "近 20 天跑输材料板块 17.2 个百分点",
     "RSI 37，动能偏弱",
     "MACD 动能转弱"
@@ -3562,23 +3561,23 @@
      "max": 15
     }
    ],
-   "price": 295.69,
-   "sma20": 303.41,
-   "sma50": 328.18,
+   "price": 296.12,
+   "sma20": 303.43,
+   "sma50": 328.19,
    "sma200": 338.48,
-   "rsi14": 40.5,
+   "rsi14": 40.8,
    "atr14": 10.29,
-   "stretch_atr": -0.75,
-   "ret20": -13.18,
-   "rel_spy20": -11.84,
-   "rel_sector20": -11.64,
-   "hv20": 54.19,
-   "rsi2": 58.2,
+   "stretch_atr": -0.71,
+   "ret20": -13.06,
+   "rel_spy20": -11.92,
+   "rel_sector20": -11.71,
+   "hv20": 54.18,
+   "rsi2": 61.6,
    "down_streak": 1,
    "above_sma5": true,
    "low": 293.44,
-   "streak_drop_atr": -0.29,
-   "vs_sector_streak": -1.99,
+   "streak_drop_atr": -0.25,
+   "vs_sector_streak": -2.04,
    "uptrend": false,
    "bar_date": "2026-11-13",
    "symbol": "GOOGL",
@@ -3592,37 +3591,37 @@
    "setup": "长期趋势不向上，不做",
    "score_prev_close": 10,
    "score_open": 10,
-   "day_pct": -1.01,
+   "day_pct": -0.86,
    "why_bull": [
     "MACD 动能转强"
    ],
    "why_bear": [
-    "股价 295.69 在 20 日均线 303.41 下方",
+    "股价 296.12 在 20 日均线 303.43 下方",
     "20 日均线在 50 日均线下方（短期趋势向下）",
     "50 日均线在 200 日均线下方（中期趋势向下）",
     "20 日均线正在下行",
-    "近 20 天跑输大盘 11.8 个百分点",
-    "近 20 天跑输通信板块 11.6 个百分点",
-    "RSI 40，动能偏弱"
+    "近 20 天跑输大盘 11.9 个百分点",
+    "近 20 天跑输通信板块 11.7 个百分点",
+    "RSI 41，动能偏弱"
    ]
   }
  ],
  "benchmark_prices": {
-  "SPY": 753.02,
-  "XLB": 52.145,
-  "XLC": 108.615,
-  "XLE": 64.805,
-  "XLF": 58.485,
-  "XLI": 168.5,
-  "XLK": 170.02,
-  "XLP": 92.215,
-  "XLRE": 44.32,
-  "XLU": 43.995,
-  "XLV": 188.635,
-  "XLY": 119.905
+  "SPY": 754.575,
+  "XLB": 52.195,
+  "XLC": 108.83,
+  "XLE": 64.775,
+  "XLF": 58.555,
+  "XLI": 168.755,
+  "XLK": 170.645,
+  "XLP": 92.255,
+  "XLRE": 44.335,
+  "XLU": 44.04,
+  "XLV": 188.71,
+  "XLY": 120.16
  },
  "session_date": "2026-11-13",
- "scan_no": 100,
+ "scan_no": 101,
  "prev_session_date": "2026-11-12",
- "spy_day_pct": -0.54
+ "spy_day_pct": -0.34
 }
