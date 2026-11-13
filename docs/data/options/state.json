@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-12T21:50:42.769194+00:00",
+ "updated_at": "2026-11-13T15:03:35.664845+00:00",
  "open": [
   {
    "symbol": "KO",
@@ -25,8 +25,8 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-08",
    "iv_vs_hv20": 0.93,
-   "last_value": 3.92,
-   "pnl_pct": 31.71
+   "last_value": 4.7,
+   "pnl_pct": 57.72
   },
   {
    "symbol": "BAC",
@@ -52,8 +52,8 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-08",
    "iv_vs_hv20": 0.9,
-   "last_value": 1.35,
-   "pnl_pct": -35.1
+   "last_value": 1.24,
+   "pnl_pct": -40.38
   },
   {
    "symbol": "AAPL",
@@ -85,35 +85,8 @@
    "exit_by": "2026-12-01",
    "entry_date": "2026-11-09",
    "iv_vs_hv20": 0.97,
-   "last_value": 5.6,
-   "pnl_pct": 15.46
-  },
-  {
-   "symbol": "NEE",
-   "type": "call",
-   "structure": "single",
-   "score_at_entry": 80,
-   "underlying_at_entry": 87.12,
-   "legs": [
-    {
-     "contract": "NEE261218C00087500",
-     "qty": 1,
-     "strike": 87.5,
-     "entry_mid": 2.49
-    }
-   ],
-   "expiration": "2026-12-18",
-   "entry_cost": 2.49,
-   "cost_per_contract": 249.0,
-   "max_gain_per_contract": null,
-   "breakeven": 89.99,
-   "stop_value": 1.25,
-   "target_value": 4.48,
-   "exit_by": "2026-12-08",
-   "entry_date": "2026-11-09",
-   "iv_vs_hv20": 0.79,
-   "last_value": 1.29,
-   "pnl_pct": -47.99
+   "last_value": 6.62,
+   "pnl_pct": 36.6
   },
   {
    "symbol": "FCX",
@@ -166,10 +139,40 @@
    "exit_by": "2026-12-08",
    "entry_date": "2026-11-10",
    "iv_vs_hv20": 0.87,
-   "last_value": 5.8,
-   "pnl_pct": -20.0
+   "last_value": 6.05,
+   "pnl_pct": -16.55
   }
  ],
  "qualified": [],
- "closed": []
+ "closed": [
+  {
+   "symbol": "NEE",
+   "type": "call",
+   "structure": "single",
+   "score_at_entry": 80,
+   "underlying_at_entry": 87.12,
+   "legs": [
+    {
+     "contract": "NEE261218C00087500",
+     "qty": 1,
+     "strike": 87.5,
+     "entry_mid": 2.49
+    }
+   ],
+   "expiration": "2026-12-18",
+   "entry_cost": 2.49,
+   "cost_per_contract": 249.0,
+   "max_gain_per_contract": null,
+   "breakeven": 89.99,
+   "stop_value": 1.25,
+   "target_value": 4.48,
+   "exit_by": "2026-12-08",
+   "entry_date": "2026-11-09",
+   "iv_vs_hv20": 0.79,
+   "last_value": 1.15,
+   "pnl_pct": -53.82,
+   "exit_reason": "止损：-54%",
+   "exit_date": "2026-11-13"
+  }
+ ]
 }
